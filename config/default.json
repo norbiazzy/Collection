@@ -1,0 +1,5 @@
+{
+  "port": 5000,
+  "jwtSecret": "galakov",
+  "mongoUri": "mongodb+srv://vadim:QWERTY@cluster0.t8zxz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+}
