@@ -1,7 +1,20 @@
 import s from './Sing.module.css'
 import {NavLink} from "react-router-dom";
+import login from "./Login";
 
 const Registration = (props) => {
+  const handleBtn = (e) => {
+    e.preventDefault()
+    let res = fetch('api/auth/register', {
+      method: 'POST',
+      body: {
+        email: 'vadim@mail.ru',
+        password: '123'
+      }
+    }).then((res)=>{
+      console.log(res)
+    })
+  }
   return (
     <div className={s.wrapper}>
       <h1 className={s.title}>Registration</h1>
@@ -25,7 +38,7 @@ const Registration = (props) => {
           </label>
         </div>
         <div>
-          <button className='btn btn-dark w-100'>Sing Up</button>
+          <button className='btn btn-dark w-100' onClick={handleBtn}>Sing Up</button>
         </div>
       </form>
       <div className='d-flex justify-content-between'>
