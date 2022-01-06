@@ -1,10 +1,10 @@
-import Header from "./Header/Header";
 import {Col, Container, Row} from "react-bootstrap";
-import Sidebar from "./Sidebar/Sidebar";
 import {Route, Routes} from "react-router-dom";
+import Header from "./Header/Header";
+import Sidebar from "./Sidebar/Sidebar";
 import News from "./News/News";
-import Profile from "./Profile/Profile";
 import Users from "./Users/Users";
+import ProfileContainer from "./Profile/ProfileContainer";
 
 const Main = () => {
   return (
@@ -18,7 +18,7 @@ const Main = () => {
           <Col xs={9}>
             <Routes>
               <Route path='/home' element={<News/>}/>
-              <Route path='/profile' element={<Profile/>}/>
+              <Route path='/profile' element={<ProfileContainer/>}/>
               <Route path='/users' element={<Users/>}/>
             </Routes>
           </Col>
