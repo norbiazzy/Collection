@@ -22,6 +22,15 @@ export const loginUser = ({email, password}) => {
         return body
     })
 }
+export const verifyTokenAPI = (token) => {
+    return fetch('/api/auth/verify', {
+        method: 'POST',
+        body: JSON.stringify({token}),
+        headers
+    }).then((res) => {
+        return res.json()
+    })
+}
 
 
 export const getProfileUser = (userId) => {
@@ -30,17 +39,16 @@ export const getProfileUser = (userId) => {
     return fetch('/api/profile/getUser', {
         method: 'POST', body, headers
     }).then((res) => {
-        console.log('api profile', res)
         return res.json()
     })
 }
-// let res = fetch('/api/auth/register', {
-//  method: 'POST',
-//  body: body,
-//  headers
-// }).then((res)=>{
-//  return res.json()
-// }).then((data)=>{
-//
-//  console.log(data.message)
-// })
+
+export const saveCollectionAPI = () => {
+    let body = {}
+    body = JSON.stringify(body)
+    return fetch('/api/collection/create', {
+        method: 'POST', body, headers
+    }).then((res) => {
+        return res.json()
+    })
+}

@@ -1,7 +1,7 @@
 const {Schema, model, Types} = require("mongoose");
 
 const Profile = new Schema({
-    userId: Types.ObjectId,
+    userId: {type: Types.ObjectId, ref: 'User'},
     photo: {
         type: String,
         unique: false,
@@ -9,8 +9,7 @@ const Profile = new Schema({
     },
     status: {type: String, default: 'Just status'},
     name: {type: String, default: 'New user'},
-    collections: [],
-    //blocked: {type: Boolean, default: false}
+    collections: [{type: Types.ObjectId, ref: 'Collection'}],
 })
 
 module.exports = model('Profile', Profile)

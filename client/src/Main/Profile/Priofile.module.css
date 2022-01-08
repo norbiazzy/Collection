@@ -1,3 +1,15 @@
 .img {
     width: 200px;
 }
+
+.tag {
+    margin: 0 5px;
+    padding: 2px 8px;
+    border: 1px solid;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background-color: rgba(255, 0, 0, 0.31);
+}

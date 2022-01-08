@@ -1,8 +1,8 @@
 const auth = (props)=>{
     if (!props.auth.token) {
-        let auth = localStorage.getItem('auth')
+        let auth = JSON.parse(localStorage.getItem('auth'))
         if ( auth ) {
-            JSON.parse(auth)
+            setAuth(auth)
         }
 
     }

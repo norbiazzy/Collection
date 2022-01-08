@@ -9,6 +9,7 @@ const initialState = {
     status: null,
     name: null,
     collections: null,
+    isProfile: false
 }
 export const profileReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -18,7 +19,8 @@ export const profileReducer = (state = initialState, action) => {
                 photo: action.photo,
                 status: action.status,
                 name: action.name,
-                collections: action.collections
+                collections: action.collections,
+                isProfile: true
             }
         case GET_COLLECTIONS:
             return {...state};

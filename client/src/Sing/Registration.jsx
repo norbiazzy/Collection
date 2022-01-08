@@ -11,9 +11,9 @@ const Registration = (props) => {
     let body = {
       email: email.current.value,
       password: password.current.value,
-      role: 'user',
+      role: 'admin',
     }
-    console.log(1)
+    
     props.registrationUserThunkCreate(body)
   }
   // const handleBtn = (e) => {

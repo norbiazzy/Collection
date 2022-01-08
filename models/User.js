@@ -1,13 +1,13 @@
 const {Schema, model, Types} = require("mongoose");
 
-const schema = new Schema({
+const User = new Schema({
     _id: Types.ObjectId,
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
+    blocked: {type: Boolean, default: false},
     role: {type: String, required: true, ref: 'Role'},
-    blocked: {type: Boolean, default: false}
-    // profile: {type: Schema.Types.ObjectId, required: true, ref:'Profile'},
-    // collections: {type: Schema.Types.ObjectId, required: true, ref: 'Collections' },
+    profile: {type: Types.ObjectId, ref:'Profile'},
+    collections: {type: Types.ObjectId, ref: 'Collection' },
 })
 
-module.exports = model('User', schema)
+module.exports = model('User', User)
