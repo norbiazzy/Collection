@@ -1,49 +1,49 @@
-import {getProfileUser, registerUser} from "../api/api";
+import {getProfileUserAPI} from "../api/api";
 
 const GET_PROFILE = 'GET_PROFILE'
 const GET_COLLECTIONS = 'GET_COLLECTIONS'
 
 const initialState = {
-    userId: null,
-    photo: null,
-    status: null,
-    name: null,
-    collections: null,
-    isProfile: false
+  userId: null,
+  photo: null,
+  status: null,
+  name: null,
+  collections: null,
+  isProfile: false
 }
 export const profileReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case GET_PROFILE:
-            return {
-                ...state,
-                photo: action.photo,
-                status: action.status,
-                name: action.name,
-                collections: action.collections,
-                isProfile: true
-            }
-        case GET_COLLECTIONS:
-            return {...state};
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case GET_PROFILE:
+      return {
+        ...state,
+        photo: action.photo,
+        status: action.status,
+        name: action.name,
+        collections: action.collections,
+        isProfile: true
+      }
+    case GET_COLLECTIONS:
+      return {...state};
+    default:
+      return state;
+  }
 }
 
-const getProfileAC = (profile) => ({
-    type: GET_PROFILE,
-    userId: profile.userId,
-    photo: profile.photo,
-    status: profile.status,
-    name: profile.name,
-    collections: profile.collections,
+const getProfileAC = (user) => ({
+  type: GET_PROFILE,
+  userId: user.profile.userId,
+  photo: user.profile.photo,
+  status: user.profile.status,
+  name: user.profile.name,
+  collections: user.collections,
 })
 
 
-export const getProfile = (userId) => {
-    return (dispatch) => {
-        getProfileUser(userId)
-            .then(profile => {
-            dispatch(getProfileAC(profile))
-        })
-    }
+export const getProfileThunk = (token) => {
+  return (dispatch) => {
+    return getProfileUserAPI(token)
+      .then(user => {
+        dispatch(getProfileAC(user))
+      })
+  }
 }

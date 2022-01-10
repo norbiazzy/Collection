@@ -1,20 +1,39 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import s from './Priofile.module.css'
 import NewCollection from "./Collections/NewCollection";
 import Collection from "./Collections/Collection";
+import {Navigate, useNavigate} from "react-router-dom";
 
 
 const Profile = (props) => {
-  
-  useEffect(() => {
-    if (!props.profile.isProfile) props.getProfile(props.userId) // just shit
-  })
+  let [loading, setLoading] = useState(true)
   let [createMod, setCreateMod] = useState(false)
   
+  let navigate = useNavigate();
+  let getProfile = useCallback(() => {
+    props.getProfileThunk(props.token)
+      .then(() => setLoading(false))
+  }, [props.token])
+  useEffect(() => {
+    getProfile()
+  }, [getProfile])
+  
   const toggleCreateMod = () => {
-    setCreateMod(!createMod)
+    setCreateMod(prevState => !prevState)
+  }
+  const handelCollection = (key) => navigate('/items/' + key)
+  let collections
+  if (props.profile && props.profile.collections) {
+    collections = props.profile.collections.map((collection, i) => <Collection callback={handelCollection}
+                                                                               id={collection._id} key={collection._id}
+                                                                               value={collection}/>)
   }
   
+  if (loading) {
+    return (
+      <div>Загрузка...</div>
+    )
+  }
   return (
     <>
       <h2>Profile</h2>
@@ -41,7 +60,7 @@ const Profile = (props) => {
           </div>
         </div>
         {createMod ? <NewCollection {...props}/> : null}
-        <Collection/>
+        {collections}
       </div>
     </>
   )

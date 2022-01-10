@@ -3,13 +3,12 @@ import React from "react";
 const AmountInputSetting = (props) => {
   
   return (<div className={''}>
-    <button onClick={() => props.setCount(props.count - 1)}
-            disabled={props.count <= 0}
+    <button onClick={() => props.counter.remove()}
+            disabled={props.counter.value <= 0}
             className={'btn btn-dark'}>-
     </button>
-    <span className={'mx-2'}>{props.count}</span>
-    <button onClick={() => props.setCount(props.count + 1)}
-            disabled={props.count >= props.maxCount}
+    <span className={'mx-2'}>{props.counter.value}</span>
+    <button onClick={() => props.counter.add()}
             className={'btn btn-dark'}>+
     </button>
   </div>)

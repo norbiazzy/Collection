@@ -7,7 +7,7 @@ const User = new Schema({
     blocked: {type: Boolean, default: false},
     role: {type: String, required: true, ref: 'Role'},
     profile: {type: Types.ObjectId, ref:'Profile'},
-    collections: {type: Types.ObjectId, ref: 'Collection' },
+    collections: [{type: Types.ObjectId, ref: 'Collection' }],
 })
 
 module.exports = model('User', User)

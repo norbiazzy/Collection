@@ -1,21 +1,57 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import AmountInputSetting from "./AmountInputSetting";
 import s from '../Priofile.module.css'
+import login from "../../../Sing/Login";
+
+const useInput = (initialValue) => {
+  let [value, setValue] = useState(initialValue)
+  
+  const onChange = (e) => setValue(e.target.value)
+  const clear = () => setValue('')
+  return {
+    bind: {value, onChange},
+    value, clear
+  }
+}
+const useCounter = (initialValue = 0) => {
+  let [value, setValue] = useState(initialValue)
+  
+  const add = () => setValue(prevState => ++prevState)
+  const remove = () => setValue(prevState => --prevState)
+  return {add, remove, value}
+}
 
 const NewCollection = (props) => {
   
-  let [amountString, setAmountString] = useState(0)
-  let [amountNumber, setAmountNumber] = useState(0)
-  let [amountText, setAmountText] = useState(0)
-  let [amountBoolean, setAmountBoolean] = useState(0)
-  let [amountDate, setAmountDate] = useState(0)
-  let [tags, setTags] = useState([])
-  let [tag, setTag] = useState('')
-  let [name, setName] = useState('')
-  let [description, setDescription] = useState('')
-  let [topic, setTopic] = useState('')
+  
+  const amountString = useCounter(0)
+  const amountNumber = useCounter(0)
+  const amountText = useCounter(0)
+  const amountBoolean = useCounter(0)
+  const amountDate = useCounter(0)
+  const [tags, setTags] = useState([])
+  const tag = useInput('')
+  const name = useInput('')
+  const description = useInput('')
+  const [topic, setTopic] = useState('topic')
+  const [object, setObject] = useState({
+    str: Array(amountString).fill(),
+    num: Array(amountNumber).fill(),
+    text: Array(amountText).fill(),
+    boolean: Array(amountString).fill(),
+    date: Array(amountBoolean).fill(),
+  })
   const handleSaveBtn = () => {
-    props.saveCollectionThunk()
+    let collectionSettings = {
+      name, tags, description, topic, amountInputs: {
+        str: amountString,
+        num: amountNumber,
+        text: amountText,
+        boolean: amountBoolean,
+        date: amountDate
+      }
+    }
+    props.saveCollectionThunk(collectionSettings, props.token)
   }
   const optionsTopic = props.topics.map((topic, i) => {
     return <option key={i} value={topic}>{topic}</option>
@@ -27,12 +63,41 @@ const NewCollection = (props) => {
     setTags(filerTags)
   }
   const addTag = () => {
-    setTags([...tags, tag])
-    setTag('')
+    setTags([...tags, tag().value])
+    tag.clear()
   }
-  const changeTagInput = (e) => {
-    setTag(e.target.value)
+  
+  const handleInput = (e) => {
+    setObject((prevState) => ({
+      ...prevState,
+      ...prevState['str'],
+      ...prevState['num'],
+      ...prevState['text'],
+      ...prevState['boolean'],
+      ...prevState['date'],
+      ...prevState[e.target.dataset.key][e.target.dataset.id] = e.target.value
+    }))
   }
+  let srtInputs = Array(amountString.value).fill('')
+  srtInputs = srtInputs.map((el, i) => <input data-key={'str'} key={i} data-id={i} value={object['str'][i] || ''}
+                                              onChange={handleInput}
+                                              type={"text"}/>)
+  let numInputs = Array(amountNumber.value).fill('')
+  numInputs = numInputs.map((el, i) => <input data-key={'num'} key={i} data-id={i} value={object['num'][i] || ''}
+                                              onChange={handleInput}
+                                              type={"text"}/>)
+  let textInputs = Array(amountText.value).fill('')
+  textInputs = textInputs.map((el, i) => <input data-key={'text'} key={i} data-id={i} value={object['text'][i] || ''}
+                                                onChange={handleInput}
+                                                type={"text"}/>)
+  let booleanInputs = Array(amountBoolean.value).fill('')
+  booleanInputs = booleanInputs.map((el, i) => <input data-key={'boolean'} key={i} data-id={i}
+                                                      value={object['boolean'][i] || ''}
+                                                      onChange={handleInput} type={"text"}/>)
+  let dateInputs = Array(amountDate.value).fill('')
+  dateInputs = dateInputs.map((el, i) => <input data-key={'date'} data-id={i} key={i} value={object['date'][i] || ''}
+                                                onChange={handleInput}
+                                                type={"text"}/>)
   
   const spanTag = tags.map((tag, i) => <span className={s.tag} key={i} onClick={removeTag}>{tag}</span>)
   return (
@@ -40,15 +105,11 @@ const NewCollection = (props) => {
       <div className={'d-flex'}>
         <div className={'me-4'}>
           <p>Имя коллекции</p>
-          <input type={"text"} onChange={(e) => {
-            setName(e.target.value)
-          }} value={name}/>
+          <input type={"text"} {...name.bind}/>
         </div>
         <div className={'me-4'}>
           <p>Описание коллекции</p>
-          <textarea value={description} onChange={(e) => {
-            setDescription(e.target.value)
-          }}/>
+          <textarea {...description.bind}/>
         </div>
         <div className={'me-4'}>
           <p>Тема</p>
@@ -59,7 +120,7 @@ const NewCollection = (props) => {
         </div>
         <div className={'me-4'}>
           <p>Теги</p>
-          <input value={tag} onChange={changeTagInput} placeholder={'Tag...'}/>
+          <input {...tag.bind} placeholder={'Tag...'}/>
           <button
             disabled={!tag}
             onClick={addTag}
@@ -68,41 +129,37 @@ const NewCollection = (props) => {
           <div>{spanTag}</div>
         </div>
       </div>
-      <div className={'d-flex justify-content-around mb-3'}>
+      <div className={'d-flex justify-content-around mb-3 flex-wrap'}>
         <div className={'d-flex flex-column align-items-center'}>
           <p>Строковые поля</p>
-          <AmountInputSetting count={amountString}
-                              maxCount={props.maxAmountInputs.sting}
-                              setCount={setAmountString}/>
+          <AmountInputSetting counter={amountString}/>
+          {srtInputs}
         </div>
         <div className={'d-flex flex-column align-items-center'}>
           <p>Числовые поля</p>
-          <AmountInputSetting count={amountNumber}
-                              maxCount={props.maxAmountInputs.numb}
-                              setCount={setAmountNumber}/>
+          <AmountInputSetting counter={amountNumber}/>
+          {numInputs}
         </div>
         <div className={'d-flex flex-column align-items-center'}>
           <p>Текстовые поля</p>
-          <AmountInputSetting count={amountText}
-                              maxCount={props.maxAmountInputs.text}
-                              setCount={setAmountText}/>
+          <AmountInputSetting counter={amountText}/>
+          {textInputs}
         </div>
         <div className={'d-flex flex-column align-items-center'}>
           <p>Чекбоскы</p>
-          <AmountInputSetting count={amountBoolean}
-                              maxCount={props.maxAmountInputs.numb}
-                              setCount={setAmountBoolean}/>
+          <AmountInputSetting counter={amountBoolean}/>
+          {booleanInputs}
         </div>
         
         <div className={'d-flex flex-column align-items-center'}>
           <p>Поля дат</p>
-          <AmountInputSetting count={amountDate}
-                              maxCount={props.maxAmountInputs.numb}
-                              setCount={setAmountDate}/>
+          <AmountInputSetting counter={amountDate}/>
+          {dateInputs}
         </div>
       </div>
       <button onClick={handleSaveBtn}
-              className={'btn btn-success me-2'}>Save</button>
+              className={'btn btn-success me-2'}>Save
+      </button>
     </div>
   )
 }

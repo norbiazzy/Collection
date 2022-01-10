@@ -1,58 +1,96 @@
-import {getProfileUser, registerUser} from "../api/api";
+import {saveCollectionAPI, getCollectionAPI} from "../api/api";
 
 const GET_PROFILE = 'GET_PROFILE'
 const GET_COLLECTIONS = 'GET_COLLECTIONS'
+const GET_COLLECTION = 'GET_COLLECTION'
+const SAVE_COLLECTIONS_LIST = 'SAVE_COLLECTIONS_LIST'
 
 const initialState = {
-    new_collection: {
-        id: null,
-        tags: [],
-        name: null,
-        description: null,
-        topic: null,
-        amountInputs: {
-            numb: 0,
-            sting: 0,
-            text: 0,
-            date: 0,
-            boolean: 0,
-        },
-    },
-    topics: ['Alcohol', 'Books', 'Films'],
-    maxAmountInputs: {
-        numb: 3,
-        sting: 3,
-        text: 3,
-        date: 3,
-        boolean: 3,
-    },
-    photo: null,
-    status: null,
+  isItems: false,
+  new_collection: {
+    id: null,
+    tags: [],
     name: null,
-    collections: null,
-    isProfile: false
+    description: null,
+    topic: null,
+    amountInputs: {
+      num: [],
+      sting: [],
+      text: [],
+      date: [],
+      boolean: [],
+    },
+  },
+  topics: ['Alcohol', 'Books', 'Films'],
+  photo: null,
+  status: null,
+  name: null,
+  collections: [],
+  currentCollection: {
+    name: '',
+    description: '',
+    created: '',
+    items: [],
+    amountInputs: {}
+  }
 }
 export const collectionReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case GET_PROFILE:
-            return {
-                ...state,
-                photo: action.photo,
-                status: action.status,
-                name: action.name,
-                collections: action.collections,
-                isProfile: true
-            }
-        case GET_COLLECTIONS:
-            return {...state};
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case GET_PROFILE:
+      return {
+        ...state,
+        photo: action.photo,
+        status: action.status,
+        name: action.name,
+        collections: action.collections,
+        isProfile: true
+      }
+    case GET_COLLECTION:
+      return {
+        ...state,
+        currentCollection: action.collection,
+        isItems: true
+      }
+    case
+    SAVE_COLLECTIONS_LIST:
+      return {
+        ...state,
+        collections: action.collections
+      };
+    default:
+      return state;
+  }
 }
 
-export const saveCollectionThunk = (name, description, topic, {str, numb, text, boolean, date}) => ({
+export const saveCollectionThunk = (body, token) => () => {
+  saveCollectionAPI(body, token)
+    .then(r => {
+      console.log(r)
+    })
+}
 
+export const getCollectionAC = (collection) => ({
+  type: GET_COLLECTION, collection
 })
+
+export const getCollectionThunk = (token, id) => (dispatch) => {
+  return getCollectionAPI(token, id)
+    .then(collection => {
+      dispatch(getCollectionAC(collection))
+    }).then(()=>true)
+}
+
+// export const getCollectionListThunk = (token) => () => {
+//   getCollectionListAPI(token)
+//     .then(r => {
+//     })
+// }
+
+export const saveCollectionsList = (collections) => ({
+  type: SAVE_COLLECTIONS_LIST,
+  collections
+})
+
 //
 //
 // export const getProfile = (userId) => {

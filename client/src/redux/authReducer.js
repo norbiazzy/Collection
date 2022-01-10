@@ -1,8 +1,8 @@
-import {loginUser, registerUser, verifyTokenAPI} from "../api/api";
+import {loginUserAPI, registerUserAPI, verifyTokenAPI} from "../api/api";
 
 const REG_USER = 'REG_USER'
 const LOG_USER = 'LOG_USER'
-const LOCAL_LOGIN = 'LOCAL_LOGIN'
+const SET_TOKEN = 'SET_TOKEN'
 
 const initialState = {
   userId: null,
@@ -21,7 +21,6 @@ export const authReducer = (state = initialState, action) => {
         ...state,
       }
     case LOG_USER:
-      
       console.log('reducer log')
       return {
         ...state,
@@ -30,6 +29,11 @@ export const authReducer = (state = initialState, action) => {
         email: action.email,
         role: action.role,
         blocked: action.blocked
+      };
+    case SET_TOKEN:
+      return {
+        ...state,
+        token: action.token,
       };
     default:
       return state;
@@ -47,6 +51,8 @@ export const loginAC = ({email, token, role, blocked, userId}) => ({
   userId
 })
 
+export const setTokenAC = (token) => ({type: SET_TOKEN, token})
+
 export const verifyTokenThunk = (token) => (dispatch) => {
   verifyTokenAPI(token)
     .then((body) => {
@@ -57,7 +63,7 @@ export const verifyTokenThunk = (token) => (dispatch) => {
 
 export const loginThunk = ({email, password}) => {
   return (dispatch) => {
-    loginUser({email, password})
+    loginUserAPI({email, password})
       .then(body => {
         dispatch(loginAC(body))
       })
@@ -65,10 +71,10 @@ export const loginThunk = ({email, password}) => {
 }
 export const registrationUserThunkCreate = ({email, password, role}) => {
   return (dispatch) => {
-    registerUser({email, password, role})
+    registerUserAPI({email, password, role})
       .then((res) => {
         dispatch(registerAC(res))
-        loginUser({email, password})
+        loginUserAPI({email, password})
           .then((body) => {
             window.localStorage.setItem('auth', JSON.stringify(body.token))
             dispatch(loginAC(body))

@@ -4,7 +4,7 @@ const config = require('config')
 const Role = require('../models/Role')
 const User = require('../models/User')
 const Profile = require('../models/Profile')
-const Collections = require('../models/Collections')
+const Collections = require('../models/Collection')
 const jwt = require('jsonwebtoken')
 const {check, validationResult} = require("express-validator");
 const {Types} = require("mongoose");
@@ -19,7 +19,7 @@ router.post('/register',
   ],
   async (req, res) => {
     try {
-      console.log('registration')
+      ('registration')
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
         return res.status(200).json({message: 'Ошибка при регистрации регистрации'})
@@ -29,7 +29,7 @@ router.post('/register',
       if (candidate) return res.status(400).json({message: 'Уже есть такой'})
       const hashedPassword = await bcrypt.hash(password, 7)
       const userRole = await Role.findOne({value: role})
-      console.log('registration2')
+      ('registration2')
       const user = await new User({
         _id: new Types.ObjectId(),
         email, password: hashedPassword,
@@ -37,7 +37,7 @@ router.post('/register',
       })
       const userProfile = await new Profile({userId: user._id})
       const userCollections = await new Collections({userId: user._id})
-      console.log('registration3')
+      ('registration3')
   
       await user.save(() => {
         userCollections.save()
@@ -93,7 +93,6 @@ router.post('/login',
 // /api/auth/verify
 router.post('/verify', async (req, res) => {
   try {
-    
     let {token} = req.body
     const user = jwt.verify(token, config.get('jwtSecret'))
     console.log(user, 'data')

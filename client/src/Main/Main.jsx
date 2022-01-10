@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar/Sidebar";
 import News from "./News/News";
 import Users from "./Users/Users";
 import ProfileContainer from "./Profile/ProfileContainer";
+import ItemsContainer from "./Items/ItemsContainer";
 
 const Main = () => {
   return (
@@ -20,6 +21,7 @@ const Main = () => {
               <Route path='/home' element={<News/>}/>
               <Route path='/profile' element={<ProfileContainer/>}/>
               <Route path='/users' element={<Users/>}/>
+              <Route path='/items/:id' element={<ItemsContainer/>}/>
             </Routes>
           </Col>
         </Row>
