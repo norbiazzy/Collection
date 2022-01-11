@@ -34,7 +34,7 @@ const NewCollection = (props) => {
   const name = useInput('')
   const description = useInput('')
   const [topic, setTopic] = useState('topic')
-  const [object, setObject] = useState({
+  const [inputsValue, setInputsValue] = useState({
     str: Array(amountString).fill(),
     num: Array(amountNumber).fill(),
     text: Array(amountText).fill(),
@@ -63,12 +63,12 @@ const NewCollection = (props) => {
     setTags(filerTags)
   }
   const addTag = () => {
-    setTags([...tags, tag().value])
+    setTags([...tags, tag.value])
     tag.clear()
   }
   
   const handleInput = (e) => {
-    setObject((prevState) => ({
+    setInputsValue((prevState) => ({
       ...prevState,
       ...prevState['str'],
       ...prevState['num'],
@@ -79,23 +79,23 @@ const NewCollection = (props) => {
     }))
   }
   let srtInputs = Array(amountString.value).fill('')
-  srtInputs = srtInputs.map((el, i) => <input data-key={'str'} key={i} data-id={i} value={object['str'][i] || ''}
+  srtInputs = srtInputs.map((el, i) => <input data-key={'str'} key={i} data-id={i} value={inputsValue['str'][i] || ''}
                                               onChange={handleInput}
                                               type={"text"}/>)
   let numInputs = Array(amountNumber.value).fill('')
-  numInputs = numInputs.map((el, i) => <input data-key={'num'} key={i} data-id={i} value={object['num'][i] || ''}
+  numInputs = numInputs.map((el, i) => <input data-key={'num'} key={i} data-id={i} value={inputsValue['num'][i] || ''}
                                               onChange={handleInput}
                                               type={"text"}/>)
   let textInputs = Array(amountText.value).fill('')
-  textInputs = textInputs.map((el, i) => <input data-key={'text'} key={i} data-id={i} value={object['text'][i] || ''}
+  textInputs = textInputs.map((el, i) => <input data-key={'text'} key={i} data-id={i} value={inputsValue['text'][i] || ''}
                                                 onChange={handleInput}
                                                 type={"text"}/>)
   let booleanInputs = Array(amountBoolean.value).fill('')
   booleanInputs = booleanInputs.map((el, i) => <input data-key={'boolean'} key={i} data-id={i}
-                                                      value={object['boolean'][i] || ''}
+                                                      value={inputsValue['boolean'][i] || ''}
                                                       onChange={handleInput} type={"text"}/>)
   let dateInputs = Array(amountDate.value).fill('')
-  dateInputs = dateInputs.map((el, i) => <input data-key={'date'} data-id={i} key={i} value={object['date'][i] || ''}
+  dateInputs = dateInputs.map((el, i) => <input data-key={'date'} data-id={i} key={i} value={inputsValue['date'][i] || ''}
                                                 onChange={handleInput}
                                                 type={"text"}/>)
   
