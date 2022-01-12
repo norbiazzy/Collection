@@ -34,23 +34,35 @@ const NewCollection = (props) => {
   const name = useInput('')
   const description = useInput('')
   const [topic, setTopic] = useState('topic')
-  const [inputsValue, setInputsValue] = useState({
-    str: Array(amountString).fill(),
-    num: Array(amountNumber).fill(),
-    text: Array(amountText).fill(),
-    boolean: Array(amountString).fill(),
-    date: Array(amountBoolean).fill(),
+  const [headersInputs, setHeadersInputs] = useState({
+    'str': [],
+    'num': [],
+    'text': [],
+    'boolean': [],
+    'date': [],
   })
   const handleSaveBtn = () => {
-    let collectionSettings = {
-      name, tags, description, topic, amountInputs: {
-        str: amountString,
-        num: amountNumber,
-        text: amountText,
-        boolean: amountBoolean,
-        date: amountDate
-      }
+    let headersInp = { // don't delete
+      'str': headersInputs['str'],
+      'num': headersInputs['num'],
+      'text': headersInputs['text'],
+      'boolean': headersInputs['boolean'],
+      'date': headersInputs['date'],
     }
+    let a = false
+    for (const key in headersInp) {
+      // debugger
+      // if (headersInp[key]) continue
+      headersInp[key].map(el => {
+        el.trim()
+        if (!el) a = true
+      })
+    }
+    if (a) return
+    let collectionSettings = {
+      name: name.value, tags, description: description.value, topic, headersInp
+    }
+    console.log(collectionSettings)
     props.saveCollectionThunk(collectionSettings, props.token)
   }
   const optionsTopic = props.topics.map((topic, i) => {
@@ -68,7 +80,7 @@ const NewCollection = (props) => {
   }
   
   const handleInput = (e) => {
-    setInputsValue((prevState) => ({
+    setHeadersInputs((prevState) => ({
       ...prevState,
       ...prevState['str'],
       ...prevState['num'],
@@ -79,23 +91,23 @@ const NewCollection = (props) => {
     }))
   }
   let srtInputs = Array(amountString.value).fill('')
-  srtInputs = srtInputs.map((el, i) => <input data-key={'str'} key={i} data-id={i} value={inputsValue['str'][i] || ''}
+  srtInputs = srtInputs.map((el, i) => <input data-key={'str'} key={i} data-id={i} value={headersInputs['str'][i] || ''}
                                               onChange={handleInput}
                                               type={"text"}/>)
   let numInputs = Array(amountNumber.value).fill('')
-  numInputs = numInputs.map((el, i) => <input data-key={'num'} key={i} data-id={i} value={inputsValue['num'][i] || ''}
+  numInputs = numInputs.map((el, i) => <input data-key={'num'} key={i} data-id={i} value={headersInputs['num'][i] || ''}
                                               onChange={handleInput}
                                               type={"text"}/>)
   let textInputs = Array(amountText.value).fill('')
-  textInputs = textInputs.map((el, i) => <input data-key={'text'} key={i} data-id={i} value={inputsValue['text'][i] || ''}
+  textInputs = textInputs.map((el, i) => <input data-key={'text'} key={i} data-id={i} value={headersInputs['text'][i] || ''}
                                                 onChange={handleInput}
                                                 type={"text"}/>)
   let booleanInputs = Array(amountBoolean.value).fill('')
   booleanInputs = booleanInputs.map((el, i) => <input data-key={'boolean'} key={i} data-id={i}
-                                                      value={inputsValue['boolean'][i] || ''}
+                                                      value={headersInputs['boolean'][i] || ''}
                                                       onChange={handleInput} type={"text"}/>)
   let dateInputs = Array(amountDate.value).fill('')
-  dateInputs = dateInputs.map((el, i) => <input data-key={'date'} data-id={i} key={i} value={inputsValue['date'][i] || ''}
+  dateInputs = dateInputs.map((el, i) => <input data-key={'date'} data-id={i} key={i} value={headersInputs['date'][i] || ''}
                                                 onChange={handleInput}
                                                 type={"text"}/>)
   

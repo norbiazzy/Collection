@@ -7,12 +7,12 @@ const Collection = new Schema({
     description: {type: String},
     created: {type: Date, default: Date.now},
     topic: {type: String, required: true},
-    amountInputs: {
-        str: {type: Number},
-        num: {type: Number},
-        text: {type: Number},
-        boolean: {type: Number},
-        date: {type: Number}
+    headersInp: {
+        str: [],
+        num: [],
+        text: [],
+        boolean: [],
+        date: []
     }
 })
 

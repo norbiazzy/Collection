@@ -5,12 +5,12 @@ import ItemsForm from "./ItemsForm";
 
 const Items = (props) => {
   let [loading, setLoading] = useState(true)
-  let id = useParams().id
+  let collectionId = useParams().id
   
   let getCollection = useCallback(() => {
-    props.getCollectionThunk(props.token, id)
+    props.getCollectionThunk(props.token, collectionId)
       .then(() => setLoading(false))
-  }, [id])
+  }, [collectionId])
   
   useEffect(() => {
     getCollection()
@@ -21,13 +21,14 @@ const Items = (props) => {
       <div>Загрузка...</div>
     )
   }
+  debugger
   return (
     <div>
       <h2>{props.collection.name}</h2>
       <p>{props.collection.description}</p>
       <p>{props.collection.created}</p>
       <p>{props.collection.topic}</p>
-      <ItemsForm amounthInputs={props.collection.amountInputs}/>
+      <ItemsForm collectionId={collectionId} headersInp={props.collection.headersInp}/>
     </div>)
 }
 

@@ -59,10 +59,21 @@ export const getCollectionAPI = (token, id) => {
     return res.json()
   })
 }
+export const saveItemAPI = (token, item) => {
+  let body = JSON.stringify(item)
+  return fetch('/api/collection/createItem', {
+    method: 'POST', body, headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
 
 export const saveCollectionAPI = (body, token) => {
   body = JSON.stringify(body)
-  return fetch('/api/collection/createCollection', {
+  return fetch('/api/collection/create', {
     method: 'POST', body, headers: {
       ...headers,
       Authorization: `Bearer ${token}`

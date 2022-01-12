@@ -3,7 +3,6 @@ const config = require('config')
 const mongoose = require('mongoose')
 
 const app = express();
-
 app.use(express.json({ extended: true }))
 app.use('/api/profile', require('./routes/profile.routes'))
 app.use('/api/auth', require('./routes/auth.routes'))

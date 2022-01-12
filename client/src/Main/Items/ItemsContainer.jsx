@@ -1,6 +1,6 @@
 import {connect} from "react-redux";
 import Items from "./Items";
-import {getCollectionThunk} from "../../redux/collectionsReducer";
+import {getCollectionThunk, saveItemThunk} from "../../redux/collectionsReducer";
 
 
 const mapStateToProps = (state) => ({
@@ -10,7 +10,8 @@ const mapStateToProps = (state) => ({
 })
 
 const ItemsContainer = connect(mapStateToProps, {
-  getCollectionThunk
+  getCollectionThunk,
+  saveItemThunk
 })(Items)
 
 export default ItemsContainer

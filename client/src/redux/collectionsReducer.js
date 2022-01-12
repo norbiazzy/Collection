@@ -1,4 +1,4 @@
-import {saveCollectionAPI, getCollectionAPI} from "../api/api";
+import {saveCollectionAPI, getCollectionAPI, saveItemAPI} from "../api/api";
 
 const GET_PROFILE = 'GET_PROFILE'
 const GET_COLLECTIONS = 'GET_COLLECTIONS'
@@ -77,6 +77,13 @@ export const getCollectionThunk = (token, id) => (dispatch) => {
   return getCollectionAPI(token, id)
     .then(collection => {
       dispatch(getCollectionAC(collection))
+    }).then(()=>true)
+}
+export const saveItemThunk = (token, item) => (dispatch) => {
+  return saveItemAPI(token, item)
+    .then(res => {
+      console.log(res)
+      // dispatch(saveCollectionAC(res))
     }).then(()=>true)
 }
 
