@@ -2,7 +2,7 @@ const {Schema, model, Types} = require("mongoose");
 
 const Collection = new Schema({
     userId: {type: Types.ObjectId, ref: 'User'},
-    items: {type: Array},
+    items: [{type:Types.ObjectId}],
     name: {type: String, required: true},
     description: {type: String},
     created: {type: Date, default: Date.now},

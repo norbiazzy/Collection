@@ -12,9 +12,7 @@ router.post('/create', auth, async (req, res) => {
     obj.userId = req.user.userId
     // if (!obj.name || !obj.topic) return res.status(400).json({message: 'заебись... пустое поле'})
     let collection = new Collection(obj)
-    await User.findByIdAndUpdate(req.user.userId, (user)=>{
-      user.collections = [...user.collections, collection._id]
-    })
+    await User.findByIdAndUpdate(req.user.userId, {$addToSet: {collections: collection._id}})
     await collection.save()
     
     return res.status(200).json({message: 'заебись...'})
@@ -23,24 +21,61 @@ router.post('/create', auth, async (req, res) => {
     console.log(e, 'error')
   }
 })
-// router.post('/createItem', auth, async (req, res) => {
-//   try {
-//     const item = req.body
-//     item.userId = req.user.userId
-//     // if (!obj.name || !obj.topic) return res.status(400).json({message: 'заебись... пустое поле'})
-//     debugger
-//     let newItem = new Item(item)
-//     // await User.findByIdAndUpdate(req.user.userId, (user)=>{
-//     //   user.collections = [...user.collections, collection._id]
-//     // })
-//     // await collection.save()
-//
-//     return res.status(200).json({message: 'заебись...'})
-//
-//   } catch (e) {
-//     console.log(e, 'error')
-//   }
-// })
+router.post('/createItem', auth, async (req, res) => {
+  try {
+    const item = req.body
+    item.userId = req.user.userId
+    // if (!obj.name || !obj.topic) return res.status(400).json({message: 'заебись... пустое поле'})
+    let newItem = new Item(item)
+    await Collection.findByIdAndUpdate(item.collectionId, {$addToSet: {items: newItem._id}})
+    await newItem.save()
+    // await User.findByIdAndUpdate(req.user.userId, (user)=>{
+    //   user.collections = [...user.collections, collection._id]
+    // })
+    // await collection.save()
+    
+    return res.status(200).json({message: 'заебись...'})
+    
+  } catch (e) {
+    console.log(e, 'error')
+  }
+})
+router.post('/deleteItem', auth, async (req, res) => {
+  try {
+    const {itemId} = req.body
+    await Item.findByIdAndDelete(itemId)
+    await Collection.findOneAndUpdate({items: {$all: [itemId]}}, {$pullAll: {items: [itemId]}})
+    return res.status(200).json({message: 'Удалили...'})
+  } catch (e) {
+    console.log(e, 'error')
+  }
+})
+router.post('/likeItem', auth, async (req, res) => {
+    try {
+      const {itemId} = req.body
+      let userId = req.user.userId
+      await Item.findByIdAndUpdate(itemId, {$addToSet: {likes: userId}});
+      return res.status(200).json({message: 'Лайк!', userId})
+      
+    } catch
+      (e) {
+      console.log(e, 'error')
+    }
+  }
+)
+router.post('/dislikeItem', auth, async (req, res) => {
+    try {
+      const {itemId} = req.body
+      let userId = req.user.userId
+      await Item.findByIdAndUpdate(itemId, {$pull: {likes: userId}});
+      return res.status(200).json({message: 'Дизлайк(!', userId})
+      
+    } catch
+      (e) {
+      console.log(e, 'error')
+    }
+  }
+)
 
 // /api/collection/createCollection
 router.post('/getCollectionsList', auth, async (req, res) => {
@@ -56,7 +91,8 @@ router.post('/getCollectionsList', auth, async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     let collection = await Collection.findById(req.params.id)
-    return res.status(200).json(collection)
+    let items = await Item.find({collectionId: req.params.id})
+    return res.status(200).json({collection, items})
   } catch (e) {
     console.log(e, 'error')
   }

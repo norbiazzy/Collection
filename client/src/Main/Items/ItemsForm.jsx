@@ -32,12 +32,18 @@ const ItemsForm = (props) => {
   }
   
   const saveItem = () => {
-    debugger
+    
     let item = {
-      name, tags, bodyInputs, description,
+      name, tags, bodyInputs: {
+        str: bodyInputs['str'],
+        num: bodyInputs['num'],
+        text: bodyInputs['text'],
+        boolean: bodyInputs['boolean'],
+        date: bodyInputs['date']
+      }, description,
       collectionId: props.collectionId
     }
-    // props.saveItemThunk(item)
+    props.saveItemThunk(props.token, item)
   }
   
   const handleInput = (e) => {
@@ -83,13 +89,13 @@ const ItemsForm = (props) => {
     <>
       <div className={'d-flex'}>
         <div className={'me-4'}>
-          <p>Имя коллекции</p>
+          <p>Имя</p>
           <input type={"text"} onChange={(e) => {
             setName(e.target.value)
           }} value={name}/>
         </div>
         <div className={'me-4'}>
-          <p>Описание коллекции</p>
+          <p>Описание</p>
           <textarea value={description} onChange={(e) => {
             setDescription(e.target.value)
           }}/>

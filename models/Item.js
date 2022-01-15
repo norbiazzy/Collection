@@ -9,12 +9,12 @@ const Item = new Schema({
     description: {type: String},
     created: {type: Date, default: Date.now},
     tags: [],
-    bodyInp: {
-        str: [],
-        num: [],
-        text: [],
-        boolean: [],
-        date: []
+    bodyInputs: {
+        str: [{type:String}],
+        num: [{type:String}],
+        text: [{type:String}],
+        boolean: [{type:String}],
+        date: [{type:String}]
     }
 })
 

@@ -70,6 +70,39 @@ export const saveItemAPI = (token, item) => {
     return res.json()
   })
 }
+export const deleteItemAPI = (token, itemId) => {
+  let body = JSON.stringify({itemId})
+  return fetch('/api/collection/deleteItem', {
+    method: 'POST', body, headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
+export const likeItemAPI = (token, itemId) => {
+  let body = JSON.stringify({itemId})
+  return fetch('/api/collection/likeItem', {
+    method: 'POST', body, headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
+export const dislikeItemAPI = (token, itemId) => {
+  let body = JSON.stringify({itemId})
+  return fetch('/api/collection/dislikeItem', {
+    method: 'POST', body, headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
 
 export const saveCollectionAPI = (body, token) => {
   body = JSON.stringify(body)

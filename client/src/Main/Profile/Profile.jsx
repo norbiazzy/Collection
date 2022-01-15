@@ -44,7 +44,6 @@ const Profile = (props) => {
         <div>
           <p>{props.profile.name}</p>
           <p>{props.profile.status}</p>
-          <button className='btn btn-dark'>token</button>
         </div>
         <div>
           collections

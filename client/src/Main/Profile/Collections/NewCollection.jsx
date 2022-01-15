@@ -29,8 +29,6 @@ const NewCollection = (props) => {
   const amountText = useCounter(0)
   const amountBoolean = useCounter(0)
   const amountDate = useCounter(0)
-  const [tags, setTags] = useState([])
-  const tag = useInput('')
   const name = useInput('')
   const description = useInput('')
   const [topic, setTopic] = useState('topic')
@@ -51,7 +49,7 @@ const NewCollection = (props) => {
     }
     let a = false
     for (const key in headersInp) {
-      // debugger
+      //
       // if (headersInp[key]) continue
       headersInp[key].map(el => {
         el.trim()
@@ -60,7 +58,7 @@ const NewCollection = (props) => {
     }
     if (a) return
     let collectionSettings = {
-      name: name.value, tags, description: description.value, topic, headersInp
+      name: name.value, description: description.value, topic, headersInp
     }
     console.log(collectionSettings)
     props.saveCollectionThunk(collectionSettings, props.token)
@@ -68,17 +66,6 @@ const NewCollection = (props) => {
   const optionsTopic = props.topics.map((topic, i) => {
     return <option key={i} value={topic}>{topic}</option>
   })
-  const removeTag = (e) => {
-    let filerTags = [...tags.filter(tag => {
-      return tag !== e.target.innerText
-    })]
-    setTags(filerTags)
-  }
-  const addTag = () => {
-    setTags([...tags, tag.value])
-    tag.clear()
-  }
-  
   const handleInput = (e) => {
     setHeadersInputs((prevState) => ({
       ...prevState,
@@ -99,7 +86,8 @@ const NewCollection = (props) => {
                                               onChange={handleInput}
                                               type={"text"}/>)
   let textInputs = Array(amountText.value).fill('')
-  textInputs = textInputs.map((el, i) => <input data-key={'text'} key={i} data-id={i} value={headersInputs['text'][i] || ''}
+  textInputs = textInputs.map((el, i) => <input data-key={'text'} key={i} data-id={i}
+                                                value={headersInputs['text'][i] || ''}
                                                 onChange={handleInput}
                                                 type={"text"}/>)
   let booleanInputs = Array(amountBoolean.value).fill('')
@@ -107,11 +95,11 @@ const NewCollection = (props) => {
                                                       value={headersInputs['boolean'][i] || ''}
                                                       onChange={handleInput} type={"text"}/>)
   let dateInputs = Array(amountDate.value).fill('')
-  dateInputs = dateInputs.map((el, i) => <input data-key={'date'} data-id={i} key={i} value={headersInputs['date'][i] || ''}
+  dateInputs = dateInputs.map((el, i) => <input data-key={'date'} data-id={i} key={i}
+                                                value={headersInputs['date'][i] || ''}
                                                 onChange={handleInput}
                                                 type={"text"}/>)
   
-  const spanTag = tags.map((tag, i) => <span className={s.tag} key={i} onClick={removeTag}>{tag}</span>)
   return (
     <div>
       <div className={'d-flex'}>
@@ -129,16 +117,6 @@ const NewCollection = (props) => {
                   value={topic}>
             {optionsTopic}
           </select>
-        </div>
-        <div className={'me-4'}>
-          <p>Теги</p>
-          <input {...tag.bind} placeholder={'Tag...'}/>
-          <button
-            disabled={!tag}
-            onClick={addTag}
-            className={'btn btn-dark'}>+
-          </button>
-          <div>{spanTag}</div>
         </div>
       </div>
       <div className={'d-flex justify-content-around mb-3 flex-wrap'}>
