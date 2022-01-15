@@ -1,4 +1,12 @@
-import {saveCollectionAPI, getCollectionAPI, saveItemAPI, deleteItemAPI, likeItemAPI, dislikeItemAPI} from "../api/api";
+import {
+  saveCollectionAPI,
+  getCollectionAPI,
+  saveItemAPI,
+  deleteItemAPI,
+  likeItemAPI,
+  dislikeItemAPI,
+  saveUpdateItemAPI
+} from "../api/api";
 
 const GET_PROFILE = 'GET_PROFILE'
 const GET_COLLECTIONS = 'GET_COLLECTIONS'
@@ -136,6 +144,13 @@ export const dislikeItemThunk = (token, itemId, index) => (dispatch) => {
       
       if (res.userId) dispatch(dislikeAC(index, res.userId))
       // dispatch(saveCollectionAC(res))
+    })
+}
+export const saveUpdateItemThunk = (token, updateItem) => (dispatch) => {
+debugger
+  return saveUpdateItemAPI(token, updateItem)
+    .then(res => {
+      console.log(res)
     })
 }
 

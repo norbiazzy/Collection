@@ -2,22 +2,30 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import s from './Items.module.css'
 
 const EditItem = (props) => {
-  debugger
+  // const cancelScroll = ()=>{
+  //   window.scrollTo(0,0)
+  // }
+  // useEffect(()=>{
+  //   window.addEventListener('scroll',cancelScroll)
+  //   return ()=>{
+  //     window.removeEventListener('scroll', cancelScroll)
+  //   }
+  // })
   return (
     <>
-      <div className={s.shadow}/>
+      <div onClick={props.closeModal} className={s.shadow}/>
       <div className={s.modal}>
         <div>
-          <button className={'position-absolute'}>X</button>
+          <button onClick={props.closeModal} className={'position-absolute'}>X</button>
           <p>Name</p>
-          <input value={props.item.name} type={"text"}/>
+          <input onChange={props.handle} data-input={'name'} value={props.item.name} type={"text"}/>
           <p>Description</p>
-          <textarea value={props.item.description} />
+          <textarea onChange={props.handle} data-input={'description'} value={props.item.description} />
           <p>Tags</p>
           {props.item.tags.map(tag=><span>{tag} </span>)}
           <div>
-            <button>Save</button>
-            <button>Cansel</button>
+            <button onClick={props.save}>Save</button>
+            <button onClick={props.closeModal}>Cansel</button>
           </div>
         </div>
       </div>

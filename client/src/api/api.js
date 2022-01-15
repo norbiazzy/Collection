@@ -70,6 +70,18 @@ export const saveItemAPI = (token, item) => {
     return res.json()
   })
 }
+export const saveUpdateItemAPI = (token, updateItem) => {
+  let body = JSON.stringify(updateItem)
+  debugger
+  return fetch('/api/collection/updateItem', {
+    method: 'POST', body, headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
 export const deleteItemAPI = (token, itemId) => {
   let body = JSON.stringify({itemId})
   return fetch('/api/collection/deleteItem', {

@@ -19,7 +19,13 @@ const Items = (props) => {
   let [createMod, setCreateMod] = useState(false)
   let [currentComments, setCurrentComments] = useState(false)
   let [editMod, setEditMod] = useState(false)
-  
+  const handleEditItem = (e)=>{
+    setEditMod(prevState => ({
+      ...prevState,
+      [e.target.dataset.input]: e.target.value
+
+    }))
+  }
   let collectionId = useParams().id
   
   let getCollection = useCallback(() => {
@@ -40,12 +46,14 @@ const Items = (props) => {
   const dislikeItem = (e) => {
     props.dislikeItemThunk(props.token, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
   }
-  const openComments = (e) => {
-  
+  const saveUpdateItem = (e) => {
+    debugger
+    props.saveUpdateItemThunk(props.token, editMod)
   }
   const openEditModal = (e) => {
     setEditMod(props.items.filter(el=>el._id === e.currentTarget.dataset.id)[0])
   }
+
   if (loading) {
     return (
       <div>Загрузка...</div>
@@ -94,7 +102,7 @@ const Items = (props) => {
   })
   return (
     <>
-      {editMod ? <EditItem item={editMod}/> : null}
+      {editMod ? <EditItem save={saveUpdateItem} handle={handleEditItem} closeModal={()=>setEditMod(false)} item={editMod}/> : null}
       <div>
         <h2>{props.collection.name}</h2>
         <p>{props.collection.description}</p>
