@@ -76,6 +76,18 @@ router.post('/dislikeItem', auth, async (req, res) => {
     }
   }
 )
+router.post('/updateItem', auth, async (req, res) => {
+    try {
+      const item = req.body
+      await Item.findByIdAndUpdate(item._id, item);
+      return res.status(200).json({message: 'UPDATE!!!'})
+
+    } catch
+      (e) {
+      console.log(e, 'error')
+    }
+  }
+)
 
 // /api/collection/createCollection
 router.post('/getCollectionsList', auth, async (req, res) => {
