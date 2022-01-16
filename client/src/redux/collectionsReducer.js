@@ -5,7 +5,7 @@ import {
   deleteItemAPI,
   likeItemAPI,
   dislikeItemAPI,
-  saveUpdateItemAPI
+  saveUpdateItemAPI, addCommentAPI
 } from "../api/api";
 
 const GET_PROFILE = 'GET_PROFILE'
@@ -147,10 +147,17 @@ export const dislikeItemThunk = (token, itemId, index) => (dispatch) => {
     })
 }
 export const saveUpdateItemThunk = (token, updateItem) => (dispatch) => {
-debugger
   return saveUpdateItemAPI(token, updateItem)
     .then(res => {
       console.log(res)
+      return res
+    })
+}
+export const addCommentThunk = (token, comment) => (dispatch) => {
+  return addCommentAPI(token, comment)
+    .then(res => {
+      console.log(res)
+      return res
     })
 }
 

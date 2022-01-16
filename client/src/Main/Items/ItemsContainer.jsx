@@ -1,11 +1,13 @@
 import {connect} from "react-redux";
 import Items from "./Items";
 import {
+  addCommentThunk,
   deleteItemThunk,
   dislikeItemThunk,
   getCollectionThunk,
   likeItemThunk,
-  saveItemThunk, saveUpdateItemThunk
+  saveItemThunk,
+  saveUpdateItemThunk
 } from "../../redux/collectionsReducer";
 
 
@@ -23,6 +25,7 @@ const ItemsContainer = connect(mapStateToProps, {
   likeItemThunk,
   dislikeItemThunk,
   saveUpdateItemThunk,
+  addCommentThunk,
 })(Items)
 
 export default ItemsContainer

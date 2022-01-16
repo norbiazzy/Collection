@@ -3,6 +3,7 @@ const Collection = require("../models/Collection");
 const auth = require("../middleware/auth.middleware")
 const User = require("../models/User")
 const Item = require("../models/Item")
+const Comment = require("../models/Comment")
 
 const router = Router()
 // /api/collection/createCollection
@@ -69,7 +70,6 @@ router.post('/dislikeItem', auth, async (req, res) => {
       let userId = req.user.userId
       await Item.findByIdAndUpdate(itemId, {$pull: {likes: userId}});
       return res.status(200).json({message: 'Дизлайк(!', userId})
-      
     } catch
       (e) {
       console.log(e, 'error')
@@ -82,6 +82,19 @@ router.post('/updateItem', auth, async (req, res) => {
       await Item.findByIdAndUpdate(item._id, item);
       return res.status(200).json({message: 'UPDATE!!!'})
 
+    } catch
+      (e) {
+      console.log(e, 'error')
+    }
+  }
+)
+router.post('/comment', auth, async (req, res) => {
+    try {
+      const commentBody = req.body
+      commentBody.userId = req.user.userId
+      const newComment = new Comment(commentBody)
+      await Item.findByIdAndUpdate(commentBody.itemId, {$addToSet: {comments: newComment._id}})
+      return res.status(200).json({message: 'new comment!!!'})
     } catch
       (e) {
       console.log(e, 'error')

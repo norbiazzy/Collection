@@ -19,11 +19,11 @@ const Items = (props) => {
   let [createMod, setCreateMod] = useState(false)
   let [currentComments, setCurrentComments] = useState(false)
   let [editMod, setEditMod] = useState(false)
-  const handleEditItem = (e)=>{
+  const handleEditItem = (e) => {
     setEditMod(prevState => ({
       ...prevState,
       [e.target.dataset.input]: e.target.value
-
+      
     }))
   }
   let collectionId = useParams().id
@@ -47,13 +47,18 @@ const Items = (props) => {
     props.dislikeItemThunk(props.token, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
   }
   const saveUpdateItem = (e) => {
-    debugger
+    
     props.saveUpdateItemThunk(props.token, editMod)
+      .then(res => {
+        setEditMod(false)
+        console.log(res)
+      })
+    
   }
   const openEditModal = (e) => {
-    setEditMod(props.items.filter(el=>el._id === e.currentTarget.dataset.id)[0])
+    setEditMod(props.items.filter(el => el._id === e.currentTarget.dataset.id)[0])
   }
-
+  
   if (loading) {
     return (
       <div>Загрузка...</div>
@@ -79,30 +84,45 @@ const Items = (props) => {
     })
     let isLiked = item.likes.includes(props.collection.userId)
     return (
-      <tr key={item._id}>
-        <td>{item.name}</td>
-        <td>{item.description}</td>
-        <td>{tags}</td>
-        {/*<td>{item.created}</td>*/}
-        {bodyInp}
-        <td>{item.likes.length}</td>
-        <td>
-          <button data-id={item._id} data-index={i} onClick={deleteItem}>{trashSVG()}</button>
-          {/*<button data-id={item._id} data-index={i} onClick={commentIsOpen? closeComments: openComments}>{commentSVG()}</button>*/}
-          <button data-id={item._id}
-                  data-index={i}
-                  onClick={isLiked ? dislikeItem : likeItem}>{heartSVG(isLiked ? 'yes' : 'no')}<span>{item.likes.length}</span>
-          </button>
-          <button data-id={item._id}
-                  data-index={i}
-                  onClick={openEditModal}>{editSVG()}</button>
-        </td>
-      </tr>
+      <>
+        <tr key={item._id}>
+          <td>{item.name}</td>
+          <td>{item.description}</td>
+          <td>{tags}</td>
+          {/*<td>{item.created}</td>*/}
+          {bodyInp}
+          <td>
+            <button data-id={item._id} data-index={i} onClick={deleteItem}>{trashSVG()}</button>
+            {/*<button data-id={item._id} data-index={i} onClick={commentIsOpen? closeComments: openComments}>{commentSVG()}</button>*/}
+            <button data-id={item._id}
+                    data-index={i}
+                    onClick={isLiked ? dislikeItem : likeItem}>{heartSVG(isLiked ? 'yes' : 'no')}<span>{item.likes.length}</span>
+            </button>
+            <button data-id={item._id}
+                    data-index={i}
+                    onClick={openEditModal}>{editSVG()}</button>
+          </td>
+        </tr>
+        <tr>
+          <td colSpan={'100%'}>
+            <div>
+              <div>
+                {item.comments}
+              </div>
+              <div>
+              <textarea/>
+                <button onClick={()=>{props.addCommentThunk(props.token, )}}>Send</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </>
     )
   })
   return (
     <>
-      {editMod ? <EditItem save={saveUpdateItem} handle={handleEditItem} closeModal={()=>setEditMod(false)} item={editMod}/> : null}
+      {editMod ? <EditItem save={saveUpdateItem} handle={handleEditItem} closeModal={() => setEditMod(false)}
+                           item={editMod}/> : null}
       <div>
         <h2>{props.collection.name}</h2>
         <p>{props.collection.description}</p>
@@ -120,7 +140,6 @@ const Items = (props) => {
             <th>Description</th>
             <th>Tags</th>
             {headers}
-            <th>Likes</th>
             <th>Tools</th>
             {/*<th>Date Created</th>*/}
           </tr>

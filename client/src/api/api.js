@@ -72,7 +72,7 @@ export const saveItemAPI = (token, item) => {
 }
 export const saveUpdateItemAPI = (token, updateItem) => {
   let body = JSON.stringify(updateItem)
-  debugger
+  
   return fetch('/api/collection/updateItem', {
     method: 'POST', body, headers: {
       ...headers,
@@ -119,6 +119,17 @@ export const dislikeItemAPI = (token, itemId) => {
 export const saveCollectionAPI = (body, token) => {
   body = JSON.stringify(body)
   return fetch('/api/collection/create', {
+    method: 'POST', body, headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
+export const addCommentAPI = (token, comment) => {
+  let body = JSON.stringify(comment)
+  return fetch('/api/collection/comment', {
     method: 'POST', body, headers: {
       ...headers,
       Authorization: `Bearer ${token}`
