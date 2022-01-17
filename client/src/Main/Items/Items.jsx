@@ -103,19 +103,7 @@ const Items = (props) => {
                     onClick={openEditModal}>{editSVG()}</button>
           </td>
         </tr>
-        <tr>
-          <td colSpan={'100%'}>
-            <div>
-              <div>
-                {item.comments}
-              </div>
-              <div>
-              <textarea/>
-                <button onClick={()=>{props.addCommentThunk(props.token, )}}>Send</button>
-              </div>
-            </div>
-          </td>
-        </tr>
+
       </>
     )
   })
