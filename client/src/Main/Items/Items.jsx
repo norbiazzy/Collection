@@ -6,6 +6,7 @@ import {body} from "express-validator";
 import {commentSVG, editSVG, heartSVG, trashSVG} from "../../assets/svg/svgExport";
 import login from "../../Sing/Login";
 import EditItem from "./EditItem";
+import Comment from "./Comment";
 
 
 // const useComments = (initialValue = false) => {
@@ -46,19 +47,34 @@ const Items = (props) => {
   const dislikeItem = (e) => {
     props.dislikeItemThunk(props.token, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
   }
-  const saveUpdateItem = (e) => {
-    
+  const saveUpdateItem = (e) => {    
     props.saveUpdateItemThunk(props.token, editMod)
       .then(res => {
         setEditMod(false)
         console.log(res)
-      })
-    
+      })    
   }
   const openEditModal = (e) => {
     setEditMod(props.items.filter(el => el._id === e.currentTarget.dataset.id)[0])
   }
-  
+  const addCommentThunk = ()=>{
+    props.sendCommentThunk(props.token, currentComments.newCommentText)
+  }
+  const closeComments = () => {
+    setCurrentComments(false)
+  }
+  const openComments = (e) => {
+      setCurrentComments({
+      comments: props.items[e.target.dataset.index].comments,
+      newCommentText: null
+    })
+  }
+  const editComment = (e)=>{
+    setCurrentComments(prevState=>({
+      ...prevState,
+      newCommentText: e.target.value
+    }))
+  }
   if (loading) {
     return (
       <div>Загрузка...</div>
@@ -67,6 +83,7 @@ const Items = (props) => {
   //
   let headers = []
   for (const collectionKey in props.collection.headersInp) {
+    // eslint-disable-next-line no-loop-func
     props.collection.headersInp[collectionKey].map((el) => {
       headers = [...headers, <th key={headers.length}>{el}</th>]
     })
@@ -75,6 +92,7 @@ const Items = (props) => {
   let items = props.items.map((item, i) => {
     let bodyInp = []
     for (const key in item.bodyInputs) {
+      // eslint-disable-next-line no-loop-func
       item.bodyInputs[key].map((el) => {
         bodyInp = [...bodyInp, <td key={bodyInp.length}>{el}</td>]
       })
@@ -93,7 +111,11 @@ const Items = (props) => {
           {bodyInp}
           <td>
             <button data-id={item._id} data-index={i} onClick={deleteItem}>{trashSVG()}</button>
-            {/*<button data-id={item._id} data-index={i} onClick={commentIsOpen? closeComments: openComments}>{commentSVG()}</button>*/}
+
+            {/* adsasdfaaaaaaaaaa */}
+            <button data-id={item._id} data-index={i} onClick={currentComments && currentComments.id === item._id? closeComments : openComments}>{commentSVG()}</button>
+            {/* adsasdfaaaaaaaaaa */}
+
             <button data-id={item._id}
                     data-index={i}
                     onClick={isLiked ? dislikeItem : likeItem}>{heartSVG(isLiked ? 'yes' : 'no')}<span>{item.likes.length}</span>
@@ -103,7 +125,7 @@ const Items = (props) => {
                     onClick={openEditModal}>{editSVG()}</button>
           </td>
         </tr>
-
+        {currentComments? <Comment comment={currentComments} editComment={editComment} sendComment={addCommentThunk}/>: null}
       </>
     )
   })

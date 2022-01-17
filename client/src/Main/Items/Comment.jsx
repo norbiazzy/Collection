@@ -1,5 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import s from './Items.module.css'
+import { useState } from "react"
 
 const Comment = (props) => {
   return (
@@ -7,11 +6,11 @@ const Comment = (props) => {
       <td colSpan={'100%'}>
         <div>
           <div>
-            {props.item.comments}
+            {}
           </div>
           <div>
-            <textarea/>
-            <button onClick={()=>{props.addCommentThunk(props.token, )}}>Send</button>
+            <textarea value={props.comment.newCommnetText} onChange={props.editComment}/>
+            <button onClick={props.addCommentThunk}>Send</button>
           </div>
         </div>
       </td>
