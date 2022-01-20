@@ -154,11 +154,13 @@ export const saveUpdateItemThunk = (token, updateItem) => (dispatch) => {
     })
 }
 export const addCommentThunk = (token, comment) => (dispatch) => {
+  debugger
   return addCommentAPI(token, comment)
-    .then(res => {
-      console.log(res)
-      return res
-    })
+.then(res => {
+    debugger
+    console.log(res)
+    return res
+  })
 }
 
 // export const getCollectionListThunk = (token) => () => {

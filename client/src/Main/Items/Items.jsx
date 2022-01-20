@@ -2,9 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 import ItemsForm from "./ItemsForm";
 import s from './Items.module.css'
-import {body} from "express-validator";
 import {commentSVG, editSVG, heartSVG, trashSVG} from "../../assets/svg/svgExport";
-import login from "../../Sing/Login";
 import EditItem from "./EditItem";
 import Comment from "./Comment";
 
@@ -28,7 +26,6 @@ const Items = (props) => {
     }))
   }
   let collectionId = useParams().id
-  
   let getCollection = useCallback(() => {
     props.getCollectionThunk(props.token, collectionId)
       .then(() => setLoading(false))
@@ -37,40 +34,46 @@ const Items = (props) => {
   useEffect(() => {
     getCollection()
   }, [getCollection])
-  
+  console.log(props)
   const deleteItem = (e) => {
     props.deleteItemThunk(props.token, e.target.dataset.id)
   }
   const likeItem = (e) => {
+    debugger
     props.likeItemThunk(props.token, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
   }
   const dislikeItem = (e) => {
     props.dislikeItemThunk(props.token, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
   }
-  const saveUpdateItem = (e) => {    
+  const saveUpdateItem = (e) => {
     props.saveUpdateItemThunk(props.token, editMod)
       .then(res => {
         setEditMod(false)
         console.log(res)
-      })    
+      })
   }
   const openEditModal = (e) => {
     setEditMod(props.items.filter(el => el._id === e.currentTarget.dataset.id)[0])
   }
-  const addCommentThunk = ()=>{
-    props.sendCommentThunk(props.token, currentComments.newCommentText)
+  const addComment = () => {
+    debugger
+    props.addCommentThunk(props.token, {
+      message: currentComments.newCommentText,
+      itemId: currentComments.id
+    })
   }
   const closeComments = () => {
     setCurrentComments(false)
   }
   const openComments = (e) => {
-      setCurrentComments({
+    setCurrentComments({
       comments: props.items[e.target.dataset.index].comments,
-      newCommentText: null
+      newCommentText: null,
+      id: e.target.dataset.id
     })
   }
-  const editComment = (e)=>{
-    setCurrentComments(prevState=>({
+  const editComment = (e) => {
+    setCurrentComments(prevState => ({
       ...prevState,
       newCommentText: e.target.value
     }))
@@ -111,11 +114,12 @@ const Items = (props) => {
           {bodyInp}
           <td>
             <button data-id={item._id} data-index={i} onClick={deleteItem}>{trashSVG()}</button>
-
+            
             {/* adsasdfaaaaaaaaaa */}
-            <button data-id={item._id} data-index={i} onClick={currentComments && currentComments.id === item._id? closeComments : openComments}>{commentSVG()}</button>
+            <button data-id={item._id} data-index={i}
+                    onClick={currentComments && currentComments.id === item._id ? closeComments : openComments}>{commentSVG()}</button>
             {/* adsasdfaaaaaaaaaa */}
-
+            
             <button data-id={item._id}
                     data-index={i}
                     onClick={isLiked ? dislikeItem : likeItem}>{heartSVG(isLiked ? 'yes' : 'no')}<span>{item.likes.length}</span>
@@ -125,7 +129,8 @@ const Items = (props) => {
                     onClick={openEditModal}>{editSVG()}</button>
           </td>
         </tr>
-        {currentComments? <Comment comment={currentComments} editComment={editComment} sendComment={addCommentThunk}/>: null}
+        {currentComments && currentComments.id === item._id ?
+          <Comment comment={currentComments} editComment={editComment} addComment={addComment}/> : null}
       </>
     )
   })

@@ -81,7 +81,7 @@ router.post('/updateItem', auth, async (req, res) => {
       const item = req.body
       await Item.findByIdAndUpdate(item._id, item);
       return res.status(200).json({message: 'UPDATE!!!'})
-
+      
     } catch
       (e) {
       console.log(e, 'error')
@@ -90,9 +90,11 @@ router.post('/updateItem', auth, async (req, res) => {
 )
 router.post('/comment', auth, async (req, res) => {
     try {
+      debugger
       const commentBody = req.body
       commentBody.userId = req.user.userId
       const newComment = new Comment(commentBody)
+      await newComment.save()
       await Item.findByIdAndUpdate(commentBody.itemId, {$addToSet: {comments: newComment._id}})
       return res.status(200).json({message: 'new comment!!!'})
     } catch

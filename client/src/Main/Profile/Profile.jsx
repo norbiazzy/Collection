@@ -9,7 +9,6 @@ const Profile = (props) => {
   let [loading, setLoading] = useState(true)
   let [createMod, setCreateMod] = useState(false)
   
-  let navigate = useNavigate();
   let getProfile = useCallback(() => {
     props.getProfileThunk(props.token)
       .then(() => setLoading(false))
@@ -21,11 +20,9 @@ const Profile = (props) => {
   const toggleCreateMod = () => {
     setCreateMod(prevState => !prevState)
   }
-  const handelCollection = (key) => navigate('/items/' + key)
   let collections
   if (props.profile && props.profile.collections) {
-    collections = props.profile.collections.map((collection, i) => <Collection callback={handelCollection}
-                                                                               id={collection._id} key={collection._id}
+    collections = props.profile.collections.map((collection, i) => <Collection id={collection._id} key={collection._id}
                                                                                value={collection}/>)
   }
   

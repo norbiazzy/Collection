@@ -135,6 +135,25 @@ export const addCommentAPI = (token, comment) => {
       Authorization: `Bearer ${token}`
     }
   }).then((res) => {
+    debugger
+    return res.json()
+  })
+}
+export const bigCollectionsAPI = () => {
+  return fetch('/api/home/bigCollections', {
+    method: 'GET', headers: {
+      ...headers
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
+export const popularItemsAPI = () => {
+  return fetch('/api/home/popularItems', {
+    method: 'GET', headers: {
+      ...headers
+    }
+  }).then((res) => {
     return res.json()
   })
 }

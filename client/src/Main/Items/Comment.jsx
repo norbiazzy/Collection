@@ -10,7 +10,7 @@ const Comment = (props) => {
           </div>
           <div>
             <textarea value={props.comment.newCommnetText} onChange={props.editComment}/>
-            <button onClick={props.addCommentThunk}>Send</button>
+            <button onClick={props.addComment}>Send</button>
           </div>
         </div>
       </td>
