@@ -9,7 +9,7 @@ app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/collection', require('./routes/collection.routes'))
 app.use('/api/home', require('./routes/home.routes'))
 
-const PORT = config.get('port') || 5000
+const PORT =  process.env.PORT || config.get('port') || 5000
 
 async function start() {
     try {
