@@ -5,7 +5,7 @@ import {
   deleteItemAPI,
   likeItemAPI,
   dislikeItemAPI,
-  saveUpdateItemAPI, addCommentAPI
+  saveUpdateItemAPI, addCommentAPI, getCommentAPI
 } from "../api/api";
 
 const GET_PROFILE = 'GET_PROFILE'
@@ -74,15 +74,15 @@ export const collectionReducer = (state = initialState, action) => {
         items: action.items
       };
     case LIKE_ITEM:
-      
+
       return {
         ...state,
         items: [...state.items],
         ...state.items[action.index].likes = [...state.items[action.index].likes, action.userId]
       };
     case DISLIKE_ITEM:
-      
-  
+
+
       return {
         ...state,
         items: [...state.items],
@@ -107,7 +107,7 @@ export const getCollectionAC = (collection) => ({
 export const getCollectionThunk = (token, id) => (dispatch) => {
   return getCollectionAPI(token, id)
     .then(object => {
-      
+
       dispatch(getCollectionAC(object.collection))
       dispatch(getItemsAC(object.items))
     }).then(() => true)
@@ -132,16 +132,16 @@ export const deleteItemThunk = (token, itemId) => (dispatch) => {
 export const likeItemThunk = (token, itemId, index) => (dispatch) => {
   return likeItemAPI(token, itemId)
     .then(res => {
-      
+
       if (res.userId) dispatch(likeAC(index, res.userId))
       // dispatch(saveCollectionAC(res))
     })
 }
 export const dislikeItemThunk = (token, itemId, index) => (dispatch) => {
-  
+
   return dislikeItemAPI(token, itemId)
     .then(res => {
-      
+
       if (res.userId) dispatch(dislikeAC(index, res.userId))
       // dispatch(saveCollectionAC(res))
     })
@@ -154,13 +154,17 @@ export const saveUpdateItemThunk = (token, updateItem) => (dispatch) => {
     })
 }
 export const addCommentThunk = (token, comment) => (dispatch) => {
-  debugger
   return addCommentAPI(token, comment)
-.then(res => {
-    debugger
-    console.log(res)
-    return res
-  })
+    .then(res => {
+      return res
+    })
+}
+export const getCommentThunk = (itemId) => (dispatch) => {
+  return getCommentAPI(itemId)
+    .then(res => {
+      debugger
+      return res
+    })
 }
 
 // export const getCollectionListThunk = (token) => () => {

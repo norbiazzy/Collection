@@ -23,35 +23,37 @@ export const loginUserAPI = ({email, password}) => {
   })
 }
 export const verifyTokenAPI = (token) => {
-  return fetch('/api/auth/verify', {
-    method: 'POST',
-    body: JSON.stringify({token}),
-    headers
+  return fetch('/api/auth/verify/', {
+    method: 'GET',
+    headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
   }).then((res) => {
-    return res.json()
+    if (res.status === 200) return res.json()
+    else return false
   })
 }
 
 
-export const getProfileUserAPI = (token) => {
-  // let body = JSON.stringify({userId})
-  return fetch('/api/profile/getUser', {
+export const getProfileUserAPI = (token = null, profileId = '') => {
+
+  return fetch('/api/profile/getUser' + (profileId ? '/' + profileId : ''), {
     method: 'GET', headers: {
       ...headers,
       Authorization: `Bearer ${token}`
     }
   }).then((res) => {
-    
     return res.json()
-  }).then(res=>{
-    
+  }).then(res => {
+
     console.log(res)
     return res
   })
 }
 
 export const getCollectionAPI = (token, id) => {
-  return fetch('/api/collection/'+id, {
+  return fetch('/api/collection/' + id, {
     method: 'GET', headers: {
       Authorization: `Bearer ${token}`
     }
@@ -72,7 +74,7 @@ export const saveItemAPI = (token, item) => {
 }
 export const saveUpdateItemAPI = (token, updateItem) => {
   let body = JSON.stringify(updateItem)
-  
+
   return fetch('/api/collection/updateItem', {
     method: 'POST', body, headers: {
       ...headers,
@@ -135,6 +137,14 @@ export const addCommentAPI = (token, comment) => {
       Authorization: `Bearer ${token}`
     }
   }).then((res) => {
+    return res.json()
+  })
+}
+export const getCommentAPI = (itemId) => {
+  debugger
+  return fetch('/api/collection/comment/'+itemId, {
+    method: 'GET', headers
+  }).then((res) => {
     debugger
     return res.json()
   })
@@ -152,6 +162,25 @@ export const popularItemsAPI = () => {
   return fetch('/api/home/popularItems', {
     method: 'GET', headers: {
       ...headers
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
+export const getUsersAPI = () => {
+  return fetch('/api/home/users', {
+    method: 'GET', headers: {
+      ...headers
+    }
+  }).then((res) => {
+    return res.json()
+  })
+}
+export const deleteUsersAPI = (token, userId) => {
+  return fetch(`/api/home/user/${userId}`, {
+    method: 'DELETE', headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
     }
   }).then((res) => {
     return res.json()

@@ -2,21 +2,21 @@ import React, {useCallback, useEffect, useState} from "react";
 import s from './Priofile.module.css'
 import NewCollection from "./Collections/NewCollection";
 import Collection from "./Collections/Collection";
-import {Navigate, useNavigate} from "react-router-dom";
+import {Navigate, useNavigate, useParams} from "react-router-dom";
 
 
 const Profile = (props) => {
-  let [loading, setLoading] = useState(true)
-  let [createMod, setCreateMod] = useState(false)
-  
-  let getProfile = useCallback(() => {
-    props.getProfileThunk(props.token)
+  const [loading, setLoading] = useState(true)
+  const [createMod, setCreateMod] = useState(false)
+  const profileId = useParams().id
+  const getProfile = useCallback(() => {
+    props.getProfileThunk(props.token, profileId)
       .then(() => setLoading(false))
-  }, [props.token])
+  }, [props.token,profileId])
   useEffect(() => {
     getProfile()
   }, [getProfile])
-  
+
   const toggleCreateMod = () => {
     setCreateMod(prevState => !prevState)
   }
@@ -25,12 +25,13 @@ const Profile = (props) => {
     collections = props.profile.collections.map((collection, i) => <Collection id={collection._id} key={collection._id}
                                                                                value={collection}/>)
   }
-  
+
   if (loading) {
     return (
       <div>Загрузка...</div>
     )
   }
+
   return (
     <>
       <h2>Profile</h2>
@@ -49,19 +50,19 @@ const Profile = (props) => {
       <div>
         <div className='d-flex justify-content-between align-items-center'>
           <h2>Collections</h2>
-          <div>
+          {props.adminMod || props.profile.userId === props.userId ? <div>
             <button className={'btn ' + (createMod ? 'btn-danger' : 'btn-dark')}
                     onClick={toggleCreateMod}>{createMod ? 'Close' : 'Create new Collection'}
             </button>
-          </div>
+          </div> : null}
         </div>
         {createMod ? <NewCollection {...props}/> : null}
         {collections}
       </div>
     </>
   )
-  
-  
+
+
 }
 
 export default Profile

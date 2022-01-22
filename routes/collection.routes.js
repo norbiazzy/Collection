@@ -3,6 +3,7 @@ const Collection = require("../models/Collection");
 const auth = require("../middleware/auth.middleware")
 const User = require("../models/User")
 const Item = require("../models/Item")
+const Profile = require("../models/Profile")
 const Comment = require("../models/Comment")
 
 const router = Router()
@@ -15,9 +16,9 @@ router.post('/create', auth, async (req, res) => {
     let collection = new Collection(obj)
     await User.findByIdAndUpdate(req.user.userId, {$addToSet: {collections: collection._id}})
     await collection.save()
-    
+
     return res.status(200).json({message: 'заебись...'})
-    
+
   } catch (e) {
     console.log(e, 'error')
   }
@@ -34,9 +35,9 @@ router.post('/createItem', auth, async (req, res) => {
     //   user.collections = [...user.collections, collection._id]
     // })
     // await collection.save()
-    
+
     return res.status(200).json({message: 'заебись...'})
-    
+
   } catch (e) {
     console.log(e, 'error')
   }
@@ -57,7 +58,7 @@ router.post('/likeItem', auth, async (req, res) => {
       let userId = req.user.userId
       await Item.findByIdAndUpdate(itemId, {$addToSet: {likes: userId}});
       return res.status(200).json({message: 'Лайк!', userId})
-      
+
     } catch
       (e) {
       console.log(e, 'error')
@@ -81,7 +82,7 @@ router.post('/updateItem', auth, async (req, res) => {
       const item = req.body
       await Item.findByIdAndUpdate(item._id, item);
       return res.status(200).json({message: 'UPDATE!!!'})
-      
+
     } catch
       (e) {
       console.log(e, 'error')
@@ -90,13 +91,31 @@ router.post('/updateItem', auth, async (req, res) => {
 )
 router.post('/comment', auth, async (req, res) => {
     try {
-      debugger
       const commentBody = req.body
       commentBody.userId = req.user.userId
       const newComment = new Comment(commentBody)
       await newComment.save()
       await Item.findByIdAndUpdate(commentBody.itemId, {$addToSet: {comments: newComment._id}})
       return res.status(200).json({message: 'new comment!!!'})
+    } catch
+      (e) {
+      console.log(e, 'error')
+    }
+  }
+)
+router.get('/comment/:id', async (req, res) => {
+    try {
+      const itemId = req.params.id
+
+      const comments = await Comment.find({itemId})
+      const names = await comments.map(comment => {
+        let profile = Profile.findOne({userId: comment.userId}, (e, p)=>{
+          return p.name
+        })
+        return profile.name
+      })
+      console.log(names)
+      return res.status(200).json({comments, names})
     } catch
       (e) {
       console.log(e, 'error')

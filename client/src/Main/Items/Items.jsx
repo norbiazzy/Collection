@@ -5,6 +5,7 @@ import s from './Items.module.css'
 import {commentSVG, editSVG, heartSVG, trashSVG} from "../../assets/svg/svgExport";
 import EditItem from "./EditItem";
 import Comment from "./Comment";
+import {loginAC} from "../../redux/authReducer";
 
 
 // const useComments = (initialValue = false) => {
@@ -39,7 +40,7 @@ const Items = (props) => {
     props.deleteItemThunk(props.token, e.target.dataset.id)
   }
   const likeItem = (e) => {
-    debugger
+
     props.likeItemThunk(props.token, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
   }
   const dislikeItem = (e) => {
@@ -56,7 +57,6 @@ const Items = (props) => {
     setEditMod(props.items.filter(el => el._id === e.currentTarget.dataset.id)[0])
   }
   const addComment = () => {
-    debugger
     props.addCommentThunk(props.token, {
       message: currentComments.newCommentText,
       itemId: currentComments.id
@@ -71,6 +71,7 @@ const Items = (props) => {
       newCommentText: null,
       id: e.target.dataset.id
     })
+    props.getCommentThunk(e.target.dataset.id)
   }
   const editComment = (e) => {
     setCurrentComments(prevState => ({
@@ -103,23 +104,18 @@ const Items = (props) => {
     let tags = item.tags.map((el, i) => {
       return <span key={i}>{el} </span>
     })
-    let isLiked = item.likes.includes(props.collection.userId)
+    let isLiked = item.likes.includes(props.userId)
     return (
       <>
         <tr key={item._id}>
           <td>{item.name}</td>
           <td>{item.description}</td>
           <td>{tags}</td>
-          {/*<td>{item.created}</td>*/}
           {bodyInp}
           <td>
             <button data-id={item._id} data-index={i} onClick={deleteItem}>{trashSVG()}</button>
-            
-            {/* adsasdfaaaaaaaaaa */}
             <button data-id={item._id} data-index={i}
                     onClick={currentComments && currentComments.id === item._id ? closeComments : openComments}>{commentSVG()}</button>
-            {/* adsasdfaaaaaaaaaa */}
-            
             <button data-id={item._id}
                     data-index={i}
                     onClick={isLiked ? dislikeItem : likeItem}>{heartSVG(isLiked ? 'yes' : 'no')}<span>{item.likes.length}</span>
