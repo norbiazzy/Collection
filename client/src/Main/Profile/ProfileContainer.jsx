@@ -5,6 +5,7 @@ import {saveCollectionThunk} from "../../redux/collectionsReducer";
 const mapStateToProps = (state) => ({
     profile: state.profile,
     userId: state.auth.userId,
+    adminMod: state.auth.adminMod,
     token: state.auth.token,
     new_collection: state.collection.new_collection,
     topics: state.collection.topics,

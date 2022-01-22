@@ -4,7 +4,7 @@ import {
   addCommentThunk,
   deleteItemThunk,
   dislikeItemThunk,
-  getCollectionThunk,
+  getCollectionThunk, getCommentThunk,
   likeItemThunk,
   saveItemThunk,
   saveUpdateItemThunk
@@ -15,7 +15,8 @@ const mapStateToProps = (state) => ({
   token: state.auth.token,
   collection: state.collection.currentCollection,
   isItems: state.collection.isItems,
-  items: state.collection.items
+  items: state.collection.items,
+  userId: state.auth.userId,
 })
 
 const ItemsContainer = connect(mapStateToProps, {
@@ -26,6 +27,7 @@ const ItemsContainer = connect(mapStateToProps, {
   dislikeItemThunk,
   saveUpdateItemThunk,
   addCommentThunk,
+  getCommentThunk,
 })(Items)
 
 export default ItemsContainer

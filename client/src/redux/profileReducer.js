@@ -20,7 +20,7 @@ export const profileReducer = (state = initialState, action) => {
         status: action.status,
         name: action.name,
         collections: action.collections,
-        isProfile: true
+        userId: action.userId
       }
     case GET_COLLECTIONS:
       return {...state};
@@ -39,11 +39,12 @@ const getProfileAC = (user) => ({
 })
 
 
-export const getProfileThunk = (token) => {
+export const getProfileThunk = (token, profileId) => {
   return (dispatch) => {
-    return getProfileUserAPI(token)
-      .then(user => {
-        dispatch(getProfileAC(user))
+    return getProfileUserAPI(token, profileId)
+      .then(profile => {
+
+        dispatch(getProfileAC(profile))
       })
   }
 }

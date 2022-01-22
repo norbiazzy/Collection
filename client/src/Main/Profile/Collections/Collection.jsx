@@ -11,8 +11,5 @@ const Collection = (props) => {
       <p>{props.value.created}</p>
     </div>
   )
-  
-  
 }
-
 export default Collection

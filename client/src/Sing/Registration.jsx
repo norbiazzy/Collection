@@ -3,7 +3,6 @@ import {NavLink} from "react-router-dom";
 import React from "react";
 
 const Registration = (props) => {
-
   let email = React.createRef()
   let password = React.createRef()
   const log = (e)=> {
@@ -13,7 +12,7 @@ const Registration = (props) => {
       password: password.current.value,
       role: 'admin',
     }
-    
+
     props.registrationUserThunkCreate(body)
   }
   // const handleBtn = (e) => {
