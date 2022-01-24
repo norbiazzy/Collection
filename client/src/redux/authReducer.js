@@ -54,7 +54,7 @@ export const authReducer = (state = initialState, action) => {
   }
 }
 
-export const toggleAdminModAC= (boolean)=>({
+export const toggleAdminModAC = (boolean) => ({
   type: TOGGLE_ADMIN_MOD,
   adminMod: boolean,
 })
@@ -67,9 +67,10 @@ export const loginAC = ({email, token, role, blocked, userId}) => ({
 export const setTokenAC = (token) => ({type: SET_TOKEN, token})
 
 export const verifyTokenThunk = (token) => (dispatch) => {
-  verifyTokenAPI(token)
+  return verifyTokenAPI(token)
     .then((res) => {
       if (res) dispatch(loginAC(res))
+      else return 'is not auth'
     })
 
 }
@@ -82,16 +83,15 @@ export const loginThunk = ({email, password}) => {
       })
   }
 }
-export const registrationUserThunkCreate = ({email, password, role}) => {
+export const registrationThunk = ({email, password, role}) => {
   return (dispatch) => {
-    registerUserAPI({email, password, role})
-      .then((res) => {
-        dispatch(registerAC(res))
-        loginUserAPI({email, password})
-          .then((body) => {
-            window.localStorage.setItem('auth', JSON.stringify(body.token))
-            dispatch(loginAC(body))
-          })
+    return registerUserAPI({email, password, role})
+      .then(body => {
+        debugger
+        if (body) {
+          dispatch(loginAC(body))
+          return true
+        } else return false
       })
   }
 }

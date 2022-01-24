@@ -5,10 +5,16 @@ const auth = require("../middleware/auth.middleware")
 const router = Router()
 
 
+
 // /api/profile/get
 router.get('/getUser', auth, async (req, res) => {
   try {
+    console.log('reg')
+    console.log('asdasd')
+
+    console.log('profile')
     const profile = await Profile.findOne({userId: req.user.userId})
+    console.log('collection')
     const collections = await Collection.find({userId: req.user.userId})
     if (profile) return res.status(201).json({profile, collections})
     

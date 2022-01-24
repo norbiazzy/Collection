@@ -9,10 +9,12 @@ const Profile = (props) => {
   const [loading, setLoading] = useState(true)
   const [createMod, setCreateMod] = useState(false)
   const profileId = useParams().id
+  const navigate = useNavigate()
   const getProfile = useCallback(() => {
+    if (!props.token) return navigate('/')
     props.getProfileThunk(props.token, profileId)
       .then(() => setLoading(false))
-  }, [props.token,profileId])
+  }, [props.token, profileId])
   useEffect(() => {
     getProfile()
   }, [getProfile])
@@ -28,7 +30,10 @@ const Profile = (props) => {
 
   if (loading) {
     return (
-      <div>Загрузка...</div>
+
+      <div className="spinner-border position-absolute top-50 start-50" role="status">
+        <span className="visually-hidden ">Loading...</span>
+      </div>
     )
   }
 

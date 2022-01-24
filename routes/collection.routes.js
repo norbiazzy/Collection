@@ -106,15 +106,13 @@ router.post('/comment', auth, async (req, res) => {
 router.get('/comment/:id', async (req, res) => {
     try {
       const itemId = req.params.id
-
+      const names = []
       const comments = await Comment.find({itemId})
-      const names = await comments.map(comment => {
-        let profile = Profile.findOne({userId: comment.userId}, (e, p)=>{
-          return p.name
-        })
-        return profile.name
-      })
-      console.log(names)
+      for (let i = 0; i < comments.length; i++) {
+        let profile = await Profile.findOne({userId: comments[i].userId})
+        console.log(profile)
+        await names.push(profile.name)
+      }
       return res.status(200).json({comments, names})
     } catch
       (e) {

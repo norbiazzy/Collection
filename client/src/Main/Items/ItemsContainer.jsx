@@ -17,6 +17,7 @@ const mapStateToProps = (state) => ({
   isItems: state.collection.isItems,
   items: state.collection.items,
   userId: state.auth.userId,
+  comments: state.collection.comments,
 })
 
 const ItemsContainer = connect(mapStateToProps, {

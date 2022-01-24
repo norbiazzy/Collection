@@ -19,23 +19,21 @@ const Items = (props) => {
   let [createMod, setCreateMod] = useState(false)
   let [currentComments, setCurrentComments] = useState(false)
   let [editMod, setEditMod] = useState(false)
-  const handleEditItem = (e) => {
+  const handleEditItem = useCallback((e) => {
     setEditMod(prevState => ({
       ...prevState,
       [e.target.dataset.input]: e.target.value
-      
     }))
-  }
+  })
   let collectionId = useParams().id
   let getCollection = useCallback(() => {
     props.getCollectionThunk(props.token, collectionId)
       .then(() => setLoading(false))
   }, [collectionId])
-  
+
   useEffect(() => {
     getCollection()
   }, [getCollection])
-  console.log(props)
   const deleteItem = (e) => {
     props.deleteItemThunk(props.token, e.target.dataset.id)
   }
@@ -81,7 +79,10 @@ const Items = (props) => {
   }
   if (loading) {
     return (
-      <div>Загрузка...</div>
+
+      <div className="spinner-border position-absolute top-50 start-50" role="status">
+        <span className="visually-hidden ">Loading...</span>
+      </div>
     )
   }
   //
@@ -92,7 +93,7 @@ const Items = (props) => {
       headers = [...headers, <th key={headers.length}>{el}</th>]
     })
   }
-  
+
   let items = props.items.map((item, i) => {
     let bodyInp = []
     for (const key in item.bodyInputs) {
@@ -126,7 +127,7 @@ const Items = (props) => {
           </td>
         </tr>
         {currentComments && currentComments.id === item._id ?
-          <Comment comment={currentComments} editComment={editComment} addComment={addComment}/> : null}
+          <Comment comments={props.comments} comment={currentComments} editComment={editComment} addComment={addComment}/> : null}
       </>
     )
   })
@@ -142,7 +143,7 @@ const Items = (props) => {
         <button onClick={() => setCreateMod(prevState => !prevState)}>{createMod ? 'Close' : 'Create new item'}</button>
         {createMod ? <ItemsForm token={props.token} saveItemThunk={props.saveItemThunk} collectionId={collectionId}
                                 headersInp={props.collection.headersInp}/> : null}
-        
+
         {/*{items}*/}
         <table>
           <thead>
@@ -157,7 +158,7 @@ const Items = (props) => {
           </thead>
           <tbody>
           {items}
-          
+
           </tbody>
         </table>
       </div>

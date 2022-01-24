@@ -1,24 +1,25 @@
-import s from './Sing.module.css'
-import {NavLink, useNavigate} from "react-router-dom";
+import s from '../Sing.module.css'
+import {NavLink} from "react-router-dom";
 import {Form, Field} from 'react-final-form'
-import {registrationThunk} from "../redux/authReducer";
+import {registrationThunk} from "../../redux/authReducer";
 import {body} from "express-validator";
-import SingFormInput from "./SingForm/SingFormInput";
 
 
-const Registration = (props) => {
-  const navigate = useNavigate()
+const SingForm = (props) => {
+
   let onSubmit = values => {
     const body = {
       ...values,
       role: values.role ? 'admin' : 'user',
     }
-    props.registrationThunk(body).then((result)=>{
-      if (result) navigate('/profile')
-    })
-
+    debugger
+    props.registrationThunk(body)
   }
+
+
   const required = value => (value ? undefined : true)
+
+
   return (
 
     <div className={s.wrapper}>
@@ -29,10 +30,26 @@ const Registration = (props) => {
         render={({handleSubmit, submitting}) => (
           <form onSubmit={handleSubmit}>
             <div>
-              <SingFormInput name={"email"} type={"text"} required={required} nameText={"Email"}/>
+              <Field name="email" type={'text'} validate={required} render={
+                ({input, meta}) => (
+                  <label className={'d-block mb-2'}>
+                    <p className={s.inpHeader}>Email</p>
+                    <input
+                      className={s.textInput + ' ' + (meta.error && s.errorInput)} {...input}/>
+                  </label>
+                )
+              }/>
             </div>
             <div>
-              <SingFormInput name={"password"} type={"password"} required={required} nameText={"Password"}/>
+              <Field name="password" type={'password'} validate={required} render={
+                ({input, meta}) => (
+                  <label className={'d-block'}>
+                    <p className={s.inpHeader}>Password</p>
+                    <input
+                      className={s.textInput + ' ' + (meta.error && s.errorInput)} {...input}/>
+                  </label>
+                )
+              }/>
             </div>
             <div>
               <Field name="role" type={'checkbox'} render={
@@ -56,4 +73,4 @@ const Registration = (props) => {
 }
 
 
-export default Registration
+export default SingForm

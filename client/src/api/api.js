@@ -2,12 +2,18 @@ let headers = {
   'Content-Type': 'application/json'
 }
 export const registerUserAPI = (body) => {
+  debugger
   body = JSON.stringify(body)
   return fetch('/api/auth/register', {
     method: 'POST', body, headers
   }).then((res) => {
+    debugger
     console.log('api reg')
     return res.json()
+  }).then(body=>{
+    debugger
+    if (body)localStorage.setItem('auth', JSON.stringify({token: body.token}))
+    return body
   })
 }
 export const loginUserAPI = ({email, password}) => {
@@ -18,11 +24,12 @@ export const loginUserAPI = ({email, password}) => {
   }).then((res) => {
     return res.json()
   }).then((body) => {
-    localStorage.setItem('auth', JSON.stringify(body))
+    localStorage.setItem('auth', JSON.stringify({token: body.token}))
     return body
   })
 }
 export const verifyTokenAPI = (token) => {
+  debugger
   return fetch('/api/auth/verify/', {
     method: 'GET',
     headers: {
@@ -30,6 +37,7 @@ export const verifyTokenAPI = (token) => {
       Authorization: `Bearer ${token}`
     }
   }).then((res) => {
+    debugger
     if (res.status === 200) return res.json()
     else return false
   })
@@ -37,7 +45,7 @@ export const verifyTokenAPI = (token) => {
 
 
 export const getProfileUserAPI = (token = null, profileId = '') => {
-
+  debugger
   return fetch('/api/profile/getUser' + (profileId ? '/' + profileId : ''), {
     method: 'GET', headers: {
       ...headers,
@@ -141,11 +149,11 @@ export const addCommentAPI = (token, comment) => {
   })
 }
 export const getCommentAPI = (itemId) => {
-  debugger
+
   return fetch('/api/collection/comment/'+itemId, {
     method: 'GET', headers
   }).then((res) => {
-    debugger
+
     return res.json()
   })
 }

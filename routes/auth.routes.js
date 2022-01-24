@@ -23,6 +23,7 @@ router.post('/register',
       if (!errors.isEmpty()) {
         return res.status(200).json({message: 'Ошибка при регистрации регистрации'})
       }
+
       const {email, password, role} = req.body
       const candidate = await User.findOne({email})
       if (candidate) return res.status(400).json({message: 'Уже есть такой'})
@@ -35,13 +36,27 @@ router.post('/register',
       })
       const userProfile = await new Profile({userId: user._id})
       user.profile = userProfile._id
-      const userCollections = await new Collections({userId: user._id})
+      // const userCollections = await new Collections({userId: user._id})
       await user.save(() => {
-        userCollections.save()
+        // userCollections.save()
         userProfile.save()
       })
+      const token = jwt.sign(
+        {
+          userId: user.id,
+          email: user.email,
+          role: user.role,
+          blocked: user.blocked,
+        },
+        config.get('jwtSecret'),
+        {expiresIn: '360d'}
+      )
 
-      res.status(201).json({message: 'Успешно создан'})
+      res.status(201).json({
+        token, email: user.email,
+        userId: user.id, role: user.role, blocked: user.blocked
+      })
+      // res.status(201).json({message: 'Успешно создан'})
 
     } catch (e) {
       console.log(e, 'error')
@@ -51,7 +66,7 @@ router.post('/register',
 // /api/auth/login
 router.post('/login',
   [
-    check('email').normalizeEmail().isEmail(),
+    check('email').isEmail(),
     check('password').exists()
   ],
   async (req, res) => {
@@ -90,9 +105,11 @@ router.post('/login',
 // /api/auth/verify
 router.get('/verify', auth, async (req, res) => {
   try {
+    console.log(1)
     res.status(200).json(req.user)
   } catch (e) {
-    console.log(e)
+    console.log(2)
+    res.status(401).json({message: 'is not auth'})
   }
 })
 

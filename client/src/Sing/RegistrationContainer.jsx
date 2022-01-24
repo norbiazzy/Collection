@@ -1,14 +1,14 @@
 import React from "react";
-import Registration from "./Registration";
 import {connect} from "react-redux";
-import {registerAC, registrationUserThunkCreate} from "../redux/authReducer";
+import {registerAC, registrationThunk} from "../redux/authReducer";
+import Registration from "./Registration";
 
 const mapStateToProps = (state) => ({
     register: state.authPage,
 })
 const RegistrationContainer = connect(mapStateToProps, {
     registerAC,
-    registrationUserThunkCreate
+  registrationThunk
 })(Registration)
 
 export default RegistrationContainer

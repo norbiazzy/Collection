@@ -5,6 +5,7 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.38);
+    z-index: 20;
 }
 
 .modal {
@@ -14,4 +15,36 @@
     padding: 20px;
     transform: translate(-50%, -50%);
     background-color: #fff;
+    z-index: 30;
+}
+
+.message {
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+.messageText {
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.messageTitle {
+    margin: 0;
+    font-size: 16px;
+}
+
+.messageTextarea {
+    padding: 10px 100px 10px 10px;
+    resize: none;
+    width: 100%;
+    min-height: 50px;
+}
+
+.sendComment {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translate(-5px, -50%);
 }

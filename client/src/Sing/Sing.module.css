@@ -30,3 +30,10 @@
 .label > span {
     margin-right: 10px;
 }
+.errorInput {
+    box-shadow: 0 0 15px 0px rgba(255, 0, 0, 0.8);
+}
+
+.inpHeader {
+    margin-bottom: 5px;
+}

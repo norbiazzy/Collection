@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=production node app.js",
     "server": "nodemon app.js",
     "client:install": "npm install --prefix client",
-    "client:build" : "npm run build --prefix client",
+    "client:build": "npm run build --prefix client",
     "client": "npm run start --prefix client",
     "dev": "cross-env NODE_ENV=development concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client:install && npm run client:build"
@@ -17,14 +17,13 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",
+    "concurrently": "^6.5.1",
     "config": "^3.3.6",
+    "cross-env": "^7.0.3",
     "express": "^4.17.2",
     "express-validator": "^6.14.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.1.4",
-    "redux-thunk": "^2.4.1",
-    "concurrently": "^6.5.1",
-    "cross-env": "^7.0.3"
+    "mongoose": "^6.1.4"
   },
   "devDependencies": {
     "concurrently": "^6.5.1",

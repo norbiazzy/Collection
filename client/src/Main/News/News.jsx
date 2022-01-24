@@ -26,7 +26,11 @@ const News = (props) => {
 
   }, [getCollections, props.contentType])
 
-  if (loading) return (<div>Loading...</div>)
+  if (loading) return (
+    <div className="spinner-border position-absolute top-50 start-50" role="status">
+      <span className="visually-hidden ">Loading...</span>
+    </div>
+  )
   switch (props.contentType) {
     case 'collections':
       content = props.collections.map(c => <Collection value={c} id={c._id}/>)

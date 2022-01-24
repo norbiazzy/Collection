@@ -15,6 +15,7 @@ const SAVE_COLLECTIONS_LIST = 'SAVE_COLLECTIONS_LIST'
 const GET_ITEMS = 'GET_ITEMS'
 const LIKE_ITEM = 'LIKE_ITEM'
 const DISLIKE_ITEM = 'DISLIKE_ITEM'
+const GET_COMMENTS = 'GET_COMMENTS'
 
 const initialState = {
   isItems: false,
@@ -44,7 +45,8 @@ const initialState = {
     items: [],
     amountInputs: {}
   },
-  items: []
+  items: [],
+  comments: []
 }
 export const collectionReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -74,19 +76,21 @@ export const collectionReducer = (state = initialState, action) => {
         items: action.items
       };
     case LIKE_ITEM:
-
       return {
         ...state,
         items: [...state.items],
         ...state.items[action.index].likes = [...state.items[action.index].likes, action.userId]
       };
     case DISLIKE_ITEM:
-
-
       return {
         ...state,
         items: [...state.items],
         ...state.items[action.index].likes = [...state.items[action.index].likes.filter(id => id !== action.userId)]
+      }
+    case GET_COMMENTS:
+      return {
+        ...state,
+        comments: action.comments,
       }
     default:
       return state;
@@ -162,11 +166,19 @@ export const addCommentThunk = (token, comment) => (dispatch) => {
 export const getCommentThunk = (itemId) => (dispatch) => {
   return getCommentAPI(itemId)
     .then(res => {
-      debugger
-      return res
+      // debugger
+      const comments = res.comments.map((comment, i) => {
+        // debugger
+        comment.name = res.names[i]
+        return comment
+      })
+      dispatch(getCommentAC(comments))
+      return comments
     })
 }
-
+export const getCommentAC = (comments) => ({
+  type: GET_COMMENTS, comments
+})
 // export const getCollectionListThunk = (token) => () => {
 //   getCollectionListAPI(token)
 //     .then(r => {
