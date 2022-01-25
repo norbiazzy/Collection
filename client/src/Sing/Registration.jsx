@@ -13,8 +13,8 @@ const Registration = (props) => {
       ...values,
       role: values.role ? 'admin' : 'user',
     }
-    props.registrationThunk(body).then((result)=>{
-      if (result) navigate('/profile')
+    props.registrationThunk(body).then((res) => {
+      if (!res.err) navigate('/profile')
     })
 
   }
@@ -23,10 +23,13 @@ const Registration = (props) => {
 
     <div className={s.wrapper}>
       <h1 className={s.title}>Registration</h1>
+      {props.errorMessage ? (<div className={s.errorMessage}>
+        {props.errorMessage}
+      </div>) : null}
       <Form
         onSubmit={onSubmit}
         validate={required}
-        render={({handleSubmit, submitting}) => (
+        render={({handleSubmit}) => (
           <form onSubmit={handleSubmit}>
             <div>
               <SingFormInput name={"email"} type={"text"} required={required} nameText={"Email"}/>
@@ -44,7 +47,7 @@ const Registration = (props) => {
                 )
               }/>
             </div>
-            <button disabled={submitting} className={'btn btn-dark w-100'} type="submit">Sing Up</button>
+            <button className={'btn btn-dark w-100'} type="submit">Sing Up</button>
           </form>
         )}
       />

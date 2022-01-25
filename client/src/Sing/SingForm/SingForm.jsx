@@ -12,7 +12,7 @@ const SingForm = (props) => {
       ...values,
       role: values.role ? 'admin' : 'user',
     }
-    debugger
+
     props.registrationThunk(body)
   }
 

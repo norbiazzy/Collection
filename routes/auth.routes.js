@@ -21,12 +21,12 @@ router.post('/register',
     try {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        return res.status(200).json({message: 'Ошибка при регистрации регистрации'})
+        return res.status(200).json({err: true, errorMessage: 'Ошибка при регистрации регистрации.'})
       }
 
       const {email, password, role} = req.body
       const candidate = await User.findOne({email})
-      if (candidate) return res.status(400).json({message: 'Уже есть такой'})
+      if (candidate) return res.status(400).json({err: true, errorMessage: 'Пользователь с таким email уже существует.'})
       const hashedPassword = await bcrypt.hash(password, 7)
       const userRole = await Role.findOne({value: role})
       const user = await new User({
@@ -56,7 +56,6 @@ router.post('/register',
         token, email: user.email,
         userId: user.id, role: user.role, blocked: user.blocked
       })
-      // res.status(201).json({message: 'Успешно создан'})
 
     } catch (e) {
       console.log(e, 'error')

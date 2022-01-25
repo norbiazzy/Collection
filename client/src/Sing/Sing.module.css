@@ -1,18 +1,22 @@
 .text {
     margin-bottom: 5px;
 }
+
 .title {
     margin-bottom: 15px;
 }
+
 .textInput {
     width: 100%;
     border: 1px solid black;
     border-radius: 5px;
     margin: 0;
 }
+
 .item {
     margin-bottom: 10px;
 }
+
 .wrapper {
     width: 250px;
     position: absolute;
@@ -22,18 +26,33 @@
     display: flex;
     flex-direction: column;
 }
+
 .label {
     padding: 5px 0;
     display: flex;
     align-items: center;
 }
+
 .label > span {
     margin-right: 10px;
 }
+
 .errorInput {
     box-shadow: 0 0 15px 0px rgba(255, 0, 0, 0.8);
 }
 
 .inpHeader {
     margin-bottom: 5px;
+}
+
+.errorMessage {
+    padding: 5px;
+    border: 1px solid rgb(255, 0, 0);
+    background-color: rgba(255, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.textareaInput {
+    width: 100%;
+    resize: none;
 }

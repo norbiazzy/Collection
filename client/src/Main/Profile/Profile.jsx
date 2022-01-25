@@ -3,6 +3,7 @@ import s from './Priofile.module.css'
 import NewCollection from "./Collections/NewCollection";
 import Collection from "./Collections/Collection";
 import {Navigate, useNavigate, useParams} from "react-router-dom";
+import NewCollectionForm from "./Collections/NewCollectionForm";
 
 
 const Profile = (props) => {
@@ -10,6 +11,11 @@ const Profile = (props) => {
   const [createMod, setCreateMod] = useState(false)
   const profileId = useParams().id
   const navigate = useNavigate()
+  let submit
+  let setSubmit = (e) => {
+    submit = e
+  }
+
   const getProfile = useCallback(() => {
     if (!props.token) return navigate('/')
     props.getProfileThunk(props.token, profileId)
@@ -48,20 +54,18 @@ const Profile = (props) => {
           <p>{props.profile.name}</p>
           <p>{props.profile.status}</p>
         </div>
-        <div>
-          collections
-        </div>
       </div>
       <div>
         <div className='d-flex justify-content-between align-items-center'>
           <h2>Collections</h2>
           {props.adminMod || props.profile.userId === props.userId ? <div>
+            {createMod ? <button className={'btn btn-success me-2'} onClick={event => submit(event)}>Create</button> : null}
             <button className={'btn ' + (createMod ? 'btn-danger' : 'btn-dark')}
                     onClick={toggleCreateMod}>{createMod ? 'Close' : 'Create new Collection'}
             </button>
           </div> : null}
         </div>
-        {createMod ? <NewCollection {...props}/> : null}
+        {createMod ? <NewCollectionForm setSubmit={setSubmit} {...props}/> : null}
         {collections}
       </div>
     </>

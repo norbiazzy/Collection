@@ -5,6 +5,7 @@ const LOG_USER = 'LOG_USER'
 const SET_TOKEN = 'SET_TOKEN'
 const LOGIN_OUT = 'LOGIN_OUT'
 const TOGGLE_ADMIN_MOD = 'TOGGLE_ADMIN_MOD'
+const ERROR_REGISTER = 'ERROR_REGISTER'
 
 const initialState = {
   userId: null,
@@ -13,6 +14,7 @@ const initialState = {
   role: null,
   blocked: null,
   adminMod: false,
+  errorMessage: null
 }
 
 
@@ -48,6 +50,11 @@ export const authReducer = (state = initialState, action) => {
       return {
         ...state,
         adminMod: action.adminMod,
+      };
+    case ERROR_REGISTER:
+      return {
+        ...state,
+        errorMessage: action.errorMessage,
       };
     default:
       return state;
@@ -85,16 +92,17 @@ export const loginThunk = ({email, password}) => {
 }
 export const registrationThunk = ({email, password, role}) => {
   return (dispatch) => {
-    return registerUserAPI({email, password, role})
-      .then(body => {
-        debugger
-        if (body) {
-          dispatch(loginAC(body))
-          return true
-        } else return false
+    registerUserAPI({email, password, role})
+      .then(res => {
+        if (!res.err) dispatch(loginAC(res))
+        else dispatch(showErrMessageAC(res))
       })
   }
 }
+export const showErrMessageAC = (res) => ({
+  type: ERROR_REGISTER,
+  errorMessage: res.errorMessage,
+})
 export const loginOutAC = () => ({
   type: LOGIN_OUT
 })

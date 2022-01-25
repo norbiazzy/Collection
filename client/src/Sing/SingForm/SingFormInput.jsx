@@ -6,11 +6,12 @@ import {body} from "express-validator";
 
 
 const SingFormInput = (props) => {
+  const element = props.element || 'input'
   return (
     <Field name={props.name} type={props.type} validate={props.required} render={
       ({input, meta}) => (
         <label className={'d-block mb-2'}>
-          <p className={s.inpHeader}>{props.nameText}</p>
+          {props.nameText ? <p className={s.inpHeader}>{props.nameText}</p> : null}
           <input
             className={s.textInput + ' ' + (meta.error&& meta.touched && s.errorInput)} {...input}/>
         </label>

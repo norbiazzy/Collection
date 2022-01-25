@@ -10,7 +10,7 @@ const Login = (props) => {
   if (props.token) navigate('/profile')
 
   let onSubmit = values => {
-    debugger
+
     props.loginThunk(values)
   }
   const required = value => (value ? undefined : true)

@@ -37,11 +37,9 @@ function App(props) {
       <Routes>
         <Route path='/registration' element={<RegistrationContainer/>}/>
         <Route path='/login' element={<LoginContainer/>}/>
-        {/*<Route path='/messages' element={<DialogsContainer/>}/>*/}
         <Route path={'*'} element={<Main/>}/>
       </Routes>
     </div>
-    /*</AuthContext.Provider>*/
   );
 }
 

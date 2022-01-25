@@ -33,7 +33,18 @@ const initialState = {
       boolean: [],
     },
   },
-  topics: ['Alcohol', 'Books', 'Films'],
+  topics: [
+    {value: 'alcohol', label: 'Alcohol'},
+    {value: 'books', label: 'Books'},
+    {value: 'films', label: 'Films'},
+    {value: 'marks', label: 'Marks'},
+    {value: 'pens', label: 'Pens'},
+    {value: 'friends', label: 'Friends'},
+    {value: 'wrappers', label: 'Wrappers'},
+    {value: 'chocolate', label: 'Chocolate'},
+    {value: 'strawberry', label: 'Strawberry'},
+    {value: 'vanilla', label: 'Vanilla'}
+  ],
   photo: null,
   status: null,
   name: null,
@@ -166,9 +177,7 @@ export const addCommentThunk = (token, comment) => (dispatch) => {
 export const getCommentThunk = (itemId) => (dispatch) => {
   return getCommentAPI(itemId)
     .then(res => {
-      // debugger
       const comments = res.comments.map((comment, i) => {
-        // debugger
         comment.name = res.names[i]
         return comment
       })
