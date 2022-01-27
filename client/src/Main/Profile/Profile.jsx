@@ -1,51 +1,79 @@
 import React, {useCallback, useEffect, useState} from "react";
 import s from './Priofile.module.css'
-import NewCollection from "./Collections/NewCollection";
-import Collection from "./Collections/Collection";
-import {Navigate, useNavigate, useParams} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import NewCollectionForm from "./Collections/NewCollectionForm";
+import {useNavigate} from "react-router";
+import EditProfile from "./EditProfile";
+import CollectionTable from "./Collections/CollectionTable";
+import {connect} from "react-redux";
+import {deleteCollectionThunk, saveCollectionThunk} from "../../redux/collectionsReducer";
+import {getProfile} from "../../redux/selectors/user-select";
+import AuthDataHOC from "../../hoc/AuthDataHOC";
+import {compose} from "redux";
+import {getCollectionListSelect} from "../../redux/selectors/collection-select";
+import {deleteUserThunk, getProfileThunk} from "../../redux/uersReducer";
+import Loader from "../all/Loader";
+import {editSVG} from "../../assets/svg/svgExport";
 
 
-const Profile = (props) => {
+let Profile = (props) => {
   const [loading, setLoading] = useState(true)
   const [createMod, setCreateMod] = useState(false)
+  const [editProfileMod, setEditProfileMod] = useState(false)
+  const [errorPage, setErrorPage] = useState(false)
   const profileId = useParams().id
   const navigate = useNavigate()
   let submit
   let setSubmit = (e) => {
     submit = e
   }
-
   const getProfile = useCallback(() => {
     if (!props.token) return navigate('/')
     props.getProfileThunk(props.token, profileId)
-      .then(() => setLoading(false))
+      .then((res) => {
+          setLoading(false)
+          setErrorPage(!res)
+        }
+      )
   }, [props.token, profileId])
-  useEffect(() => {
-    getProfile()
-  }, [getProfile])
 
-  const toggleCreateMod = () => {
-    setCreateMod(prevState => !prevState)
-  }
-  let collections
-  if (props.profile && props.profile.collections) {
-    collections = props.profile.collections.map((collection, i) => <Collection id={collection._id} key={collection._id}
-                                                                               value={collection}/>)
-  }
+  useEffect(() => getProfile(), [getProfile])
 
-  if (loading) {
+  const toggleMod = (value) => value(prevState => !prevState)
+
+  if (loading) return <Loader/>
+
+  if (errorPage) {
     return (
-
-      <div className="spinner-border position-absolute top-50 start-50" role="status">
-        <span className="visually-hidden ">Loading...</span>
+      <div>
+        <h2>Error 404</h2>
+        <p> Profile is not defined :( </p>
+        <NavLink to={'/'}>Go to home page</NavLink>
       </div>
     )
   }
 
+  const deleteUser = () => {
+    props.deleteUserThunk(props.token, props.userId)
+  }
+  const blockUser = () => {
+  // blockUserThunk(props.token, props.userId)
+  }
+  debugger
+
   return (
     <>
-      <h2>Profile</h2>
+      {editProfileMod ? <EditProfile deleteUser={deleteUser} blockUser={blockUser}
+                                     profile={props.profile} closeModal={() => toggleMod(setEditProfileMod)}/> : null}
+      <div className={'d-flex'}>
+        <h2>Profile</h2>
+        {props.adminMod || props.profile.userId === props.userId ?
+          <button
+            onClick={() => toggleMod(setEditProfileMod)}
+            className={'btn btn-dark'}>
+            {editSVG(s.buttonSVG_big + ' ' + s.svg_white)}
+          </button> : null}
+      </div>
       <div className={`d-flex`}>
         <div>
           <img className={s.img} src={props.profile.photo} alt={'profile'}/>
@@ -56,17 +84,20 @@ const Profile = (props) => {
         </div>
       </div>
       <div>
-        <div className='d-flex justify-content-between align-items-center'>
-          <h2>Collections</h2>
-          {props.adminMod || props.profile.userId === props.userId ? <div>
-            {createMod ? <button className={'btn btn-success me-2'} onClick={event => submit(event)}>Create</button> : null}
-            <button className={'btn ' + (createMod ? 'btn-danger' : 'btn-dark')}
-                    onClick={toggleCreateMod}>{createMod ? 'Close' : 'Create new Collection'}
-            </button>
-          </div> : null}
-        </div>
-        {createMod ? <NewCollectionForm setSubmit={setSubmit} {...props}/> : null}
-        {collections}
+      <div className='d-flex justify-content-between align-items-center'>
+        <h2>Collections</h2>
+        {props.adminMod || props.profile.userId === props.userId ? <div>
+          {createMod ? <button className={'btn btn-success me-2'}
+                               onClick={event => submit(event)}>Create
+          </button> : null}
+          <button className={'btn ' + (createMod ? 'btn-danger' : 'btn-dark')}
+                  onClick={() => toggleMod(setCreateMod)}>{createMod ? 'Close' : 'Create new Collection'}
+          </button>
+        </div> : null}
+      </div>
+      {createMod ? <NewCollectionForm token={props.token} saveCollectionThunk={props.saveCollectionThunk}
+                                      setSubmit={setSubmit} {...props}/> : null}
+      <CollectionTable />
       </div>
     </>
   )
@@ -74,4 +105,15 @@ const Profile = (props) => {
 
 }
 
-export default Profile
+const mapStateToProps = (state) => ({
+  profile: getProfile(state)
+})
+
+export default compose(
+  AuthDataHOC,
+  connect(mapStateToProps, {
+    getProfileThunk,
+    saveCollectionThunk,
+    deleteUserThunk,
+  }),
+)(Profile)

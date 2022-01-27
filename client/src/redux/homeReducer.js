@@ -1,4 +1,6 @@
-import {bigCollectionsAPI, deleteUsersAPI, getUsersAPI, popularItemsAPI} from "../api/api";
+import {bigCollectionsAPI} from "../api/apiCollection";
+import {popularItemsAPI} from "../api/apiItem";
+import {deleteUserAPI, getUsersAPI} from "../api/apiUser";
 
 const GET_COLLECTIONS = 'GET_COLLECTIONS'
 const SET_CONTENT = 'SET_CONTENT'
@@ -61,10 +63,10 @@ export const getUsersThunk = () => (dispatch) => {
       dispatch(getUsersAC(res.users))
     })
 }
-export const deleteUsersThunk = (token, userId) => (dispatch) => {
-  return deleteUsersAPI(token, userId)
+export const deleteUserThunk = (token, userId) => (dispatch) => {
+  return deleteUserAPI(token, userId)
     .then(res => {
-      console.log(res)
+      if (res) console.log()
     })
 }
 export const getCollectionsAC = (collections) => ({

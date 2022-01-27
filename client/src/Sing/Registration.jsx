@@ -1,26 +1,24 @@
 import s from './Sing.module.css'
 import {NavLink, useNavigate} from "react-router-dom";
 import {Form, Field} from 'react-final-form'
-import {registrationThunk} from "../redux/authReducer";
-import {body} from "express-validator";
-import SingFormInput from "./SingForm/SingFormInput";
+import {hideErrMessageAC, registerAC, registrationThunk, showErrMessageAC} from "../redux/authReducer";
+import InputForm from "./SingForm/InputForm";
+import {connect} from "react-redux";
 
 
 const Registration = (props) => {
   const navigate = useNavigate()
-  let onSubmit = values => {
+  if (props.token) navigate('/profile')
+  let onSubmit = async values => {
+    props.hideErrMessageAC()
     const body = {
       ...values,
       role: values.role ? 'admin' : 'user',
     }
-    props.registrationThunk(body).then((res) => {
-      if (!res.err) navigate('/profile')
-    })
-
+    props.registrationThunk(body)
   }
   const required = value => (value ? undefined : true)
   return (
-
     <div className={s.wrapper}>
       <h1 className={s.title}>Registration</h1>
       {props.errorMessage ? (<div className={s.errorMessage}>
@@ -32,10 +30,10 @@ const Registration = (props) => {
         render={({handleSubmit}) => (
           <form onSubmit={handleSubmit}>
             <div>
-              <SingFormInput name={"email"} type={"text"} required={required} nameText={"Email"}/>
+              <InputForm name={"email"} type={"text"} required={required} nameText={"Email"}/>
             </div>
             <div>
-              <SingFormInput name={"password"} type={"password"} required={required} nameText={"Password"}/>
+              <InputForm name={"password"} type={"password"} required={required} nameText={"Password"}/>
             </div>
             <div>
               <Field name="role" type={'checkbox'} render={
@@ -58,5 +56,13 @@ const Registration = (props) => {
   )
 }
 
+const mapStateToProps = (state) => ({
+  errorMessage: state.auth.errorMessage
+})
+export default connect(mapStateToProps, {
+  registerAC,
+  registrationThunk,
+  showErrMessageAC,
+  hideErrMessageAC,
+})(Registration)
 
-export default Registration

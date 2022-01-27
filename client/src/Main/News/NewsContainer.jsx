@@ -1,7 +1,7 @@
 import {connect} from "react-redux";
 import News from "./News";
 import {
-  deleteUsersThunk,
+  deleteUserThunk,
   getCollectionsThunk,
   getItemsThunk,
   getUsersThunk,
@@ -21,6 +21,6 @@ const NewsContainer = connect(mapStateToProps, {
   setContentAC,
   getItemsThunk,
   getUsersThunk,
-  deleteUsersThunk,
+  deleteUserThunk,
 })(News)
 export default NewsContainer

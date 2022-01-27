@@ -1,38 +1,24 @@
+import {deleteCollectionAPI, getCollectionAPI, saveCollectionAPI} from "../api/apiCollection";
 import {
-  saveCollectionAPI,
-  getCollectionAPI,
-  saveItemAPI,
+  addCommentAPI,
   deleteItemAPI,
+  dislikeItemAPI, getCommentAPI,
   likeItemAPI,
-  dislikeItemAPI,
-  saveUpdateItemAPI, addCommentAPI, getCommentAPI
-} from "../api/api";
+  saveItemAPI,
+  saveUpdateItemAPI
+} from "../api/apiItem";
 
 const GET_PROFILE = 'GET_PROFILE'
-const GET_COLLECTIONS = 'GET_COLLECTIONS'
 const GET_COLLECTION = 'GET_COLLECTION'
 const SAVE_COLLECTIONS_LIST = 'SAVE_COLLECTIONS_LIST'
 const GET_ITEMS = 'GET_ITEMS'
 const LIKE_ITEM = 'LIKE_ITEM'
 const DISLIKE_ITEM = 'DISLIKE_ITEM'
 const GET_COMMENTS = 'GET_COMMENTS'
+const DELETE_COLLECTION = 'DELETE_COLLECTION'
 
 const initialState = {
   isItems: false,
-  new_collection: {
-    id: null,
-    tags: [],
-    name: null,
-    description: null,
-    topic: null,
-    amountInputs: {
-      num: [],
-      sting: [],
-      text: [],
-      date: [],
-      boolean: [],
-    },
-  },
   topics: [
     {value: 'alcohol', label: 'Alcohol'},
     {value: 'books', label: 'Books'},
@@ -77,6 +63,7 @@ export const collectionReducer = (state = initialState, action) => {
         isItems: true
       }
     case SAVE_COLLECTIONS_LIST:
+
       return {
         ...state,
         collections: action.collections
@@ -95,7 +82,13 @@ export const collectionReducer = (state = initialState, action) => {
     case DISLIKE_ITEM:
       return {
         ...state,
-        items: [...state.items],
+        collections: [...state.collections],
+
+      }
+    case DELETE_COLLECTION:
+      return {
+        ...state,
+        collections: [...state.items],
         ...state.items[action.index].likes = [...state.items[action.index].likes.filter(id => id !== action.userId)]
       }
     case GET_COMMENTS:
@@ -144,6 +137,13 @@ export const deleteItemThunk = (token, itemId) => (dispatch) => {
       // dispatch(saveCollectionAC(res))
     })
 }
+export const deleteCollectionThunk = (token, collectionId) => (dispatch) => {
+    deleteCollectionAPI(token, collectionId)
+    .then(res => {
+      console.log(res)
+      dispatch(deleteCollectionAC(collectionId))
+    })
+}
 export const likeItemThunk = (token, itemId, index) => (dispatch) => {
   return likeItemAPI(token, itemId)
     .then(res => {
@@ -188,11 +188,6 @@ export const getCommentThunk = (itemId) => (dispatch) => {
 export const getCommentAC = (comments) => ({
   type: GET_COMMENTS, comments
 })
-// export const getCollectionListThunk = (token) => () => {
-//   getCollectionListAPI(token)
-//     .then(r => {
-//     })
-// }
 
 export const saveCollectionsList = (collections) => ({
   type: SAVE_COLLECTIONS_LIST,
@@ -204,14 +199,6 @@ export const likeAC = (index, userId) => ({
 export const dislikeAC = (index, userId) => ({
   type: DISLIKE_ITEM, index, userId
 })
-
-//
-//
-// export const getProfile = (userId) => {
-//     return (dispatch) => {
-//         getProfileUser(userId)
-//             .then(profile => {
-//             dispatch(getProfileAC(profile))
-//         })
-//     }
-// }
+export const deleteCollectionAC = (index, collectionId) => ({
+  type: DELETE_COLLECTION, index, collectionId
+})

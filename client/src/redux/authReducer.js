@@ -1,4 +1,4 @@
-import {loginUserAPI, registerUserAPI, verifyTokenAPI} from "../api/api";
+import {loginUserAPI, registerUserAPI, verifyTokenAPI} from "../api/apiAuth";
 
 const REG_USER = 'REG_USER'
 const LOG_USER = 'LOG_USER'
@@ -31,8 +31,6 @@ export const authReducer = (state = initialState, action) => {
         token: null
       }
     case LOG_USER:
-      console.log('reducer log')
-
       return {
         ...state,
         token: action.token,
@@ -66,49 +64,44 @@ export const toggleAdminModAC = (boolean) => ({
   adminMod: boolean,
 })
 
-export const registerAC = ({email, password, role}) => ({type: REG_USER, email, password, role})
-export const loginAC = ({email, token, role, blocked, userId}) => ({
-  type: LOG_USER, email, token, role, blocked, userId,
-})
 
-export const setTokenAC = (token) => ({type: SET_TOKEN, token})
-
-export const verifyTokenThunk = (token) => (dispatch) => {
-  return verifyTokenAPI(token)
-    .then((res) => {
-      if (res) dispatch(loginAC(res))
-      else return 'is not auth'
-    })
-
+export const loginThunk = ({email, password}) => async (dispatch) => {
+  debugger
+  let res = await loginUserAPI({email, password})
+  if (res) dispatch(loginAC(res))
 }
 
-export const loginThunk = ({email, password}) => {
-  return (dispatch) => {
-    loginUserAPI({email, password})
-      .then(body => {
-        dispatch(loginAC(body))
-      })
+export const verifyTokenThunk = (token) => async (dispatch) => {
+  let res = await verifyTokenAPI(token)
+  if (res) dispatch(loginAC(res))
+  else loginOutAC()
+}
+
+export const registrationThunk = ({email, password, role}) => async (dispatch) => {
+  let res = await registerUserAPI({email, password, role})
+  if (res.err) dispatch(showErrMessageAC(res))
+  else {
+    dispatch(loginAC(res))
+    return true
   }
 }
-export const registrationThunk = ({email, password, role}) => {
-  return (dispatch) => {
-    registerUserAPI({email, password, role})
-      .then(res => {
-        if (!res.err) dispatch(loginAC(res))
-        else dispatch(showErrMessageAC(res))
-      })
-  }
-}
-export const showErrMessageAC = (res) => ({
-  type: ERROR_REGISTER,
-  errorMessage: res.errorMessage,
-})
-export const loginOutAC = () => ({
-  type: LOGIN_OUT
-})
 export const loginOutThunk = () => {
   localStorage.removeItem('auth')
   return (dispatch) => {
     dispatch(loginOutAC())
   }
 }
+export const showErrMessageAC = (res) => ({
+  type: ERROR_REGISTER,
+  errorMessage: res.errorMessage,
+})
+export const hideErrMessageAC = () => ({
+  type: ERROR_REGISTER,
+  errorMessage: '',
+})
+export const loginOutAC = () => ({type: LOGIN_OUT})
+export const setTokenAC = (token) => ({type: SET_TOKEN, token})
+export const registerAC = ({email, password, role}) => ({type: REG_USER, email, password, role})
+export const loginAC = ({email, token, role, blocked, userId}) => ({
+  type: LOG_USER, email, token, role, blocked, userId,
+})

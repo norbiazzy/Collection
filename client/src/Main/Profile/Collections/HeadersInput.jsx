@@ -8,7 +8,7 @@ const required = value => (value ? undefined : true)
 const HeadersInput = (props) => {
   const inputs = []
   for (let i = 0; i < props.counter.value; i++) {
-    inputs.push(<Field className={'w-100 mb-1'} name={props.name + '-' + i} component={"input"} validate={required}/>)
+    inputs.push(<Field key={i} className={'w-100 mb-1'} name={props.name + '-' + i} component={"input"} validate={required}/>)
   }
   return (
     <>

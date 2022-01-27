@@ -6,6 +6,7 @@ import {commentSVG, editSVG, heartSVG, trashSVG} from "../../assets/svg/svgExpor
 import EditItem from "./EditItem";
 import Comment from "./Comment";
 import {loginAC} from "../../redux/authReducer";
+import Loader from "../all/Loader";
 
 
 // const useComments = (initialValue = false) => {
@@ -77,14 +78,8 @@ const Items = (props) => {
       newCommentText: e.target.value
     }))
   }
-  if (loading) {
-    return (
 
-      <div className="spinner-border position-absolute top-50 start-50" role="status">
-        <span className="visually-hidden ">Loading...</span>
-      </div>
-    )
-  }
+  if (loading) return <Loader/>
   //
   let headers = []
   for (const collectionKey in props.collection.headersInp) {

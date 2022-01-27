@@ -135,10 +135,26 @@ router.post('/getCollectionsList', auth, async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     let collection = await Collection.findById(req.params.id)
+    if(!collection) throw new Error('Collection is not defined')
     let items = await Item.find({collectionId: req.params.id})
     return res.status(200).json({collection, items})
   } catch (e) {
     console.log(e, 'error')
+    return res.status(404).json({message:e.message})
+  }
+})
+
+// /api/collection/deleteCollection
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const collectionId = req.params.id
+    await User.updateMany({collections: [collectionId]}, {$pull: {collections: [collectionId]}})
+    await Collection.deleteMany({_id: collectionId})
+    await Item.deleteMany({collectionId})
+    return res.status(200).json('Удалили...')
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(200).json('Уе удалили...')
   }
 })
 module.exports = router

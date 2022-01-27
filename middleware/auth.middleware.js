@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const config = require('config')
-
+const User = require('../models/User')
 module.exports = (req, res, next) => {
   if (req.method === 'OPTIONS') {
     return next()
@@ -11,8 +11,9 @@ module.exports = (req, res, next) => {
     if (!token) {
       return res.status(401).json({message: 'Нет авторизации'})
     }
-
     req.user = jwt.verify(token, config.get('jwtSecret'))
+    let user = User.findById(req.user.userId)
+    if (!user) return res.status(404).json({message: 'Потзователь больше не существует'})
     req.user.token = token
     next()
 

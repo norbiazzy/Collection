@@ -13,8 +13,8 @@ const EditItem = (props) => {
   // })
   return (
     <>
-      <div onClick={props.closeModal} className={s.shadow}/>
-      <div className={s.modal}>
+      <div onClick={props.closeModal} className={'shadow'}/>
+      <div className={'modal'}>
         <div>
           <button onClick={props.closeModal} className={'position-absolute'}>X</button>
           <p>Name</p>

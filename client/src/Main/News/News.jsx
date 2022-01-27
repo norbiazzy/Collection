@@ -1,8 +1,8 @@
-import {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Collection from "../Profile/Collections/Collection";
 import NewsItems from "./NewsItems/NewsItems";
 import NewsUsers from "./Users/NewsUsers";
-import {deleteUsersThunk} from "../../redux/homeReducer";
+import Loader from "../all/Loader";
 
 const News = (props) => {
   const [loading, setLoading] = useState(true)
@@ -26,27 +26,24 @@ const News = (props) => {
 
   }, [getCollections, props.contentType])
 
-  if (loading) return (
-    <div className="spinner-border position-absolute top-50 start-50" role="status">
-      <span className="visually-hidden ">Loading...</span>
-    </div>
-  )
+
+  if (loading) return <Loader/>
+
   switch (props.contentType) {
     case 'collections':
-      content = props.collections.map(c => <Collection value={c} id={c._id}/>)
+      content = props.collections.map(c => <Collection key={c._id} value={c} id={c._id}/>)
       break
     case 'items':
-      content = props.items.map(item => <NewsItems item={item}/>)
+      content = props.items.map(item => <NewsItems key={item._id} item={item}/>)
       break
     case 'users':
-      content = props.users.map(user => <NewsUsers token={props.token} delete={props.deleteUsersThunk} user={user}/>)
+      content = props.users.map(user => <NewsUsers key={user._id} token={props.token} delete={props.deleteUsersThunk}
+                                                   user={user}/>)
       break
     default:
       content = 'default type'
       break
   }
-
-  console.log(props.contentType)
   return (
     <div>
       <div>

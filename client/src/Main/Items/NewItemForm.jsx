@@ -1,18 +1,6 @@
-import React from "react";
-import InputForm from "../../../Sing/SingForm/InputForm";
-import {Form, Field} from "react-final-form";
-import {TextareaForm} from "../../all/TextareaForm";
-import Select from "react-select";
-import {useState} from "react";
-import HeadersInput from "./HeadersInput";
-import s from "../Priofile.module.css";
-import {deleteCollectionThunk, saveCollectionThunk} from "../../../redux/collectionsReducer";
-import {compose} from "redux";
-import AuthDataHOC from "../../../hoc/AuthDataHOC";
-import {connect} from "react-redux";
-import {getTopicsSelect} from "../../../redux/selectors/collection-select";
 
 const FieldPrefixContext = React.createContext();
+
 const FieldPrefix = ({prefix, children}) => (
   <FieldPrefixContext.Provider value={prefix}>
     {children}

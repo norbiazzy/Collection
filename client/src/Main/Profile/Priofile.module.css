@@ -35,3 +35,15 @@
     width: 10px;
     height: 10px;
 }
+
+
+.buttonSVG_big {
+    width: 20px;
+    height: 20px;
+}
+.svg_white {
+    fill: white;
+}
+.modalBtn {
+    width: 40%;
+}
