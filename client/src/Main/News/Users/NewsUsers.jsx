@@ -10,8 +10,8 @@ const NewsUsers = (props) => {
   const blockUser = () => {
   }
   const linkUser = () => {
-
-    navigate('/profile/'+props.user.profile)
+  
+    navigate('/profile/'+props.user._id)
   }
   const roleUser = () => {
   }

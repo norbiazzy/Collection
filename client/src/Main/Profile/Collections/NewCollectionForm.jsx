@@ -47,7 +47,7 @@ const NewCollectionForm = (props) => {
       dateInputCount.value].sort((a, b) => b - a)[0]
     let body = {
       ...values,
-      headers: {
+      headersInp: {
         string: [],
         number: [],
         text: [],
@@ -55,13 +55,15 @@ const NewCollectionForm = (props) => {
         date: [],
       }
     }
+    
     for (let i = 0; i < maxInputs; i++) {
-      if (values.headers['string-' + i]) body.headers['string'].push(values.headers['string-' + i])
-      if (values.headers['number-' + i]) body.headers['number'].push(values.headers['number-' + i])
-      if (values.headers['text-' + i]) body.headers['text'].push(values.headers['text-' + i])
-      if (values.headers['checkbox-' + i]) body.headers['checkbox'].push(values.headers['checkbox-' + i])
-      if (values.headers['date-' + i]) body.headers['date'].push(values.headers['date-' + i])
+      if (values.headers['string-' + i]) body.headersInp['string'].push(values.headers['string-' + i])
+      if (values.headers['number-' + i]) body.headersInp['number'].push(values.headers['number-' + i])
+      if (values.headers['text-' + i]) body.headersInp['text'].push(values.headers['text-' + i])
+      if (values.headers['checkbox-' + i]) body.headersInp['checkbox'].push(values.headers['checkbox-' + i])
+      if (values.headers['date-' + i]) body.headersInp['date'].push(values.headers['date-' + i])
     }
+    
     props.saveCollectionThunk(body, props.token)
   }
 

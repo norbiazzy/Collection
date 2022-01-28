@@ -66,7 +66,7 @@ export const toggleAdminModAC = (boolean) => ({
 
 
 export const loginThunk = ({email, password}) => async (dispatch) => {
-  debugger
+  
   let res = await loginUserAPI({email, password})
   if (res) dispatch(loginAC(res))
 }

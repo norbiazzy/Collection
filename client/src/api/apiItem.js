@@ -13,13 +13,15 @@ export const saveItemAPI = (token, item) => {
   })
 }
 export const getCollectionItemsAPI = async (token, collectionId) => {
-  let res = await fetch('/api/collection/getCollection/' + collectionId, {
+  
+  let res = await fetch('/api/collection/' + collectionId, {
     method: 'GET', headers: {
       ...headers,
       Authorization: `Bearer ${token}`
     }
   })
-  return await res.json()
+  
+  return res.json()
 }
 export const saveUpdateItemAPI = (token, updateItem) => {
   let body = JSON.stringify(updateItem)

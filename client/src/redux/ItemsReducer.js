@@ -1,11 +1,12 @@
 import {
   addCommentAPI,
   deleteItemAPI,
-  dislikeItemAPI, getCommentAPI,
+  dislikeItemAPI, getCollectionItemsAPI, getCommentAPI,
   likeItemAPI,
   saveItemAPI,
   saveUpdateItemAPI
 } from "../api/apiItem";
+import {getCollectionAC} from "./collectionsReducer2";
 
 const GET_ITEMS = 'GET_ITEMS'
 const LIKE_ITEM = 'LIKE_ITEM'
@@ -34,7 +35,7 @@ export const itemsReducer = (state = initialState, action) => {
       return {
         ...state,
         collections: [...state.collections],
-
+        
       }
     case GET_COMMENTS:
       return {
@@ -54,9 +55,12 @@ export const saveItemThunk = (token, item) => (dispatch) => {
     }).then(() => true)
 }
 export const getCollectionItemsThunk = (token, collectionId) => async (dispatch) => {
+  
   let res = await getCollectionItemsAPI(token, collectionId)
-  console.log(res)
-  // dispatch(saveCollectionAC(res))
+  if (res) {
+    dispatch(getCollectionAC(res.collection))
+    dispatch(getItemsAC(res.items))
+  }
 }
 export const deleteItemThunk = (token, itemId) => (dispatch) => {
   return deleteItemAPI(token, itemId)
@@ -68,16 +72,16 @@ export const deleteItemThunk = (token, itemId) => (dispatch) => {
 export const likeItemThunk = (token, itemId, index) => (dispatch) => {
   return likeItemAPI(token, itemId)
     .then(res => {
-
+      
       if (res.userId) dispatch(likeAC(index, res.userId))
       // dispatch(saveCollectionAC(res))
     })
 }
 export const dislikeItemThunk = (token, itemId, index) => (dispatch) => {
-
+  
   return dislikeItemAPI(token, itemId)
     .then(res => {
-
+      
       if (res.userId) dispatch(dislikeAC(index, res.userId))
       // dispatch(saveCollectionAC(res))
     })

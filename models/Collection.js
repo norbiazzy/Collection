@@ -7,12 +7,12 @@ const Collection = new Schema({
   description: {type: String},
   created: {type: Date, default: Date.now},
   topic: {value: {type: String, required: true}, label: {type: String, required: true}},
-  headersInp: {
-    str: [],
-    num: [],
-    text: [],
-    boolean: [],
-    date: []
+  headers: {
+    text: [{header: {type: String}}],
+    number: [{header: {type: String}}],
+    textarea: [{header: {type: String}}],
+    checkbox: [{header: {type: String}}],
+    date: [{header: {type: String}}]
   }
 })
 

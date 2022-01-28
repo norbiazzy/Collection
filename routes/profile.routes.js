@@ -21,9 +21,8 @@ router.get('/getUser', auth, async (req, res) => {
 // /api/profile/get
 router.get('/getUser/:id', auth, async (req, res) => {
   try {
-    console.log('profile', req.params.id)
-    const profile = await Profile.findById(req.params.id)
-    const collections = await Collection.find({userId: profile.userId})
+    const profile = await Profile.findOne({userId: req.params.id})
+    const collections = await Collection.find({userId: req.params.id})
     if (profile) return res.status(200).json({profile, collections})
 
     return res.status(202).json({message: 'нету профиля...'})

@@ -6,23 +6,24 @@ import ItemRow from "./ItemRow";
 import {useCallback, useEffect} from "react";
 import CollectionHeader from "../Profile/Collections/CollectionHeader";
 import {useParams} from "react-router";
+import {getCollectionItemsThunk} from "../../redux/ItemsReducer";
 
 const ItemTable = (props) => {
-  const collectionId = useParams().id
-  const getItems = useCallback(()=>{
-    if(collectionId) getItems
-  })
-  useEffect(()=>{
-
-  }, getItems, props.token)
-  const deleteItem = useCallback((itemId)=>{
+  // const collectionId = useParams().id
+  // const getItems = useCallback(() => {
+  //   if (collectionId) props.getCollectionItemsThunk()
+  // }, props.token)
+  // useEffect(() => {
+  //   getItems()
+  // }, [getItems])
+  const deleteItem = useCallback((itemId) => {
     console.log('delete')
   }, [props.token])
-
-  const editItem = useCallback((itemId)=>{
+  
+  const editItem = useCallback((itemId) => {
     console.log('edit')
   }, [props.token])
-
+  
   return (<>
       <h2>Items</h2>
       <table className="table text-center">
@@ -36,7 +37,7 @@ const ItemTable = (props) => {
         </tr>
         </thead>
         <tbody>
-        {props.itemList.map(item=><ItemRow item={item} delete={deleteItem} editItem={editItem}/>)}
+        {props.itemList.map(item => <ItemRow item={item} delete={deleteItem} editItem={editItem}/>)}
         </tbody>
       </table>
     </>
@@ -49,5 +50,5 @@ const mapStateToProps = (state) => ({
 })
 export default compose(
   AuthDataHOC,
-  connect(mapStateToProps),
+  connect(mapStateToProps, {getCollectionItemsThunk})
 )(ItemTable)

@@ -1,13 +1,14 @@
 import React from "react";
 import s from '../Priofile.module.css'
-import {useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
-const CollectionHeader = (props) => {
+const CollectionHeader = ({collection}) => {
   let navigate = useNavigate();
   return (
     <div>
-      <h2>name</h2>
-      <p>description</p>
+      <h2>{collection.name}</h2>
+      <p>{collection.description}</p>
+      <NavLink to={'/profile/'+ collection.userId}>Author</NavLink>
     </div>
   )
 }

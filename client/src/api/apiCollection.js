@@ -11,7 +11,7 @@ export const getCollectionAPI = async (token, id) => {
   return res
 }
 export const deleteCollectionAPI = (token, id) => {
-
+  
   return fetch('/api/collection/' + id, {
     method: 'DELETE', headers: {
       Authorization: `Bearer ${token}`
@@ -22,16 +22,15 @@ export const deleteCollectionAPI = (token, id) => {
 }
 
 
-export const saveCollectionAPI = (body, token) => {
+export const saveCollectionAPI = async (body, token) => {
   body = JSON.stringify(body)
-  return fetch('/api/collection/create', {
+  let res = await fetch('/api/collection/create', {
     method: 'POST', body, headers: {
       ...headers,
       Authorization: `Bearer ${token}`
     }
-  }).then((res) => {
-    return res.json()
   })
+  return await res.json()
 }
 export const bigCollectionsAPI = () => {
   return fetch('/api/home/bigCollections', {

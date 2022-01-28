@@ -14,6 +14,7 @@ import {getCollectionListSelect} from "../../redux/selectors/collection-select";
 import {deleteUserThunk, getProfileThunk} from "../../redux/uersReducer";
 import Loader from "../all/Loader";
 import {editSVG} from "../../assets/svg/svgExport";
+import NewCollectionFormArr from "./Collections/NewCollectionFormArr";
 
 
 let Profile = (props) => {
@@ -27,22 +28,23 @@ let Profile = (props) => {
   let setSubmit = (e) => {
     submit = e
   }
-  const getProfile = useCallback(() => {
+  const getProfile = useCallback(async () => {
     if (!props.token) return navigate('/')
-    props.getProfileThunk(props.token, profileId)
-      .then((res) => {
-          setLoading(false)
-          setErrorPage(!res)
-        }
-      )
+    let res = await props.getProfileThunk(props.token, profileId)
+    
+    if (res) {
+      setLoading(false)
+      setErrorPage(!res)
+    }
+    
   }, [props.token, profileId])
-
+  
   useEffect(() => getProfile(), [getProfile])
-
+  
   const toggleMod = (value) => value(prevState => !prevState)
-
+  
   if (loading) return <Loader/>
-
+  
   if (errorPage) {
     return (
       <div>
@@ -52,15 +54,14 @@ let Profile = (props) => {
       </div>
     )
   }
-
+  
   const deleteUser = () => {
     props.deleteUserThunk(props.token, props.userId)
   }
   const blockUser = () => {
-  // blockUserThunk(props.token, props.userId)
+    // blockUserThunk(props.token, props.userId)
   }
-  debugger
-
+  
   return (
     <>
       {editProfileMod ? <EditProfile deleteUser={deleteUser} blockUser={blockUser}
@@ -84,25 +85,24 @@ let Profile = (props) => {
         </div>
       </div>
       <div>
-      <div className='d-flex justify-content-between align-items-center'>
-        <h2>Collections</h2>
-        {props.adminMod || props.profile.userId === props.userId ? <div>
-          {createMod ? <button className={'btn btn-success me-2'}
-                               onClick={event => submit(event)}>Create
-          </button> : null}
-          <button className={'btn ' + (createMod ? 'btn-danger' : 'btn-dark')}
-                  onClick={() => toggleMod(setCreateMod)}>{createMod ? 'Close' : 'Create new Collection'}
-          </button>
-        </div> : null}
-      </div>
-      {createMod ? <NewCollectionForm token={props.token} saveCollectionThunk={props.saveCollectionThunk}
-                                      setSubmit={setSubmit} {...props}/> : null}
-      <CollectionTable />
+        <div className='d-flex justify-content-between align-items-center'>
+          <h2>Collections</h2>
+          {props.adminMod || props.profile.userId === props.userId ? <div>
+            {createMod ? <button className={'btn btn-success me-2'}
+                                 onClick={event => submit(event)}>Create
+            </button> : null}
+            <button className={'btn ' + (createMod ? 'btn-danger' : 'btn-dark')}
+                    onClick={() => toggleMod(setCreateMod)}>{createMod ? 'Close' : 'Create new Collection'}
+            </button>
+          </div> : null}
+        </div>
+        {createMod ? <NewCollectionFormArr setSubmit={setSubmit} {...props}/> : null}
+        <CollectionTable/>
       </div>
     </>
   )
-
-
+  
+  
 }
 
 const mapStateToProps = (state) => ({

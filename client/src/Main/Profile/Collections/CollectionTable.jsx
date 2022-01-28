@@ -29,7 +29,7 @@ const CollectionTable = (props) => {
       </tr>
       </thead>
       <tbody>
-      {props.collectionList.map(collection => <CollectionRow deleteCollection={deleteCollection}
+      {props.collectionList.map(collection => <CollectionRow key={collection._id} deleteCollection={deleteCollection}
                                                                     collection={collection}/>)}
       </tbody>
     </table>

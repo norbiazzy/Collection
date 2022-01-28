@@ -63,7 +63,7 @@ export const collectionReducer = (state = initialState, action) => {
         isItems: true
       }
     case SAVE_COLLECTIONS_LIST:
-
+      
       return {
         ...state,
         collections: action.collections
@@ -83,7 +83,7 @@ export const collectionReducer = (state = initialState, action) => {
       return {
         ...state,
         collections: [...state.collections],
-
+        
       }
     case DELETE_COLLECTION:
       return {
@@ -101,11 +101,9 @@ export const collectionReducer = (state = initialState, action) => {
   }
 }
 
-export const saveCollectionThunk = (body, token) => () => {
-  saveCollectionAPI(body, token)
-    .then(r => {
-      console.log(r)
-    })
+export const saveCollectionThunk = (body, token) => async (dispatch) => {
+  let res = await saveCollectionAPI(body, token)
+  console.log(res)
 }
 
 export const getCollectionAC = (collection) => ({
@@ -115,7 +113,7 @@ export const getCollectionAC = (collection) => ({
 export const getCollectionThunk = (token, id) => (dispatch) => {
   return getCollectionAPI(token, id)
     .then(object => {
-
+      
       dispatch(getCollectionAC(object.collection))
       dispatch(getItemsAC(object.items))
     }).then(() => true)
@@ -138,7 +136,7 @@ export const deleteItemThunk = (token, itemId) => (dispatch) => {
     })
 }
 export const deleteCollectionThunk = (token, collectionId) => (dispatch) => {
-    deleteCollectionAPI(token, collectionId)
+  deleteCollectionAPI(token, collectionId)
     .then(res => {
       console.log(res)
       dispatch(deleteCollectionAC(collectionId))
@@ -147,16 +145,16 @@ export const deleteCollectionThunk = (token, collectionId) => (dispatch) => {
 export const likeItemThunk = (token, itemId, index) => (dispatch) => {
   return likeItemAPI(token, itemId)
     .then(res => {
-
+      
       if (res.userId) dispatch(likeAC(index, res.userId))
       // dispatch(saveCollectionAC(res))
     })
 }
 export const dislikeItemThunk = (token, itemId, index) => (dispatch) => {
-
+  
   return dislikeItemAPI(token, itemId)
     .then(res => {
-
+      
       if (res.userId) dispatch(dislikeAC(index, res.userId))
       // dispatch(saveCollectionAC(res))
     })

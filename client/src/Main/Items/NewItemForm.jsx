@@ -1,126 +1,152 @@
+import React, {useCallback} from "react";
+import AuthDataHOC from "../../hoc/AuthDataHOC";
+import {compose} from "redux";
+import {useState} from "react";
+import InputForm from "../../Sing/SingForm/InputForm";
+import {TextareaForm} from "../all/TextareaForm";
+import s from "../Profile/Priofile.module.css";
+import ss from "../../Sing/Sing.module.css";
+import {Field, Form} from "react-final-form";
+import arrayMutators from 'final-form-arrays'
+import ItemAdditionalInputs from "./ItemAdditionalInputs";
+import {FieldArray} from 'react-final-form-arrays'
 
-const FieldPrefixContext = React.createContext();
 
-const FieldPrefix = ({prefix, children}) => (
-  <FieldPrefixContext.Provider value={prefix}>
-    {children}
-  </FieldPrefixContext.Provider>
-);
-const PrefixedField = ({name, ...props}) => (
-  <FieldPrefixContext.Consumer>
-    {prefix => <HeadersInput name={`${prefix}.${name}`}  {...props} />}
-  </FieldPrefixContext.Consumer>
-);
-
-const useCounter = (initialValue = 0) => {
-  let [value, setValue] = useState(initialValue)
-
-  const add = () => setValue(prevState => ++prevState)
-  const remove = () => setValue(prevState => --prevState)
-  return {add, remove, value}
-}
-
-const NewCollectionForm = (props) => {
-
-  const stringInputCount = useCounter()
-  const numberInputCount = useCounter()
-  const textInputCount = useCounter()
-  const checkboxInputCount = useCounter()
-  const dateInputCount = useCounter()
-  let onSubmit = values => {
-    let maxInputs = [stringInputCount.value,
-      numberInputCount.value,
-      textInputCount.value,
-      checkboxInputCount.value,
-      dateInputCount.value].sort((a, b) => b - a)[0]
-    let body = {
-      ...values,
-      headers: {
-        string: [],
-        number: [],
-        text: [],
-        checkbox: [],
-        date: [],
+const NewItemForm = (props) => {
+  
+  let [tags, setTags] = useState([])
+  let [tag, setTag] = useState('')
+  const [body, setBody] = useState({
+    'string': [],
+    'number': [],
+    'text': [],
+    'checkbox': [],
+    'date': [],
+  })
+  const setValueInp = useCallback(e => {
+    const data = e.target.dataset.id.split('-')
+    const key = data[0]
+    const index = data[1]
+    const value = (key === 'checkbox' ? e.target.checked : e.target.value)
+    
+    setBody(prevState => {
+      debugger
+      return {
+        ...prevState,
+        ...prevState[key][index] = value
       }
-    }
-    for (let i = 0; i < maxInputs; i++) {
-      if (values.headers['string-' + i]) body.headers['string'].push(values.headers['string-' + i])
-      if (values.headers['number-' + i]) body.headers['number'].push(values.headers['number-' + i])
-      if (values.headers['text-' + i]) body.headers['text'].push(values.headers['text-' + i])
-      if (values.headers['checkbox-' + i]) body.headers['checkbox'].push(values.headers['checkbox-' + i])
-      if (values.headers['date-' + i]) body.headers['date'].push(values.headers['date-' + i])
-    }
-    props.saveCollectionThunk(body, props.token)
+    })
+    console.log(body)
+  }, [setBody])
+  
+  const removeTag = (e) => {
+    let filerTags = [...tags.filter(tag => {
+      return tag !== e.target.innerText
+    })]
+    setTags(filerTags)
   }
-
-  const ReactSelectAdapter = ({input, ...rest}) => (
-    <Select options={props.topics}
-            {...input} {...rest}
-    />
-  )
-
-  const required = value => (value ? undefined : true)
+  
+  const addTag = () => {
+    setTags([...tags, tag.trim()])
+    setTag('')
+  }
+  const changeTagInput = (e) => {
+    setTag(e.target.value.trim())
+    console.log('easd')
+  }
+  
+  let onSubmit = values => {
+    console.log('a')
+  }
+  const headers = []
+  for (const headerType in props.headers) {
+    props.headers[headerType].map((header, i) => <InputForm name={headerType + i}
+                                                            nameText={props.headers[headerType]}/>)
+    
+  }
+  let array = []
+  for (let asd = 0; asd < 5; asd++) {
+    array.push(<Field type={'textarea'} name={'asd' + asd} component={'input'}/>)
+  }
+  
+  
+  const required = useCallback(value => (value ? undefined : true))
   return (
     <Form
       onSubmit={onSubmit}
       validate={required}
-      render={({handleSubmit}) => {
+      mutators={{
+        ...arrayMutators
+      }}
+      render={({
+                 handleSubmit,
+                 form: {
+                   mutators: {push, pop}
+                 },
+                 pristine,
+                 form,
+                 submitting,
+                 values
+               }) => {
         props.setSubmit(handleSubmit)
         return (
           <form onSubmit={handleSubmit}>
+            {array}
+            asdasdas
             <div>
-              <InputForm name={"name"} type={"text"} required={required} nameText={"Collection name"}/>
+              <InputForm name={"name"} type={"text"} required={required} nameText={"Item name"}/>
             </div>
             <div>
               <TextareaForm name={"description"} nameText={"Description"}/>
             </div>
             <div className={'mb-2'}>
-              <Field
-                name="topic"
-                options={props.topics}
-                component={ReactSelectAdapter}
-              />
-            </div>
-            <div>
-              <p>Additional fields</p>
-              <div className={s.input__list + ' d-flex'}>
-                <FieldPrefix prefix="headers">
-                  <div className={s.input__item}>
-                    <PrefixedField counter={stringInputCount} name={'string'} title={'String'}/>
-                  </div>
-                  <div className={s.input__item}>
-                    <PrefixedField counter={numberInputCount}
-                                   name={'number'}
-                                   title={'Number'}/>
-                  </div>
-                  <div className={s.input__item}>
-                    <PrefixedField counter={textInputCount}
-                                   name={'text'}
-                                   title={'Text'}/>
-                  </div>
-                  <div className={s.input__item}>
-                    <PrefixedField counter={checkboxInputCount}
-                                   name={'checkbox'}
-                                   title={'Checkbox'}/>
-                  </div>
-                  <div className={s.input__item}>
-                    <PrefixedField counter={dateInputCount}
-                                   name={'date'}
-                                   title={'Date'}/>
-                  </div>
-                </FieldPrefix>
+              <div>
+                <label className={'d-block mb-2'}>
+                  <input className={ss.textInput + ' mb-2'} value={tag} onChange={changeTagInput}
+                         placeholder={'Tag...'}/>
+                </label>
+                <div className={'d-flex align-content-center'}>
+                  <button
+                    disabled={!tag}
+                    onClick={addTag}
+                    className={'btn btn-dark'}>+
+                  </button>
+                  {tags.map((tag, i) => <span className={s.tag} key={i} onClick={removeTag}>{tag}</span>)}
+                </div>
               </div>
             </div>
+  
+            <FieldArray name="checkbox">
+              {({ fields }) =>
+                fields.map((name, index) => (
+                  <div key={name}>
+                    <label>Cust. #{index + 1}</label>
+                    <Field
+                      name={`${name}.firstName`}
+                      component="input"
+                      placeholder="First Name"
+                    />
+                    <Field
+                      name={`${name}.lastName`}
+                      component="input"
+                      placeholder="Last Name"
+                    />
+                  </div>
+                ))
+              }
+            </FieldArray>
+            <ItemAdditionalInputs setValueInp={setValueInp} headers={props.headers}/>
           </form>
         )
       }}
     />
   )
 }
-const mapStateToProps = (state) => ({
-  topics: getTopicsSelect(state)
-})
+// const mapStateToProps = (state) => ({
+// topics: getTopicsSelect(state)
+// })
 export default compose(
   AuthDataHOC,
-  connect(mapStateToProps),
-)(NewCollectionForm)
+  // connect(mapStateToProps),
+)(NewItemForm)
+

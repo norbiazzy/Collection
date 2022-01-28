@@ -7,6 +7,7 @@ import NewsContainer from "./News/NewsContainer";
 import HeaderContainer from "./Header/HeaderContainer";
 import Profile from "./Profile/Profile";
 import ItemsTable from "./Items/ItemsTable";
+import ItemPage from "./Items/ItemPage";
 
 const Main = () => {
   return (
@@ -22,7 +23,8 @@ const Main = () => {
               <Route path='/' element={<NewsContainer/>}/>
               <Route exact path={'/profile'} element={<Profile/>}/>
               <Route path={'/profile/:id'} element={<Profile/>}/>
-              <Route path='/items/:id' element={<ItemsTable/>}/>
+              {/*<Route path='/items/:id' element={<ItemsTable/>}/>*/}
+              <Route path='/items/:id' element={<ItemPage/>}/>
             </Routes>
           </Col>
         </Row>

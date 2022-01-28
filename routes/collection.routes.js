@@ -12,7 +12,6 @@ router.post('/create', auth, async (req, res) => {
   try {
     const obj = req.body
     obj.userId = req.user.userId
-    // if (!obj.name || !obj.topic) return res.status(400).json({message: 'заебись... пустое поле'})
     let collection = new Collection(obj)
     await User.findByIdAndUpdate(req.user.userId, {$addToSet: {collections: collection._id}})
     await collection.save()
