@@ -66,18 +66,19 @@ export const toggleAdminModAC = (boolean) => ({
 
 
 export const loginThunk = ({email, password}) => async (dispatch) => {
-  
   let res = await loginUserAPI({email, password})
   if (res) dispatch(loginAC(res))
 }
 
 export const verifyTokenThunk = (token) => async (dispatch) => {
   let res = await verifyTokenAPI(token)
+
   if (res) dispatch(loginAC(res))
   else loginOutAC()
 }
 
 export const registrationThunk = ({email, password, role}) => async (dispatch) => {
+
   let res = await registerUserAPI({email, password, role})
   if (res.err) dispatch(showErrMessageAC(res))
   else {

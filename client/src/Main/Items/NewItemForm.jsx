@@ -6,93 +6,46 @@ import InputForm from "../../Sing/SingForm/InputForm";
 import {TextareaForm} from "../all/TextareaForm";
 import s from "../Profile/Priofile.module.css";
 import ss from "../../Sing/Sing.module.css";
-import {Field, Form} from "react-final-form";
-import arrayMutators from 'final-form-arrays'
-import ItemAdditionalInputs from "./ItemAdditionalInputs";
-import {FieldArray} from 'react-final-form-arrays'
-
+import {Form} from "react-final-form";
+import ItemAdditionalInputsTEST from "./ItemAdditionalInputsTEST";
+import {saveItemThunk} from "../../redux/ItemsReducer";
+import {connect} from "react-redux";
 
 const NewItemForm = (props) => {
-  
+
   let [tags, setTags] = useState([])
-  let [tag, setTag] = useState('')
-  const [body, setBody] = useState({
-    'string': [],
-    'number': [],
-    'text': [],
-    'checkbox': [],
-    'date': [],
-  })
-  const setValueInp = useCallback(e => {
-    const data = e.target.dataset.id.split('-')
-    const key = data[0]
-    const index = data[1]
-    const value = (key === 'checkbox' ? e.target.checked : e.target.value)
-    
-    setBody(prevState => {
-      debugger
-      return {
-        ...prevState,
-        ...prevState[key][index] = value
-      }
-    })
-    console.log(body)
-  }, [setBody])
-  
+  let [initialValues, setInitialValue] = useState({headers: {checkbox: new Array(props.headers && props.headers.checkbox && props.headers.checkbox.length).fill(false)}})
+  let tagInp = React.createRef()
   const removeTag = (e) => {
     let filerTags = [...tags.filter(tag => {
       return tag !== e.target.innerText
     })]
     setTags(filerTags)
   }
-  
-  const addTag = () => {
-    setTags([...tags, tag.trim()])
-    setTag('')
+
+  const addTag = (values) => {
+    setInitialValue(values)
+    setTags([...tags, tagInp.current.value.trim()])
+    tagInp.current.value = ''
   }
-  const changeTagInput = (e) => {
-    setTag(e.target.value.trim())
-    console.log('easd')
-  }
-  
+
   let onSubmit = values => {
-    console.log('a')
+
+    const body = {...values, tags, collectionId: props.collectionId}
+    props.saveItemThunk(props.iToken, body)
   }
-  const headers = []
-  for (const headerType in props.headers) {
-    props.headers[headerType].map((header, i) => <InputForm name={headerType + i}
-                                                            nameText={props.headers[headerType]}/>)
-    
-  }
-  let array = []
-  for (let asd = 0; asd < 5; asd++) {
-    array.push(<Field type={'textarea'} name={'asd' + asd} component={'input'}/>)
-  }
-  
-  
+
   const required = useCallback(value => (value ? undefined : true))
+
   return (
     <Form
       onSubmit={onSubmit}
       validate={required}
-      mutators={{
-        ...arrayMutators
-      }}
-      render={({
-                 handleSubmit,
-                 form: {
-                   mutators: {push, pop}
-                 },
-                 pristine,
-                 form,
-                 submitting,
-                 values
-               }) => {
+      initialValues={initialValues}
+      render={({handleSubmit, values}) => {
         props.setSubmit(handleSubmit)
         return (
           <form onSubmit={handleSubmit}>
-            {array}
-            asdasdas
             <div>
               <InputForm name={"name"} type={"text"} required={required} nameText={"Item name"}/>
             </div>
@@ -102,40 +55,21 @@ const NewItemForm = (props) => {
             <div className={'mb-2'}>
               <div>
                 <label className={'d-block mb-2'}>
-                  <input className={ss.textInput + ' mb-2'} value={tag} onChange={changeTagInput}
+                  <input ref={tagInp} className={ss.textInput + ' mb-2'}
                          placeholder={'Tag...'}/>
                 </label>
                 <div className={'d-flex align-content-center'}>
                   <button
-                    disabled={!tag}
-                    onClick={addTag}
+                    type={'button'}
+                    disabled={false}
+                    onClick={() => addTag(values)}
                     className={'btn btn-dark'}>+
                   </button>
                   {tags.map((tag, i) => <span className={s.tag} key={i} onClick={removeTag}>{tag}</span>)}
                 </div>
               </div>
             </div>
-  
-            <FieldArray name="checkbox">
-              {({ fields }) =>
-                fields.map((name, index) => (
-                  <div key={name}>
-                    <label>Cust. #{index + 1}</label>
-                    <Field
-                      name={`${name}.firstName`}
-                      component="input"
-                      placeholder="First Name"
-                    />
-                    <Field
-                      name={`${name}.lastName`}
-                      component="input"
-                      placeholder="Last Name"
-                    />
-                  </div>
-                ))
-              }
-            </FieldArray>
-            <ItemAdditionalInputs setValueInp={setValueInp} headers={props.headers}/>
+            <ItemAdditionalInputsTEST required={required} headers={props.headers}/>
           </form>
         )
       }}
@@ -147,6 +81,6 @@ const NewItemForm = (props) => {
 // })
 export default compose(
   AuthDataHOC,
-  // connect(mapStateToProps),
+  connect(null, {saveItemThunk}),
 )(NewItemForm)
 

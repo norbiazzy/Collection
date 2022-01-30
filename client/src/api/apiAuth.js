@@ -23,13 +23,14 @@ export const loginUserAPI = async ({email, password}) => {
   }
 }
 export const verifyTokenAPI = async token => {
-  let res = await fetch('/api/auth/verify/', {
+  let res = await fetch('/api/auth/verify', {
     method: 'GET',
     headers: {
       ...headers,
       Authorization: `Bearer ${token}`
     }
   })
+
   if (res.status === 200) return res.json()
   return false
 

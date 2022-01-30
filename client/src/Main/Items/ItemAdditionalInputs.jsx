@@ -5,22 +5,22 @@ import InputForm from "../../Sing/SingForm/InputForm";
 import {TextareaForm} from "../all/TextareaForm";
 
 // const ItemAdditionalInputs = ({headers, require}) => {
-  // const createFields = (h, i, name, component, type, centerStyle = false) => {
-  //   return (<Field type={type} name={name + i} validate={require} render={({input,meta}) => (
-  //     <label key={i + h} className={'d-flex mb-2 ' + (centerStyle ? 'align-items-center' : null)}>
-  //       <p className={'mb-1 me-1'}>{h}</p>
-  //       {name === 'text'
-  //         ? <textarea data-id={name + '-' + i} className={s.textInput} onChange={setValueInp}/>
-  //         : <input {...input} className={(centerStyle ? null : s.textInput) + (meta.error && meta.touched)}/>}
-  //     </label>
-  //   )}/>)
-  // }
-  // const createFields = (h, i, name, type, component) => <InputForm/>
-  //
-  // const strings = headers.string.map((h, i) => createFields(h, i, 'string', 'text'))
-  // const numbers = headers.number.map((h, i) => createFields(h, i, 'number', 'number'))
-  // const texts = headers.string.map((h, i) => <TextareaForm name={'ads'}/>
-  // const checkboxes = headers.string.map((h, i) => createFields(h, i, 'checkbox', 'checkbox', true))
+// const createFields = (h, i, name, component, type, centerStyle = false) => {
+//   return (<Field type={type} name={name + i} validate={require} render={({input,meta}) => (
+//     <label key={i + h} className={'d-flex mb-2 ' + (centerStyle ? 'align-items-center' : null)}>
+//       <p className={'mb-1 me-1'}>{h}</p>
+//       {name === 'text'
+//         ? <textarea data-id={name + '-' + i} className={s.textInput} onChange={setValueInp}/>
+//         : <input {...input} className={(centerStyle ? null : s.textInput) + (meta.error && meta.touched)}/>}
+//     </label>
+//   )}/>)
+// }
+// const createFields = (h, i, name, type, component) => <InputForm/>
+//
+// const strings = headers.string.map((h, i) => createFields(h, i, 'string', 'text'))
+// const numbers = headers.number.map((h, i) => createFields(h, i, 'number', 'number'))
+// const texts = headers.string.map((h, i) => <TextareaForm name={'ads'}/>
+// const checkboxes = headers.string.map((h, i) => createFields(h, i, 'checkbox', 'checkbox', true))
 //   // const dates = headers.string.map((h, i) => createFields(h, i, 'date', 'date'))
 //   return (<div>
 //     <p>Additional fields</p>
@@ -49,20 +49,27 @@ import {TextareaForm} from "../all/TextareaForm";
 //   </div>)
 // }
 const ItemAdditionalInputs = ({headers, setValueInp}) => {
+
   const createFields = (h, i, name, type, centerStyle = false) => {
-    return (<label key={i+h} className={'d-flex mb-2 ' + (centerStyle ? 'align-items-center' : null)}>
-      <p className={'mb-1 me-1'}>{h}</p>
-      {name === 'text'
-        ? <textarea data-id={name + '-' + i} className={s.textInput} onChange={setValueInp}/>
-        : <input data-id={name + '-' + i} onChange={setValueInp} type={type}
-                 className={centerStyle ? null : s.textInput}/>}
-    </label>)
+
+    return (
+      <Field key={i + h} name={name}
+             render={({input}) => (
+               <label  className={'d-flex mb-2 ' + (centerStyle ? 'align-items-center' : null)}>
+                 <p className={'mb-1 me-1'}>{h}</p>
+                 {name === 'text'
+                   ? <textarea data-id={name + '-' + i} {...input} className={s.textInput} onChange={setValueInp}/>
+                   : <input data-id={name + '-' + i} {...input} onChange={setValueInp} type={type}
+                            className={centerStyle ? null : s.textInput}/>}
+               </label>)}/>
+    )
   }
-  let strings = headers.string.map((h, i) => createFields(h, i, 'string', 'text'))
-  let numbers = headers.number.map((h, i) => createFields(h, i, 'number', 'number'))
-  let texts = headers.string.map((h, i) => createFields(h, i, 'text'))
-  let checkboxes = headers.string.map((h, i) => createFields(h, i, 'checkbox', 'checkbox', true))
-  let dates = headers.string.map((h, i) => createFields(h, i, 'date', 'date'))
+
+  let strings = headers.text.map((h, i) => createFields(h.header, i, 'string', 'text'))
+  let numbers = headers.number.map((h, i) => createFields(h.header, i, 'number', 'number'))
+  let texts = headers.textarea.map((h, i) => createFields(h.header, i, 'text'))
+  let checkboxes = headers.checkbox.map((h, i) => createFields(h.header, i, 'checkbox', 'checkbox', true))
+  let dates = headers.date.map((h, i) => createFields(h.header, i, 'date', 'date'))
   return (<div>
     <p>Additional fields</p>
     <div>

@@ -7,11 +7,10 @@ import InputForm from "./SingForm/InputForm";
 import {connect} from "react-redux";
 import {compose} from "redux";
 import AuthDataHOC from "../hoc/AuthDataHOC";
-import {deleteCollectionThunk} from "../redux/collectionsReducer";
 
 const Login = (props) => {
   let navigate = useNavigate()
-  useEffect(() => props.token ? navigate('/profile') : null)
+  useEffect(() => props.iToken ? navigate('/profile') : null)
   let onSubmit = values => {
     props.loginThunk(values)
   }

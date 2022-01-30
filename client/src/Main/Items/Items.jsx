@@ -4,7 +4,7 @@ import ItemsForm from "./ItemsForm";
 import s from './Items.module.css'
 import {commentSVG, editSVG, heartSVG, trashSVG} from "../../assets/svg/svgExport";
 import EditItem from "./EditItem";
-import Comment from "./Comment";
+import CommentRow from "./CommentRow";
 import {loginAC} from "../../redux/authReducer";
 import Loader from "../all/Loader";
 
@@ -28,7 +28,7 @@ const Items = (props) => {
   })
   let collectionId = useParams().id
   let getCollection = useCallback(() => {
-    props.getCollectionThunk(props.token, collectionId)
+    props.getCollectionThunk(props.iToken, collectionId)
       .then(() => setLoading(false))
   }, [collectionId])
 
@@ -36,17 +36,17 @@ const Items = (props) => {
     getCollection()
   }, [getCollection])
   const deleteItem = (e) => {
-    props.deleteItemThunk(props.token, e.target.dataset.id)
+    props.deleteItemThunk(props.iToken, e.target.dataset.id)
   }
   const likeItem = (e) => {
 
-    props.likeItemThunk(props.token, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
+    props.likeItemThunk(props.iToken, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
   }
   const dislikeItem = (e) => {
-    props.dislikeItemThunk(props.token, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
+    props.dislikeItemThunk(props.iToken, e.currentTarget.dataset.id, e.currentTarget.dataset.index)
   }
   const saveUpdateItem = (e) => {
-    props.saveUpdateItemThunk(props.token, editMod)
+    props.saveUpdateItemThunk(props.iToken, editMod)
       .then(res => {
         setEditMod(false)
         console.log(res)
@@ -56,7 +56,7 @@ const Items = (props) => {
     setEditMod(props.items.filter(el => el._id === e.currentTarget.dataset.id)[0])
   }
   const addComment = () => {
-    props.addCommentThunk(props.token, {
+    props.addCommentThunk(props.iToken, {
       message: currentComments.newCommentText,
       itemId: currentComments.id
     })
@@ -100,7 +100,7 @@ const Items = (props) => {
     let tags = item.tags.map((el, i) => {
       return <span key={i}>{el} </span>
     })
-    let isLiked = item.likes.includes(props.userId)
+    let isLiked = item.likes.includes(props.iUserId)
     return (
       <>
         <tr key={item._id}>
@@ -122,7 +122,8 @@ const Items = (props) => {
           </td>
         </tr>
         {currentComments && currentComments.id === item._id ?
-          <Comment comments={props.comments} comment={currentComments} editComment={editComment} addComment={addComment}/> : null}
+          <CommentRow comments={props.comments} comment={currentComments} editComment={editComment}
+                      addComment={addComment}/> : null}
       </>
     )
   })
@@ -136,7 +137,7 @@ const Items = (props) => {
         <p>{props.collection.created}</p>
         <p>{props.collection.topic}</p>
         <button onClick={() => setCreateMod(prevState => !prevState)}>{createMod ? 'Close' : 'Create new item'}</button>
-        {createMod ? <ItemsForm token={props.token} saveItemThunk={props.saveItemThunk} collectionId={collectionId}
+        {createMod ? <ItemsForm token={props.iToken} saveItemThunk={props.saveItemThunk} collectionId={collectionId}
                                 headersInp={props.collection.headersInp}/> : null}
 
         {/*{items}*/}

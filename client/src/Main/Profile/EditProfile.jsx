@@ -1,16 +1,20 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {Field, Form} from "react-final-form";
+import {Form} from "react-final-form";
 import InputForm from "../../Sing/SingForm/InputForm";
 import {TextareaForm} from "../all/TextareaForm";
 import s from './Priofile.module.css'
+import {compose} from "redux";
+import AuthDataHOC from "../../hoc/AuthDataHOC";
+import {connect} from "react-redux";
+import {updateProfileThunk} from "../../redux/uersReducer";
 
 const EditProfile = (props) => {
   const onSubmit = (values) => {
-    console.log(values, 'submit')
+    let updates = {...values, userId: props.profile.userId}
+    if (!updates.status) updates.status = ' '
+    props.updateProfileThunk(props.iToken, updates)
+    props.closeModal()
   }
-  const required = (values) => {
-    console.log(values, 'required')
-  }
+  const required = value => (value ? undefined : true)
 
   return (
     <>
@@ -26,25 +30,30 @@ const EditProfile = (props) => {
                            required={required}/>
               </div>
               <div>
-                <TextareaForm initialValue={props.profile.status} nameText={'Status'} name={'status'}/>
+                <TextareaForm initialValue={props.profile.status} nameText={'Status'} required={required}
+                              name={'status'}/>
               </div>
               <div className="mb-3">
                 <label htmlFor="formFile" className="form-label">Photo upload in development</label>
                 <input className="form-control" disabled={true} type='file' id="formFile"/>
               </div>
-              <div className={''}>
+              <div>
                 <div className={'mb-2 d-flex justify-content-around'}>
-                  <button className={'btn btn-danger ' + s.modalBtn} onClick={()=> {
-                    props.blockUser()
+                  <button className={'btn btn-danger ' + s.modalBtn} onClick={() => {
+                    props.profile.blocked
+                      ? props.unblockUser()
+                      : props.blockUser()
                     props.closeModal()
-                  }}>Block</button>
-                  <button className={'btn btn-danger ' + s.modalBtn} onClick={()=> {
+                  }}>{props.profile.blocked ? 'Unblock' : 'Block'}
+                  </button>
+                  <button className={'btn btn-danger ' + s.modalBtn} onClick={() => {
                     props.deleteUser()
                     props.closeModal()
-                  }}>Delete</button>
+                  }}>Delete
+                  </button>
                 </div>
                 <div className={'d-flex justify-content-around'}>
-                  <button className={'btn btn-success ' + s.modalBtn} onClick={props.closeModal}>Update</button>
+                  <button className={'btn btn-success ' + s.modalBtn} type={'submit'}>Update</button>
                   <button className={'btn btn-warning ' + s.modalBtn} onClick={props.closeModal}>Cancel</button>
                 </div>
               </div>
@@ -56,4 +65,9 @@ const EditProfile = (props) => {
   )
 }
 
-export default EditProfile
+export default compose(
+  AuthDataHOC,
+  connect(null, {
+    updateProfileThunk
+  })
+)(EditProfile)

@@ -5,53 +5,67 @@ import AuthDataHOC from "../../hoc/AuthDataHOC";
 import {compose} from "redux";
 import {useParams} from "react-router";
 import {getCollectionItemsThunk} from "../../redux/ItemsReducer";
-import {getCollection, getCollectionSelect} from "../../redux/selectors/collection-select";
+import {getCollectionSelect} from "../../redux/selectors/collection-select";
 import {getItemListSelect} from "../../redux/selectors/item-select";
 import Loader from "../all/Loader";
 import CollectionHeader from "../Profile/Collections/CollectionHeader";
-import ItemAdditionalInputs from "./ItemAdditionalInputs";
-import NewItemFormArr from "./NewItemFormArr";
+import EditCollection from "../Profile/Collections/EditCollection";
+import ItemsTable from "./ItemsTable";
 
 const ItemsPage = (props) => {
   const [createMod, setCreateMod] = useState(false)
+  const [editCollectionMod, setEditCollectionMod] = useState(false)
+  const [editItemMod, setEditItemMod] = useState(false)
   const [loading, setLoading] = useState(true)
   let submit
   let setSubmit = (e) => {
     submit = e
   }
+
   const collectionId = useParams().id
+
   const getItems = useCallback(async () => {
-    if (collectionId) await props.getCollectionItemsThunk(props.token, collectionId)
+    if (collectionId) await props.getCollectionItemsThunk(props.iToken, collectionId)
     setLoading(false)
-  }, [props.token, collectionId])
+  }, [props.iToken, collectionId])
+
   useEffect(() => {
     getItems()
   }, [getItems])
-  
+
   if (loading) return <Loader/>
-  
+
   return (
     <>
-      <CollectionHeader collection={props.collection}/>
+      {editCollectionMod
+        ? <EditCollection close={() => setEditCollectionMod(false)} collection={props.collection}/>
+        : null}
+      {editItemMod
+        ? <EditCollection close={() => setEditItemMod(false)} collection={props.collection}/>
+        : null}
+      <CollectionHeader openModal={() => setEditCollectionMod(true)} collection={props.collection}/>
       <div className='d-flex justify-content-between align-items-center'>
-        <h2>Collections</h2>
-        {props.adminMod || props.collection.userId === props.userId ? <div>
+        <h2>Items</h2>
+        {props.adminMod || props.collection.userId === props.iUserId ? <div>
           {createMod ? <button className={'btn btn-success me-2'}
                                onClick={event => submit(event)}
           >Create
           </button> : null}
           <button className={'btn ' + (createMod ? 'btn-danger' : 'btn-dark')}
-                  onClick={() => setCreateMod((p) => !p)}>{createMod ? 'Close' : 'Create new Collection'}
+                  onClick={() => {
+                    if (!createMod) console.log('push!!!')
+                    setCreateMod((p) => !p)
+                  }}>{createMod ? 'Close' : 'Create new item'}
           </button>
         </div> : null}
       </div>
-      {/*<div>*/}
-      {/*  <h2>Collection Info</h2>*/}
-      {createMod ? <NewItemFormArr setSubmit={setSubmit} headers={props.collection.headers}/> : null}
+      <div>
+      {createMod ? <NewItemForm collectionId={props.collection._id} setSubmit={setSubmit}
+                                headers={props.collection.headers}/> : null}
       {/*  <h2> ? Create Item - props.collection</h2>*/}
       {/*  <h2>Items table header -> Items Row</h2>*/}
-      
-      {/*</div>*/}
+        <ItemsTable />
+      </div>
     </>
   )
 }

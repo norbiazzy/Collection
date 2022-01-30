@@ -6,7 +6,7 @@ import ss from "../Priofile.module.css";
 
 
 const AdditionallyCollectionFields = ({push, pop, name, validate, title}) => {
-  debugger
+
   return (<div className={ss.input__item}>
     <div className="buttons d-flex justify-content-around mb-2 align-items-center">
       <button type="button"

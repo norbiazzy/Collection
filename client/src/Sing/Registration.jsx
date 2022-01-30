@@ -4,11 +4,14 @@ import {Form, Field} from 'react-final-form'
 import {hideErrMessageAC, registerAC, registrationThunk, showErrMessageAC} from "../redux/authReducer";
 import InputForm from "./SingForm/InputForm";
 import {connect} from "react-redux";
+import {useEffect} from "react";
+import AuthDataHOC from "../hoc/AuthDataHOC";
+import {compose} from "redux";
 
 
 const Registration = (props) => {
   const navigate = useNavigate()
-  if (props.token) navigate('/profile')
+  useEffect(() => props.iToken ? navigate('/profile') : null)
   let onSubmit = async values => {
     props.hideErrMessageAC()
     const body = {
@@ -59,10 +62,13 @@ const Registration = (props) => {
 const mapStateToProps = (state) => ({
   errorMessage: state.auth.errorMessage
 })
-export default connect(mapStateToProps, {
-  registerAC,
-  registrationThunk,
-  showErrMessageAC,
-  hideErrMessageAC,
-})(Registration)
+export default compose(
+  AuthDataHOC,
+  connect(mapStateToProps, {
+    registerAC,
+    registrationThunk,
+    showErrMessageAC,
+    hideErrMessageAC,
+  })
+)(Registration)
 

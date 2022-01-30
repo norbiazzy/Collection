@@ -8,13 +8,13 @@ import {compose} from "redux";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
 import {connect} from "react-redux";
 import {deleteUserThunk, getProfileThunk} from "../../../redux/uersReducer";
-import {deleteCollectionThunk} from "../../../redux/collectionsReducer";
+import {deleteCollectionThunk} from "../../../redux/collectionsReducer2";
 
 const CollectionTable = (props) => {
 
   const deleteCollection = useCallback((collectionId) => {
-    props.deleteCollectionThunk(props.token, collectionId)
-  }, [props.token])
+    props.deleteCollectionThunk(props.iToken, collectionId)
+  }, [props.iToken])
 
   return (
     <table className="table text-center">

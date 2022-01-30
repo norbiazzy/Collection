@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const User = require('../models/User')
-module.exports = async (req, res, next) => {
+module.exports = (req, res, next) => {
   if (req.method === 'OPTIONS') {
     return next()
   }
@@ -12,14 +12,11 @@ module.exports = async (req, res, next) => {
       return res.status(401).json({message: 'Нет авторизации'})
     }
     req.user = jwt.verify(token, config.get('jwtSecret'))
-    let user = await User.findById(req.user.userId, {blocked:1})
-    if (!user) return res.status(404).json({message: 'Потзователь больше не существует'})
-    console.log(user)
-    if (user.blocked) return res.status(403).json({message: 'Пользователь заблокирован'})
+    let user = User.findById(req.user.userId)
+    if (user.role !== 'admin') return res.status(404).json({message: 'У вас нет прав'})
     req.user.token = token
     next()
-
   } catch (e) {
-    res.status(401).json({message: 'Нет авторизации'})
+    res.status(401).json({message: 'Пользователь не авторизирован'})
   }
 }

@@ -8,7 +8,7 @@ import Select from "react-select";
 import {useState} from "react";
 import HeadersInput from "./HeadersInput";
 import s from "../Priofile.module.css";
-import {saveCollectionThunk} from "../../../redux/collectionsReducer";
+import {saveCollectionThunk} from "../../../redux/collectionsReducer2";
 import arrayMutators from "final-form-arrays";
 import AdditionallyCollectionFields from "./AdditionalsCollectionFiels";
 import {TextareaForm} from "../../all/TextareaForm";
@@ -35,7 +35,7 @@ const NewCollectionFormArr = (props) => {
         date: values.date,
       }
     }
-    props.saveCollectionThunk(body, props.token)
+    props.saveCollectionThunk(body, props.iToken)
   }
   
   const required = value => (value ? undefined : true)

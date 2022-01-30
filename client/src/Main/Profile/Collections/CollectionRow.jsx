@@ -5,8 +5,6 @@ import {NavLink} from "react-router-dom";
 import {editSVG, rightArrowSVG, trashSVG} from "../../../assets/svg/svgExport";
 import {compose} from "redux";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
-import {connect} from "react-redux";
-import {deleteCollectionThunk} from "../../../redux/collectionsReducer";
 
 const Collection = (props) => {
   const {_id, name, description, created, topic, items} = props.collection
@@ -16,7 +14,7 @@ const Collection = (props) => {
       <td>{description}</td>
       <td>{created}</td>
       <td>{topic.label}</td>
-      <td>{items.length}</td>
+      <td>{items ? items.length : 0}</td>
       <td>
         <button onClick={() => props.deleteCollection(_id)}
                 className={'btn btn-dark mx-1'}>{trashSVG(s.tollSVG)}</button>

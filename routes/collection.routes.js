@@ -16,29 +16,25 @@ router.post('/create', auth, async (req, res) => {
     await User.findByIdAndUpdate(req.user.userId, {$addToSet: {collections: collection._id}})
     await collection.save()
 
-    return res.status(200).json({message: 'заебись...'})
+    return res.status(200).json(collection)
 
   } catch (e) {
     console.log(e, 'error')
+    return res.status(400).json({message: 'Коллекцию сохранить не удалось, не все поля зыли заполнены!'})
   }
 })
 router.post('/createItem', auth, async (req, res) => {
   try {
     const item = req.body
     item.userId = req.user.userId
-    // if (!obj.name || !obj.topic) return res.status(400).json({message: 'заебись... пустое поле'})
     let newItem = new Item(item)
     await Collection.findByIdAndUpdate(item.collectionId, {$addToSet: {items: newItem._id}})
     await newItem.save()
-    // await User.findByIdAndUpdate(req.user.userId, (user)=>{
-    //   user.collections = [...user.collections, collection._id]
-    // })
-    // await collection.save()
-
-    return res.status(200).json({message: 'заебись...'})
+    return res.status(200).json(newItem)
 
   } catch (e) {
     console.log(e, 'error')
+    return res.status(400)
   }
 })
 router.post('/deleteItem', auth, async (req, res) => {
@@ -49,6 +45,8 @@ router.post('/deleteItem', auth, async (req, res) => {
     return res.status(200).json({message: 'Удалили...'})
   } catch (e) {
     console.log(e, 'error')
+    return res.status(400).json({message: 'error'})
+
   }
 })
 router.post('/likeItem', auth, async (req, res) => {
@@ -56,11 +54,11 @@ router.post('/likeItem', auth, async (req, res) => {
       const {itemId} = req.body
       let userId = req.user.userId
       await Item.findByIdAndUpdate(itemId, {$addToSet: {likes: userId}});
-      return res.status(200).json({message: 'Лайк!', userId})
+      return res.status(200).json({userId})
 
-    } catch
-      (e) {
+    } catch (e) {
       console.log(e, 'error')
+      return res.status(400)
     }
   }
 )
@@ -69,10 +67,11 @@ router.post('/dislikeItem', auth, async (req, res) => {
       const {itemId} = req.body
       let userId = req.user.userId
       await Item.findByIdAndUpdate(itemId, {$pull: {likes: userId}});
-      return res.status(200).json({message: 'Дизлайк(!', userId})
+      return res.status(200).json({userId})
     } catch
       (e) {
       console.log(e, 'error')
+      return res.status(400)
     }
   }
 )
@@ -134,12 +133,21 @@ router.post('/getCollectionsList', auth, async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     let collection = await Collection.findById(req.params.id)
-    if(!collection) throw new Error('Collection is not defined')
+    if (!collection) throw new Error('Collection is not defined')
     let items = await Item.find({collectionId: req.params.id})
     return res.status(200).json({collection, items})
   } catch (e) {
     console.log(e, 'error')
-    return res.status(404).json({message:e.message})
+    return res.status(404).json({message: e.message})
+  }
+})
+router.post('/update', auth, async (req, res) => {
+  try {
+    let body = req.body
+    await Collection.findByIdAndUpdate({_id: body.collectionId}, body)
+    return res.status(200).json({message: 'Коллекция обновлена успешно!'})
+  } catch (e) {
+    return res.status(404).json({message: 'Не удалось обновить коллекцию:('})
   }
 })
 
@@ -153,7 +161,7 @@ router.delete('/:id', auth, async (req, res) => {
     return res.status(200).json('Удалили...')
   } catch (e) {
     console.log(e, 'error')
-    return res.status(200).json('Уе удалили...')
+    return res.status(400).json('Не удалили...')
   }
 })
 module.exports = router

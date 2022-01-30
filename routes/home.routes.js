@@ -26,22 +26,6 @@ router.get('/users', async (req, res) => {
     return res.status(409).json(e)
   }
 })
-router.delete('/user/:id', async (req, res) => {
-  try {
-    const userId = req.params.id
-    await User.findByIdAndDelete(userId)
-    await Collection.deleteMany({userId})
-    await Profile.deleteMany({userId})
-    await Comment.deleteMany({userId})
-    await Item.deleteMany({userId})
-    await Item.updateMany({likes: [userId]}, {$pull: {likes: userId}})
-    await Item.updateMany({comments: [userId]}, {$pull: {comments: userId}})
-    return res.status(200).json({message: 'удалили...'})
-  } catch (e) {
-    console.log(e, 'error')
-    return res.status(409).json(e)
-  }
-})
 router.get('/popularItems', async (req, res) => {
   try {
     let items = await Item.find()

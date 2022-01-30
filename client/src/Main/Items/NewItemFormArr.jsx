@@ -50,7 +50,7 @@ const NewItemFormArr = (props) => {
                submitting, values
              }) => (
       <form onSubmit={handleSubmit}>
-        {props.headers.text.length ? <ItemFieldArr name={'checkbox'} headers={props.headers.text} component={'input'} type={'text'}/> : null}
+        {props.headers.text.length ? <ItemFieldArr name={'text1'} headers={props.headers.text} component={'input'} type={'text'}/> : null}
         {props.headers.number.length ? <div> 2</div> : null}
         {props.headers.textarea.length ? <div> 3</div> : null}
         {props.headers.checkbox.length ? <div> 4</div> : null}

@@ -1,5 +1,9 @@
 import {NavLink} from "react-router-dom";
 import {Col, Container, Row} from "react-bootstrap";
+import {compose} from "redux";
+import AuthDataHOC from "../../hoc/AuthDataHOC";
+import {connect} from "react-redux";
+import {loginOutThunk, toggleAdminModAC} from "../../redux/authReducer";
 
 const Header = (props) => {
   const loginOut = () => {
@@ -17,12 +21,12 @@ const Header = (props) => {
             {/*<NavLink className='btn btn-dark' to={'/users'}>NewsUsers</NavLink>*/}
           </Col>
           <Col className='d-flex justify-content-end'>
-            {props.token ?
+            {props.iToken ?
               (<>
                 {props.role === 'admin' ? <label className={'d-flex align-items-center me-2'}>
                   <span>Режим админа</span>
                   <input type={"checkbox"} checked={props.adminMod} onChange={toggleAdminMod}/>
-                </label>: null}
+                </label> : null}
 
                 <NavLink className='btn btn-dark me-2' to={'/profile'}>Profile</NavLink>
                 <button className='btn btn-dark' onClick={loginOut}>Login out</button>
@@ -36,4 +40,8 @@ const Header = (props) => {
   )
 }
 
-export default Header
+export default compose(AuthDataHOC, connect(null, {
+    loginOutThunk,
+    toggleAdminModAC,
+  })
+)(Header)

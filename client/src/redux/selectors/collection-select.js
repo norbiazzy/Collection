@@ -5,6 +5,5 @@ export const getCollectionSelect = (state)=>{
     return state.collection.collection
 }
 export const getTopicsSelect = (state) => {
-  
   return state.collection.topics
 }

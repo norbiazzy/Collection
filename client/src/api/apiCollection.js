@@ -10,15 +10,10 @@ export const getCollectionAPI = async (token, id) => {
   })
   return res
 }
-export const deleteCollectionAPI = (token, id) => {
-  
-  return fetch('/api/collection/' + id, {
-    method: 'DELETE', headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }).then((res) => {
-    return res.json()
-  })
+export const deleteCollectionAPI = async (token, id) => {
+
+  let res = await fetch(`/api/collection/${id}`, {method: 'DELETE', headers: {Authorization: `Bearer ${token}`}})
+  return res.status === 200
 }
 
 
@@ -30,7 +25,18 @@ export const saveCollectionAPI = async (body, token) => {
       Authorization: `Bearer ${token}`
     }
   })
-  return await res.json()
+    return res.status === 200 ? await res.json() : false
+}
+export const updateCollectionAPI = async (token, updates) => {
+  const body = JSON.stringify(updates)
+  let res = await fetch('/api/collection/update', {
+    method: 'POST', body, headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return res.status === 200 ? await res.json() : false
 }
 export const bigCollectionsAPI = () => {
   return fetch('/api/home/bigCollections', {

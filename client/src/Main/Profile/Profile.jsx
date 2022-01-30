@@ -6,12 +6,11 @@ import {useNavigate} from "react-router";
 import EditProfile from "./EditProfile";
 import CollectionTable from "./Collections/CollectionTable";
 import {connect} from "react-redux";
-import {deleteCollectionThunk, saveCollectionThunk} from "../../redux/collectionsReducer";
+import {deleteCollectionThunk, saveCollectionThunk} from "../../redux/collectionsReducer2";
 import {getProfile} from "../../redux/selectors/user-select";
 import AuthDataHOC from "../../hoc/AuthDataHOC";
 import {compose} from "redux";
-import {getCollectionListSelect} from "../../redux/selectors/collection-select";
-import {deleteUserThunk, getProfileThunk} from "../../redux/uersReducer";
+import {blockUserThunk, deleteUserThunk, getProfileThunk, unblockUserThunk} from "../../redux/uersReducer";
 import Loader from "../all/Loader";
 import {editSVG} from "../../assets/svg/svgExport";
 import NewCollectionFormArr from "./Collections/NewCollectionFormArr";
@@ -29,46 +28,39 @@ let Profile = (props) => {
     submit = e
   }
   const getProfile = useCallback(async () => {
-    if (!props.token) return navigate('/')
-    let res = await props.getProfileThunk(props.token, profileId)
-    
-    if (res) {
-      setLoading(false)
-      setErrorPage(!res)
-    }
-    
-  }, [props.token, profileId])
-  
+    if (!props.iToken) return navigate('/')
+    let res = await props.getProfileThunk(props.iToken, profileId)
+    setLoading(false)
+    setErrorPage(!res)
+  }, [props.iToken, profileId])
+
   useEffect(() => getProfile(), [getProfile])
-  
+
   const toggleMod = (value) => value(prevState => !prevState)
-  
+
   if (loading) return <Loader/>
-  
-  if (errorPage) {
-    return (
-      <div>
-        <h2>Error 404</h2>
-        <p> Profile is not defined :( </p>
-        <NavLink to={'/'}>Go to home page</NavLink>
-      </div>
-    )
+
+  if (errorPage) navigate('/error')
+
+  const deleteUser = async () => {
+    let res = await props.deleteUserThunk(props.iToken, props.iUserId)
+    if (res) navigate('/error')
   }
-  
-  const deleteUser = () => {
-    props.deleteUserThunk(props.token, props.userId)
+  const blockUser = async () => {
+    props.blockUserThunk(props.iToken, props.profile.userId)
   }
-  const blockUser = () => {
-    // blockUserThunk(props.token, props.userId)
+  const unblockUser = async () => {
+    props.unblockUserThunk(props.iToken, props.profile.userId)
   }
-  
   return (
     <>
-      {editProfileMod ? <EditProfile deleteUser={deleteUser} blockUser={blockUser}
-                                     profile={props.profile} closeModal={() => toggleMod(setEditProfileMod)}/> : null}
+      {editProfileMod
+        ? <EditProfile deleteUser={deleteUser} blockUser={blockUser} unblockUser={unblockUser} profile={props.profile}
+                       closeModal={() => toggleMod(setEditProfileMod)}/>
+        : null}
       <div className={'d-flex'}>
         <h2>Profile</h2>
-        {props.adminMod || props.profile.userId === props.userId ?
+        {props.adminMod || props.profile.userId === props.iUserId ?
           <button
             onClick={() => toggleMod(setEditProfileMod)}
             className={'btn btn-dark'}>
@@ -80,14 +72,16 @@ let Profile = (props) => {
           <img className={s.img} src={props.profile.photo} alt={'profile'}/>
         </div>
         <div>
-          <p>{props.profile.name}</p>
-          <p>{props.profile.status}</p>
+          <p>Username{props.profile.name}</p>
+          <p>Status: {props.profile.status}</p>
+          <p>Role: {props.profile.role}</p>
+          <p>is blocked: {props.profile.blocked + ''}</p>
         </div>
       </div>
       <div>
         <div className='d-flex justify-content-between align-items-center'>
           <h2>Collections</h2>
-          {props.adminMod || props.profile.userId === props.userId ? <div>
+          {props.adminMod || props.profile.userId === props.iUserId ? <div>
             {createMod ? <button className={'btn btn-success me-2'}
                                  onClick={event => submit(event)}>Create
             </button> : null}
@@ -101,8 +95,8 @@ let Profile = (props) => {
       </div>
     </>
   )
-  
-  
+
+
 }
 
 const mapStateToProps = (state) => ({
@@ -115,5 +109,7 @@ export default compose(
     getProfileThunk,
     saveCollectionThunk,
     deleteUserThunk,
+    blockUserThunk,
+    unblockUserThunk,
   }),
 )(Profile)

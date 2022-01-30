@@ -61,7 +61,7 @@ const NewCollection = (props) => {
       name: name.value, description: description.value, topic, headersInp
     }
     console.log(collectionSettings)
-    props.saveCollectionThunk(collectionSettings, props.token)
+    props.saveCollectionThunk(collectionSettings, props.iToken)
   }
   const optionsTopic = props.topics.map((topic, i) => {
     return <option key={i} value={topic}>{topic}</option>

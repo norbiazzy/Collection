@@ -6,7 +6,6 @@ import Select from "react-select";
 import {useState} from "react";
 import HeadersInput from "./HeadersInput";
 import s from "../Priofile.module.css";
-import {deleteCollectionThunk, saveCollectionThunk} from "../../../redux/collectionsReducer";
 import {compose} from "redux";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
 import {connect} from "react-redux";
@@ -64,7 +63,7 @@ const NewCollectionForm = (props) => {
       if (values.headers['date-' + i]) body.headersInp['date'].push(values.headers['date-' + i])
     }
     
-    props.saveCollectionThunk(body, props.token)
+    props.saveCollectionThunk(body, props.iToken)
   }
 
   const ReactSelectAdapter = ({input, ...rest}) => (

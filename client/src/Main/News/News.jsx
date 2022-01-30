@@ -3,6 +3,16 @@ import Collection from "../Profile/Collections/Collection";
 import NewsItems from "./NewsItems/NewsItems";
 import NewsUsers from "./Users/NewsUsers";
 import Loader from "../all/Loader";
+import {connect} from "react-redux";
+import {
+  deleteUserThunk,
+  getCollectionsThunk,
+  getItemsThunk,
+  getUsersThunk,
+  setContentAC
+} from "../../redux/homeReducer";
+import {compose} from "redux";
+import AuthDataHOC from "../../hoc/AuthDataHOC";
 
 const News = (props) => {
   const [loading, setLoading] = useState(true)
@@ -37,7 +47,7 @@ const News = (props) => {
       content = props.items.map(item => <NewsItems key={item._id} item={item}/>)
       break
     case 'users':
-      content = props.users.map(user => <NewsUsers key={user._id} token={props.token} delete={props.deleteUsersThunk}
+      content = props.users.map(user => <NewsUsers key={user._id} token={props.iToken} delete={props.deleteUsersThunk}
                                                    user={user}/>)
       break
     default:
@@ -81,4 +91,23 @@ const News = (props) => {
   )
 }
 
-export default News
+
+const mapStateToProps = (state) => ({
+  collections: state.home.collections,
+  contentType: state.home.contentType,
+  items: state.home.items,
+  users: state.home.users,
+  token: state.auth.token,
+})
+
+export default compose(
+  AuthDataHOC,
+  connect(mapStateToProps, {
+    getCollectionsThunk,
+    setContentAC,
+    getItemsThunk,
+    getUsersThunk,
+    deleteUserThunk,
+  }),
+)(News)
+

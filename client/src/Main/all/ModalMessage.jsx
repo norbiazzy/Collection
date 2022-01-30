@@ -1,14 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import  s from '../../index.css'
 import {connect} from "react-redux";
-import {
-  addCommentThunk,
-  deleteItemThunk,
-  dislikeItemThunk,
-  getCollectionThunk, getCommentThunk,
-  likeItemThunk,
-  saveItemThunk, saveUpdateItemThunk
-} from "../../redux/collectionsReducer";
+
 import Items from "../Items/Items";
 const ModalMessage = (props) => {
 

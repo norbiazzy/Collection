@@ -1,18 +1,16 @@
-import {getAdminMod, getRole, getUserId, getToken} from "../redux/selectors/user-select"
+import {getAdminMod, getRole, getUserId, getToken, getBlocked} from "../redux/selectors/user-select"
 import {connect} from 'react-redux'
 
 const AuthDataHOC = (Component) => (props) => {
-
-  let mapStateToProps = state => ({
-    token: getToken(state),
-    userId: getUserId(state),
-    role: getRole(state),
-    adminMod: getAdminMod(state)
+    let mapStateToProps = state => ({
+    iToken: getToken(state),
+    iUserId: getUserId(state),
+    iRole: getRole(state),
+    iBlocked: getBlocked(state),
+    iAdminMod: getAdminMod(state),
   })
-
-  let ComponentConnected = connect(mapStateToProps)(Component)
+  let ComponentConnected = connect(mapStateToProps, )(Component)
   return <ComponentConnected {...props}/>
-
 }
 
 export default AuthDataHOC

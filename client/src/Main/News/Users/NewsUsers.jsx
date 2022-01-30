@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 const NewsUsers = (props) => {
   const navigate = useNavigate()
   const deleteUser = () => {
-    props.delete(props.token, props.user._id)
+    props.delete(props.iToken, props.user._id)
   }
   const blockUser = () => {
   }

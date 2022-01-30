@@ -8,16 +8,19 @@ import {connect} from "react-redux";
 import React, {useCallback, useEffect, useState} from "react";
 import Loader from "./Main/all/Loader";
 import Registration from "./Sing/Registration";
+import ErrorPage from "./Main/all/ErrorPage";
+import {compose} from "redux";
+import AuthDataHOC from "./hoc/AuthDataHOC";
 
 function App(props) {
   const [loading, setLoading] = useState(true)
   const verify = useCallback(async () => {
-    if (!props.token) {
+    if (!props.iToken) {
       let auth = JSON.parse(localStorage.getItem('auth'))
       if (auth) await props.verifyTokenThunk(auth.token)
       setLoading(false)
     }
-  }, [props.token, loading])
+  }, [props.iToken, loading])
 
   useEffect(() => {
     verify()
@@ -28,16 +31,19 @@ function App(props) {
       <Routes>
         <Route path='/registration' element={<Registration/>}/>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/error' element={<ErrorPage/>}/>
         <Route path={'*'} element={<Main/>}/>
       </Routes>
     </div>
   );
 }
 
-const mapStateToProps = (state) => ({token: state.auth.token})
 
-export default connect(mapStateToProps,
-  {
-    verifyTokenThunk, loginOutThunk
-  }
+export default compose(
+  AuthDataHOC,
+  connect(null,
+    {
+      verifyTokenThunk, loginOutThunk
+    }
+  )
 )(App);

@@ -1,26 +1,25 @@
 let headers = {
   'Content-Type': 'application/json'
 }
-export const saveItemAPI = (token, item) => {
+export const saveItemAPI = async (token, item) => {
   let body = JSON.stringify(item)
-  return fetch('/api/collection/createItem', {
+  let res = await fetch('/api/collection/createItem', {
     method: 'POST', body, headers: {
       ...headers,
       Authorization: `Bearer ${token}`
     }
-  }).then((res) => {
-    return res.json()
   })
+  return res.status === 200 ? await res.json() : false
 }
 export const getCollectionItemsAPI = async (token, collectionId) => {
-  
+
   let res = await fetch('/api/collection/' + collectionId, {
     method: 'GET', headers: {
       ...headers,
       Authorization: `Bearer ${token}`
     }
   })
-  
+
   return res.json()
 }
 export const saveUpdateItemAPI = (token, updateItem) => {
@@ -35,38 +34,29 @@ export const saveUpdateItemAPI = (token, updateItem) => {
     return res.json()
   })
 }
-export const deleteItemAPI = (token, itemId) => {
+export const deleteItemAPI = async (token, itemId) => {
   let body = JSON.stringify({itemId})
-  return fetch('/api/collection/deleteItem', {
-    method: 'POST', body, headers: {
-      ...headers,
-      Authorization: `Bearer ${token}`
-    }
-  }).then((res) => {
-    return res.json()
+  let res = await fetch('/api/collection/deleteItem', {
+    method: 'POST', body, headers: {...headers, Authorization: `Bearer ${token}`}
   })
+  return res.status === 200
 }
-export const likeItemAPI = (token, itemId) => {
+
+export const likeItemAPI = async (token, itemId) => {
   let body = JSON.stringify({itemId})
-  return fetch('/api/collection/likeItem', {
-    method: 'POST', body, headers: {
-      ...headers,
-      Authorization: `Bearer ${token}`
-    }
-  }).then((res) => {
-    return res.json()
+  let res = await fetch('/api/collection/likeItem', {
+    method: 'POST', body, headers: {...headers, Authorization: `Bearer ${token}`}
   })
+  return res.status === 200 ? await res.json() : false
 }
-export const dislikeItemAPI = (token, itemId) => {
+
+export const dislikeItemAPI = async (token, itemId) => {
   let body = JSON.stringify({itemId})
-  return fetch('/api/collection/dislikeItem', {
-    method: 'POST', body, headers: {
-      ...headers,
-      Authorization: `Bearer ${token}`
-    }
-  }).then((res) => {
-    return res.json()
+  let res = await fetch('/api/collection/dislikeItem', {
+    method: 'POST', body, headers: {...headers, Authorization: `Bearer ${token}`}
   })
+
+  return res.status === 200 ? await res.json() : false
 }
 
 export const addCommentAPI = (token, comment) => {

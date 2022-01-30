@@ -3,7 +3,7 @@ import s from "../../Sing/Sing.module.css";
 
 export const TextareaForm = (props) => {
   return (
-    <Field name={props.name} validate={props.required} initialValue={props.initialValue} render={
+    <Field name={props.name} required={props.required} initialValue={props.initialValue} render={
       ({input, meta,initialValue}) => (
         <label className={'d-block mb-2'}>
           {props.nameText ? <p className={s.inpHeader}>{props.nameText}</p> : null}

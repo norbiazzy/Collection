@@ -26,7 +26,10 @@ router.post('/register',
 
       const {email, password, role} = req.body
       const candidate = await User.findOne({email})
-      if (candidate) return res.status(400).json({err: true, errorMessage: 'Пользователь с таким email уже существует.'})
+      if (candidate) return res.status(400).json({
+        err: true,
+        errorMessage: 'Пользователь с таким email уже существует.'
+      })
       const hashedPassword = await bcrypt.hash(password, 7)
       const userRole = await Role.findOne({value: role})
       const user = await new User({
@@ -76,8 +79,8 @@ router.post('/login',
       const user = await User.findOne({email})
 
       if (!user) return res.status(400).json({message: 'Пользователь не существует'})
+      if (user.blocked) return res.status(403).json({message: 'Пользователь заблокирован'})
       const isMatch = await bcrypt.compare(password, user.password)
-
       if (!isMatch) return res.status(400).json({message: 'Пароль не верен'})
       const token = jwt.sign(
         {
@@ -104,7 +107,7 @@ router.post('/login',
 // /api/auth/verify
 router.get('/verify', auth, async (req, res) => {
   try {
-    console.log(1)
+    console.log(true)
     res.status(200).json(req.user)
   } catch (e) {
     console.log(2)

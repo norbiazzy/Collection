@@ -9,11 +9,11 @@ const Item = new Schema({
     description: {type: String},
     created: {type: Date, default: Date.now},
     tags: [],
-    bodyInputs: {
-        str: [{type:String}],
-        num: [{type:String}],
+    headers: {
         text: [{type:String}],
-        boolean: [{type:String}],
+        number: [{type:String}],
+        textarea: [{type:String}],
+        checkbox: [{type:String}],
         date: [{type:String}]
     }
 })

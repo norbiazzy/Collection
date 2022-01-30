@@ -11,80 +11,86 @@ import {getCollectionAC} from "./collectionsReducer2";
 const GET_ITEMS = 'GET_ITEMS'
 const LIKE_ITEM = 'LIKE_ITEM'
 const DISLIKE_ITEM = 'DISLIKE_ITEM'
-const DELETE_ITEM = 'LIKE_ITEM'
-const UPDATE_ITEM = 'LIKE_ITEM'
+const DELETE_ITEM = 'DELETE_ITEM'
+const UPDATE_ITEM = 'UPDATE_ITEM'
 const GET_COMMENTS = 'GET_COMMENTS'
+const ADD_ITEM_TO_LIST = 'ADD_ITEM_TO_LIST'
 
 const initialState = {
-  itemList: []
+  itemList: [],
+  comments: {}
 }
 export const itemsReducer = (state = initialState, action) => {
+  let itemIndex
   switch (action.type) {
     case GET_ITEMS:
       return {
         ...state,
-        items: action.items
+        itemList: action.items
+      };
+    case ADD_ITEM_TO_LIST:
+      return {
+        ...state,
+        itemList: [action.item, ...state.itemList]
       };
     case LIKE_ITEM:
+      itemIndex = state.itemList.findIndex((i) => i._id === action.itemId)
+
       return {
         ...state,
-        items: [...state.items],
-        ...state.items[action.index].likes = [...state.items[action.index].likes, action.userId]
+        itemList: [...state.itemList],
+        ...state.itemList[itemIndex].likes = [...state.itemList[itemIndex].likes, action.userId]
+      };
+    case DELETE_ITEM:
+      return {
+        ...state,
+        itemList: [...state.itemList.filter(i => i._id !== action.itemId)],
+        // ...state.items[action.index].likes = [...state.items[action.index].likes, action.userId]
       };
     case DISLIKE_ITEM:
+      itemIndex = state.itemList.findIndex((i) => i._id === action.itemId)
       return {
         ...state,
-        collections: [...state.collections],
-        
+        itemList: [...state.itemList],
+        ...state.itemList[itemIndex].likes = [...state.itemList[itemIndex].likes.filter(id => id !== action.userId)]
       }
     case GET_COMMENTS:
       return {
         ...state,
-        comments: action.comments,
+        comments: {...state.comments, [action.itemId]: action.comments}
       }
     default:
       return state;
   }
 }
 
-export const saveItemThunk = (token, item) => (dispatch) => {
-  return saveItemAPI(token, item)
-    .then(res => {
-      console.log(res)
-      // dispatch(saveCollectionAC(res))
-    }).then(() => true)
+export const saveItemThunk = (token, item) => async (dispatch) => {
+  let res = await saveItemAPI(token, item)
+  if (res) dispatch(addItemToListAC(res))
+  return true
 }
 export const getCollectionItemsThunk = (token, collectionId) => async (dispatch) => {
-  
   let res = await getCollectionItemsAPI(token, collectionId)
   if (res) {
     dispatch(getCollectionAC(res.collection))
-    dispatch(getItemsAC(res.items))
+    let sortedItemList = res.items.sort((a, b) => {
+      return a.created < b.created ? 1 : -1
+    })
+    dispatch(getItemsAC(sortedItemList,))
   }
 }
-export const deleteItemThunk = (token, itemId) => (dispatch) => {
-  return deleteItemAPI(token, itemId)
-    .then(res => {
-      console.log(res)
-      // dispatch(saveCollectionAC(res))
-    })
+export const deleteItemThunk = (token, itemId) => async (dispatch) => {
+  let res = await deleteItemAPI(token, itemId)
+  if (res) dispatch(deleteItemAC(itemId))
 }
-export const likeItemThunk = (token, itemId, index) => (dispatch) => {
-  return likeItemAPI(token, itemId)
-    .then(res => {
-      
-      if (res.userId) dispatch(likeAC(index, res.userId))
-      // dispatch(saveCollectionAC(res))
-    })
+
+export const likeItemThunk = (token, itemId) => async (dispatch) => {
+  let res = await likeItemAPI(token, itemId)
+  if (res) dispatch(likeAC(itemId, res.userId))
 }
-export const dislikeItemThunk = (token, itemId, index) => (dispatch) => {
-  
-  return dislikeItemAPI(token, itemId)
-    .then(res => {
-      
-      if (res.userId) dispatch(dislikeAC(index, res.userId))
-      // dispatch(saveCollectionAC(res))
-    })
+export const dislikeItemThunk = (token, itemId) => async (dispatch) => {
+  let res = await dislikeItemAPI(token, itemId)
+  if (res) dispatch(dislikeAC(itemId, res.userId))
 }
 export const saveUpdateItemThunk = (token, updateItem) => (dispatch) => {
   return saveUpdateItemAPI(token, updateItem)
@@ -99,18 +105,21 @@ export const addCommentThunk = (token, comment) => (dispatch) => {
       return res
     })
 }
-export const getCommentThunk = (itemId) => (dispatch) => {
-  return getCommentAPI(itemId)
-    .then(res => {
-      const comments = res.comments.map((comment, i) => {
-        comment.name = res.names[i]
-        return comment
-      })
-      dispatch(getCommentAC(comments))
-      return comments
-    })
+export const addItemToListAC = (item) => ({
+  type: ADD_ITEM_TO_LIST, item
+})
+export const getCommentThunk = (itemId) => async (dispatch) => {
+  let res = await getCommentAPI(itemId)
+  const comments = res.comments.map((comment, i) => {
+    comment.name = res.names[i]
+    return comment
+  })
+  dispatch(getCommentAC(comments, itemId))
+  console.log('getComment')
+  return true
 }
-export const getCommentAC = (comments) => ({type: GET_COMMENTS, comments})
-export const likeAC = (index, userId) => ({type: LIKE_ITEM, index, userId})
-export const dislikeAC = (index, userId) => ({type: DISLIKE_ITEM, index, userId})
+export const getCommentAC = (comments, itemId) => ({type: GET_COMMENTS, comments, itemId})
+export const likeAC = (itemId, userId) => ({type: LIKE_ITEM, itemId, userId})
+export const dislikeAC = (itemId, userId) => ({type: DISLIKE_ITEM, itemId, userId})
 export const getItemsAC = (items) => ({type: GET_ITEMS, items})
+export const deleteItemAC = (itemId) => ({type: DELETE_ITEM, itemId})

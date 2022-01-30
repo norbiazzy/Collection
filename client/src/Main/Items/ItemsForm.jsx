@@ -43,7 +43,7 @@ const ItemsForm = (props) => {
       }, description,
       collectionId: props.collectionId
     }
-    props.saveItemThunk(props.token, item)
+    props.saveItemThunk(props.iToken, item)
   }
 
   const handleInput = (e) => {

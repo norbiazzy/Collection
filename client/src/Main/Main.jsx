@@ -2,17 +2,14 @@ import {Col, Container, Row} from "react-bootstrap";
 import {Route, Routes} from "react-router-dom";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
-import NewsUsers from "./News/Users/NewsUsers.jsx";
-import NewsContainer from "./News/NewsContainer";
-import HeaderContainer from "./Header/HeaderContainer";
 import Profile from "./Profile/Profile";
-import ItemsTable from "./Items/ItemsTable";
 import ItemPage from "./Items/ItemPage";
+import News from "./News/News";
 
 const Main = () => {
   return (
     <>
-      <HeaderContainer/>
+      <Header/>
       <Container>
         <Row>
           <Col xs={3}>
@@ -20,7 +17,7 @@ const Main = () => {
           </Col>
           <Col xs={9}>
             <Routes>
-              <Route path='/' element={<NewsContainer/>}/>
+              <Route path='/' element={<News/>}/>
               <Route exact path={'/profile'} element={<Profile/>}/>
               <Route path={'/profile/:id'} element={<Profile/>}/>
               {/*<Route path='/items/:id' element={<ItemsTable/>}/>*/}
