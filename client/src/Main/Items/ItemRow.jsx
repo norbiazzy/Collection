@@ -20,8 +20,8 @@ const ItemRow = (props) => {
   }
   
   for (const key in headers) {
-    for (let i = 0; i < headers.key.length; i++) {
-      headersTd.key[i] = <td key={key + i}><p>{headers.key[i]}</p></td>
+    for (let i = 0; i < headers[key].length; i++) {
+      headersTd[key][i] = <td key={key + i}><p>{headers[key][i]}</p></td>
     }
   }
   

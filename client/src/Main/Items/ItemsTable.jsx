@@ -30,8 +30,10 @@ const ItemTable = (props) => {
     date: []
   }
   for (const key in props.collection.headers) {
-    for (let i = 0; i < props.collection.headers.key.length; i++) {
-      headersTh.key[i] = <th key={i}><p>{props.collection.headers.key[i].header}</p></th>
+    debugger
+    for (let i = 0; i < props.collection.headers[key].length; i++) {
+      debugger
+      headersTh[key][i] = <th key={i}><p>{props.collection.headers[key][i].header}</p></th>
     }
   }
   
