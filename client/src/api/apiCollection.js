@@ -3,12 +3,11 @@ let headers = {
 }
 
 export const getCollectionAPI = async (token, id) => {
-  let res = await fetch('/api/collection/' + id, {
+  return await fetch('/api/collection/' + id, {
     method: 'GET', headers: {
       Authorization: `Bearer ${token}`
     }
   })
-  return res
 }
 export const deleteCollectionAPI = async (token, id) => {
   let res = await fetch(`/api/collection/${id}`, {method: 'DELETE', headers: {Authorization: `Bearer ${token}`}})
@@ -18,7 +17,7 @@ export const deleteCollectionAPI = async (token, id) => {
 
 export const saveCollectionAPI = async (body, token, userId) => {
   body = JSON.stringify(body)
-  let res = await fetch('/api/collection/create' + userId, {
+  let res = await fetch('/api/collection/create/' + userId, {
     method: 'POST', body, headers: {
       ...headers,
       Authorization: `Bearer ${token}`

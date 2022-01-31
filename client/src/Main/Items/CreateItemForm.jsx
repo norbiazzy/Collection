@@ -2,17 +2,16 @@ import React, {useCallback} from "react";
 import AuthDataHOC from "../../hoc/AuthDataHOC";
 import {compose} from "redux";
 import {useState} from "react";
-import InputForm from "../../Sing/SingForm/InputForm";
-import {TextareaForm} from "../all/TextareaForm";
+import InputForm from "../../all/InputForm";
+import {TextareaForm} from "../../all/TextareaForm";
 import s from "../Profile/Priofile.module.css";
 import ss from "../../Sing/Sing.module.css";
 import {Form} from "react-final-form";
-import ItemAdditionalInputsTEST from "./ItemAdditionalInputsTEST";
+import ItemAdditionalInputs from "./ItemAdditionalInputs";
 import {saveItemThunk} from "../../redux/ItemsReducer";
 import {connect} from "react-redux";
 
-const NewItemForm = (props) => {
-
+const CreateItemForm = (props) => {
   let [tags, setTags] = useState([])
   let [initialValues, setInitialValue] = useState({headers: {checkbox: new Array(props.headers && props.headers.checkbox && props.headers.checkbox.length).fill(false)}})
   let tagInp = React.createRef()
@@ -30,12 +29,11 @@ const NewItemForm = (props) => {
   }
 
   let onSubmit = values => {
-    
     const body = {...values, tags, collectionId: props.collectionId}
     props.saveItemThunk(props.iToken, body)
   }
 
-  const required = useCallback(value => (value ? undefined : true))
+  const required = useCallback(value => (value ? undefined : true),[])
 
   return (
     <Form
@@ -69,7 +67,7 @@ const NewItemForm = (props) => {
                 </div>
               </div>
             </div>
-            <ItemAdditionalInputsTEST required={required} headers={props.headers}/>
+            <ItemAdditionalInputs required={required} headers={props.headers}/>
           </form>
         )
       }}
@@ -82,5 +80,5 @@ const NewItemForm = (props) => {
 export default compose(
   AuthDataHOC,
   connect(null, {saveItemThunk}),
-)(NewItemForm)
+)(CreateItemForm)
 

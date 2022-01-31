@@ -1,5 +1,5 @@
 import {Field} from "react-final-form";
-import s from "../../Sing/Sing.module.css";
+import s from "../Sing/Sing.module.css";
 
 export const TextareaForm = (props) => {
   return (

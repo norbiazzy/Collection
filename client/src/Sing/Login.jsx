@@ -1,9 +1,9 @@
 import s from './Sing.module.css'
-import {NavLink, Redirect, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import React, {useEffect} from "react";
 import {loginThunk} from "../redux/authReducer";
-import {Field, Form} from "react-final-form";
-import InputForm from "./SingForm/InputForm";
+import {Form} from "react-final-form";
+import InputForm from "../all/InputForm";
 import {connect} from "react-redux";
 import {compose} from "redux";
 import AuthDataHOC from "../hoc/AuthDataHOC";
@@ -36,6 +36,7 @@ const Login = (props) => {
       <div className='d-flex justify-content-between'>
         <p>You don't have account?</p> <NavLink to={'/registration'} className='link-dark'>Sing Up</NavLink>
       </div>
+      <NavLink to={'/'}>Go to main</NavLink>
     </div>
   )
 }

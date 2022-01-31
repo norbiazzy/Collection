@@ -5,7 +5,6 @@ const Role = require('../models/Role')
 const auth = require("../middleware/auth.middleware")
 const User = require('../models/User')
 const Profile = require('../models/Profile')
-const Collections = require('../models/Collection')
 const jwt = require('jsonwebtoken')
 const {check, validationResult} = require("express-validator");
 const {Types} = require("mongoose");
@@ -107,10 +106,8 @@ router.post('/login',
 // /api/auth/verify
 router.get('/verify', auth, async (req, res) => {
   try {
-    console.log(true)
     res.status(200).json(req.user)
   } catch (e) {
-    console.log(2)
     res.status(401).json({message: 'is not auth'})
   }
 })

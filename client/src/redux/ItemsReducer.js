@@ -1,20 +1,18 @@
 import {
-  addCommentAPI,
+  
   deleteItemAPI,
-  dislikeItemAPI, getCollectionItemsAPI, getCommentAPI, getItemListAPI,
+  dislikeItemAPI, getCollectionItemsAPI,  getItemListAPI,
   likeItemAPI,
   saveItemAPI,
-  saveUpdateItemAPI
+  
 } from "../api/apiItem";
-import {getCollectionAC} from "./collectionsReducer2";
+import {getCollectionAC} from "./collectionsReducer";
 
 const GET_ITEMS = 'GET_ITEMS'
 const LIKE_ITEM = 'LIKE_ITEM'
 const DISLIKE_ITEM = 'DISLIKE_ITEM'
 const DELETE_ITEM = 'DELETE_ITEM'
-const UPDATE_ITEM = 'UPDATE_ITEM'
 const GET_COMMENTS = 'GET_COMMENTS'
-const GET_ITEM_LIST = 'GET_ITEM_LIST'
 const ADD_ITEM_TO_LIST = 'ADD_ITEM_TO_LIST'
 
 const initialState = {
@@ -73,16 +71,13 @@ export const saveItemThunk = (token, item) => async (dispatch) => {
 }
 export const getItemListThunk = () => async (dispatch) => {
   let res = await getItemListAPI()
-  console.log(res)
-  let sortedResult = res.result.sort((a, b) => b.item.likes.length - a.item.likes.length)
-  let ItemList = sortedResult.map(data => {
+  let ItemList = res.result.map(data => {
     data.item.collectionName = data.collectionInfo.name
     data.item.email = data.userInfo.email
     data.item.topic = data.collectionInfo.topic.label
     return data.item
   })
-  console.log(ItemList)
-  if (res) dispatch(getItemsAC(ItemList))
+  if (res) dispatch(getItemsAC(ItemList.reverse()))
 }
 export const getCollectionItemsThunk = (token, collectionId) => async (dispatch) => {
   let res = await getCollectionItemsAPI(token, collectionId)
@@ -107,33 +102,33 @@ export const dislikeItemThunk = (token, itemId) => async (dispatch) => {
   let res = await dislikeItemAPI(token, itemId)
   if (res) dispatch(dislikeAC(itemId, res.userId))
 }
-export const saveUpdateItemThunk = (token, updateItem) => (dispatch) => {
-  return saveUpdateItemAPI(token, updateItem)
-    .then(res => {
-      console.log(res)
-      return res
-    })
-}
-export const addCommentThunk = (token, comment) => (dispatch) => {
-  return addCommentAPI(token, comment)
-    .then(res => {
-      return res
-    })
-}
+// export const saveUpdateItemThunk = (token, updateItem) => (dispatch) => {
+//   return saveUpdateItemAPI(token, updateItem)
+//     .then(res => {
+//       console.log(res)
+//       return res
+//     })
+// }
+// export const addCommentThunk = (token, comment) => (dispatch) => {
+//   return addCommentAPI(token, comment)
+//     .then(res => {
+//       return res
+//     })
+// }
 export const addItemToListAC = (item) => ({
   type: ADD_ITEM_TO_LIST, item
 })
-export const getCommentThunk = (itemId) => async (dispatch) => {
-  let res = await getCommentAPI(itemId)
-  const comments = res.comments.map((comment, i) => {
-    comment.name = res.names[i]
-    return comment
-  })
-  dispatch(getCommentAC(comments, itemId))
-  console.log('getComment')
-  return true
-}
-export const getCommentAC = (comments, itemId) => ({type: GET_COMMENTS, comments, itemId})
+// export const getCommentThunk = (itemId) => async (dispatch) => {
+//   let res = await getCommentAPI(itemId)
+//   const comments = res.comments.map((comment, i) => {
+//     comment.name = res.names[i]
+//     return comment
+//   })
+//   dispatch(getCommentAC(comments, itemId))
+//   console.log('getComment')
+//   return true
+// }
+// export const getCommentAC = (comments, itemId) => ({type: GET_COMMENTS, comments, itemId})
 export const likeAC = (itemId, userId) => ({type: LIKE_ITEM, itemId, userId})
 export const dislikeAC = (itemId, userId) => ({type: DISLIKE_ITEM, itemId, userId})
 export const getItemsAC = (items) => ({type: GET_ITEMS, items})

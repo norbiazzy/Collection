@@ -1,13 +1,13 @@
 import {Form} from "react-final-form";
-import InputForm from "../../Sing/SingForm/InputForm";
-import {TextareaForm} from "../all/TextareaForm";
+import InputForm from "../../all/InputForm";
+import {TextareaForm} from "../../all/TextareaForm";
 import s from './Priofile.module.css'
 import {compose} from "redux";
 import AuthDataHOC from "../../hoc/AuthDataHOC";
 import {connect} from "react-redux";
 import {updateProfileThunk} from "../../redux/uersReducer";
 
-const EditProfile = (props) => {
+const EditProfileModal = (props) => {
   const onSubmit = (values) => {
     let updates = {...values, userId: props.profile.userId}
     if (!updates.status) updates.status = ' '
@@ -70,4 +70,4 @@ export default compose(
   connect(null, {
     updateProfileThunk
   })
-)(EditProfile)
+)(EditProfileModal)

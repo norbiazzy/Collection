@@ -21,7 +21,6 @@ const initialState = {
 export const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case REG_USER:
-      console.log('reducer reg')
       return {
         ...state,
       }

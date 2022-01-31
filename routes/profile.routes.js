@@ -22,7 +22,7 @@ router.get('/getUser', auth, async (req, res) => {
   }
 })
 // /api/profile/get
-router.get('/getUser/:id', auth, async (req, res) => {
+router.get('/getUser/:id', async (req, res) => {
   try {
     const userId = req.params.id
     const profile = await Profile.findOne({userId})

@@ -1,25 +1,18 @@
 import React from "react";
-import {render} from 'react-dom'
-import InputForm from "../../../Sing/SingForm/InputForm";
+import InputForm from "../../../all/InputForm";
 import {Form, Field} from "react-final-form";
-import {FieldArray} from 'react-final-form-arrays'
-// import {TextareaForm} from "../../all/TextareaForm";
-import Select from "react-select";
-import {useState} from "react";
-import HeadersInput from "./HeadersInput";
-import s from "../Priofile.module.css";
-import {saveCollectionThunk} from "../../../redux/collectionsReducer2";
+import {saveCollectionThunk} from "../../../redux/collectionsReducer";
 import arrayMutators from "final-form-arrays";
 import AdditionallyCollectionFields from "./AdditionalsCollectionFiels";
-import {TextareaForm} from "../../all/TextareaForm";
+import {TextareaForm} from "../../../all/TextareaForm";
 import {getTopicsSelect} from "../../../redux/selectors/collection-select";
 import {compose} from "redux";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
 import {connect} from "react-redux";
-import ReactSelectAdapter from "../../all/ReactSelectAdapter";
+import ReactSelectAdapter from "../../../all/ReactSelectAdapter";
 
 
-const NewCollectionFormArr = (props) => {
+const CreateCollectionForm = (props) => {
   
   
   let onSubmit = values => {
@@ -46,8 +39,7 @@ const NewCollectionFormArr = (props) => {
         ...arrayMutators
       }}
       render={({
-                 handleSubmit, form: {mutators: {push, pop}}, pristine,
-                 form, submitting, values
+                 handleSubmit, form: {mutators: {push, pop}}
                }) => {
         props.setSubmit(handleSubmit)
         return (
@@ -87,4 +79,4 @@ const mapStateToProps = (state) => ({
 export default compose(
   AuthDataHOC,
   connect(mapStateToProps, {saveCollectionThunk}),
-)(NewCollectionFormArr)
+)(CreateCollectionForm)

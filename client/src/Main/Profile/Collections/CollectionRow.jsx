@@ -2,7 +2,7 @@ import React from "react";
 import s from './Collection.module.css'
 import {NavLink} from "react-router-dom";
 
-import {editSVG, rightArrowSVG, trashSVG} from "../../../assets/svg/svgExport";
+import {rightArrowSVG, trashSVG} from "../../../assets/svg/svgExport";
 import {compose} from "redux";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
 
@@ -16,8 +16,9 @@ const Collection = (props) => {
       <td>{topic.label}</td>
       <td>{items ? items.length : 0}</td>
       <td>
-        <button onClick={() => props.deleteCollection(_id)}
-                className={'btn btn-dark mx-1'}>{trashSVG(s.tollSVG)}</button>
+        {props.iAdminMod || props.collection.userId === props.iUserId ?
+          <button onClick={() => props.deleteCollection(_id)}
+                  className={'btn btn-dark mx-1'}>{trashSVG(s.tollSVG)}</button> : null}
         <NavLink to={'/items/' + _id} className={'btn btn-dark mx-1'}>{rightArrowSVG(s.tollSVG)}</NavLink>
         {/*<NavLink to={'/profile/'+ userId} className={'btn btn-dark mx-1'}>{userSVG(s.tollSVG)}</NavLink>*/}
       </td>

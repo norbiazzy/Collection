@@ -2,15 +2,15 @@ import React from "react";
 import {Field, Form} from "react-final-form";
 import {compose} from "redux";
 import {connect} from "react-redux";
-import ReactSelectAdapter from "../../all/ReactSelectAdapter";
+import ReactSelectAdapter from "../../../all/ReactSelectAdapter";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
-import {TextareaForm} from "../../all/TextareaForm";
-import InputForm from "../../../Sing/SingForm/InputForm";
+import {TextareaForm} from "../../../all/TextareaForm";
+import InputForm from "../../../all/InputForm";
 import {getTopicsSelect} from "../../../redux/selectors/collection-select";
 import s from '../Priofile.module.css'
-import {updateCollectionThunk} from "../../../redux/collectionsReducer2";
+import {updateCollectionThunk} from "../../../redux/collectionsReducer";
 
-const EditCollection = (props) => {
+const EditCollectionModal = (props) => {
   const onSubmit = (values) => {
 
     let updates = {...values, collectionId: props.collection._id}
@@ -67,4 +67,4 @@ const mapStateToProps = (state) => ({
 export default compose(
   AuthDataHOC,
   connect(mapStateToProps, {updateCollectionThunk})
-)(EditCollection)
+)(EditCollectionModal)

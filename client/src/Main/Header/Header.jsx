@@ -13,11 +13,11 @@ const Header = (props) => {
     props.toggleAdminModAC(e.target.checked)
   }
   return (
-    <header>
+    <header className={'py-2'}>
       <Container>
         <Row>
           <Col>
-            <NavLink className='btn btn-dark me-2' to={'/news/collections'}>Collections</NavLink>
+            <NavLink className='btn btn-dark me-2' to={'/'}>Collections</NavLink>
             <NavLink className='btn btn-dark me-2' to={'/news/items'}>Items</NavLink>
             <NavLink className='btn btn-dark me-2' to={'/news/users'}>Users</NavLink>
           </Col>

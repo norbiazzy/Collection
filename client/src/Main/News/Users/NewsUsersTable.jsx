@@ -1,7 +1,4 @@
-import {Col} from "react-bootstrap";
 import React, {useCallback, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import CollectionRow from "../../Profile/Collections/CollectionRow";
 import {getUserListSelect} from "../../../redux/selectors/user-select";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
 import {connect} from "react-redux";
@@ -13,13 +10,12 @@ import {
   setUserRoleThunk,
   unblockUserThunk
 } from "../../../redux/uersReducer";
-import Loader from "../../all/Loader";
+import Loader from "../../../all/Loader";
 import UserRow from "./UserRow";
 import useSortableData from "../../../hooks/useSortableData";
 
 const NewsUsers = (props) => {
   const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
   const {items, requestSort, sortConfig} = useSortableData(props.userList);
   
   const getClassNamesFor = (name) => {
@@ -28,7 +24,7 @@ const NewsUsers = (props) => {
   };
   
   const getUserList = useCallback(async () => {
-    let res = await props.getUserListThunk()
+    await props.getUserListThunk()
     setLoading(false)
   }, [props.iToken])
   
@@ -42,7 +38,6 @@ const NewsUsers = (props) => {
   const toggleRole = (userId, data) => {
     data ? props.setAdminRoleThunk(props.iToken, userId) : props.setUserRoleThunk(props.iToken, userId)
   }
-  console.log(items)
   return (<>
     <h2>Users</h2>
     <table className="table text-center">

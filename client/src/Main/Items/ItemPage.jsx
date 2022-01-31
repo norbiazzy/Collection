@@ -1,5 +1,5 @@
-import NewItemForm from "./NewItemForm";
-import React, {useCallback, useDebugValue, useEffect, useState} from "react";
+import NewItemForm from "./CreateItemForm";
+import React, {useCallback, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import AuthDataHOC from "../../hoc/AuthDataHOC";
 import {compose} from "redux";
@@ -7,15 +7,15 @@ import {useParams} from "react-router";
 import {getCollectionItemsThunk} from "../../redux/ItemsReducer";
 import {getCollectionSelect} from "../../redux/selectors/collection-select";
 import {getItemListSelect} from "../../redux/selectors/item-select";
-import Loader from "../all/Loader";
+import Loader from "../../all/Loader";
 import CollectionHeader from "../Profile/Collections/CollectionHeader";
-import EditCollection from "../Profile/Collections/EditCollection";
+import EditCollectionModal from "../Profile/Collections/EditCollectionModal";
 import ItemsTable from "./ItemsTable";
 
 const ItemsPage = (props) => {
   const [createMod, setCreateMod] = useState(false)
   const [editCollectionMod, setEditCollectionMod] = useState(false)
-  const [editItemMod, setEditItemMod] = useState(false)
+  // const [editItemMod, setEditItemMod] = useState(false)
   const [loading, setLoading] = useState(true)
   let submit
   let setSubmit = (e) => {
@@ -38,10 +38,10 @@ const ItemsPage = (props) => {
   return (
     <>
       {editCollectionMod
-        ? <EditCollection close={() => setEditCollectionMod(false)} collection={props.collection}/>
+        ? <EditCollectionModal close={() => setEditCollectionMod(false)} collection={props.collection}/>
         : null}
       {/*{editItemMod*/}
-      {/*  ? <EditCollection close={() => setEditItemMod(false)} collection={props.collection}/>*/}
+      {/*  ? <EditCollectionModal close={() => setEditItemMod(false)} collection={props.collection}/>*/}
       {/*  : null}*/}
       <CollectionHeader openModal={() => setEditCollectionMod(true)} collection={props.collection}/>
       <div className='d-flex justify-content-between align-items-center'>
@@ -62,8 +62,6 @@ const ItemsPage = (props) => {
       <div>
       {createMod ? <NewItemForm collectionId={props.collection._id} setSubmit={setSubmit}
                                 headers={props.collection.headers}/> : null}
-      {/*  <h2> ? Create Item - props.collection</h2>*/}
-      {/*  <h2>Items table header -> Items Row</h2>*/}
         <ItemsTable />
       </div>
     </>

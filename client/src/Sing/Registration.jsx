@@ -2,9 +2,9 @@ import s from './Sing.module.css'
 import {NavLink, useNavigate} from "react-router-dom";
 import {Form, Field} from 'react-final-form'
 import {hideErrMessageAC, registerAC, registrationThunk, showErrMessageAC} from "../redux/authReducer";
-import InputForm from "./SingForm/InputForm";
+import InputForm from "../all/InputForm";
 import {connect} from "react-redux";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import AuthDataHOC from "../hoc/AuthDataHOC";
 import {compose} from "redux";
 
@@ -40,7 +40,7 @@ const Registration = (props) => {
             </div>
             <div>
               <Field name="role" type={'checkbox'} render={
-                ({input, meta}) => (
+                ({input}) => (
                   <label className={'d-flex py-2 align-items-center'}>
                     <span className={'pe-2'}>Admin</span>
                     <input {...input}/>
@@ -55,6 +55,7 @@ const Registration = (props) => {
       <div className='d-flex justify-content-between'>
         <p>You have account?</p> <NavLink to={'/login'} className='link-dark'>Sing In</NavLink>
       </div>
+      <NavLink to={'/'}>Go to main</NavLink>
     </div>
   )
 }

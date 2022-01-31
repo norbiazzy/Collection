@@ -1,17 +1,12 @@
 import React, {useCallback} from "react";
-import s from '../Priofile.module.css'
-import {useNavigate} from "react-router-dom";
 import CollectionRow from "./CollectionRow";
-import {getProfile} from "../../../redux/selectors/user-select";
 import {getCollectionListSelect} from "../../../redux/selectors/collection-select";
 import {compose} from "redux";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
 import {connect} from "react-redux";
-import {deleteUserThunk, getProfileThunk} from "../../../redux/uersReducer";
-import {deleteCollectionThunk} from "../../../redux/collectionsReducer2";
+import {deleteCollectionThunk} from "../../../redux/collectionsReducer";
 
 const CollectionTable = (props) => {
-
   const deleteCollection = useCallback((collectionId) => {
     props.deleteCollectionThunk(props.iToken, collectionId)
   }, [props.iToken])

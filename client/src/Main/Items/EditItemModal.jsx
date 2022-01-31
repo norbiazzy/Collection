@@ -1,16 +1,6 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import s from './Items.module.css'
+import React from "react";
 
-const EditItem = (props) => {
-  // const cancelScroll = ()=>{
-  //   window.scrollTo(0,0)
-  // }
-  // useEffect(()=>{
-  //   window.addEventListener('scroll',cancelScroll)
-  //   return ()=>{
-  //     window.removeEventListener('scroll', cancelScroll)
-  //   }
-  // })
+const EditItemModal = (props) => {
   return (
     <>
       <div onClick={props.closeModal} className={'shadow'}/>
@@ -25,7 +15,7 @@ const EditItem = (props) => {
           {props.item.tags.map(tag=><span>{tag} </span>)}
           <div>
             <button onClick={props.save}>Save</button>
-            <button onClick={props.closeModal}>Cansel</button>
+            <button onClick={props.closeModal}>Cancel</button>
           </div>
         </div>
       </div>
@@ -33,4 +23,4 @@ const EditItem = (props) => {
   )
 }
 
-export default EditItem
+export default EditItemModal

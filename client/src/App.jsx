@@ -6,9 +6,9 @@ import Login from "./Sing/Login";
 import {loginOutThunk, verifyTokenThunk} from "./redux/authReducer";
 import {connect} from "react-redux";
 import React, {useCallback, useEffect, useState} from "react";
-import Loader from "./Main/all/Loader";
+import Loader from "./all/Loader";
 import Registration from "./Sing/Registration";
-import ErrorPage from "./Main/all/ErrorPage";
+import ErrorPage from "./all/ErrorPage";
 import {compose} from "redux";
 import AuthDataHOC from "./hoc/AuthDataHOC";
 

@@ -1,19 +1,18 @@
 import React, {useCallback, useEffect, useState} from "react";
 import s from './Priofile.module.css'
-import {NavLink, useParams} from "react-router-dom";
-import NewCollectionForm from "./Collections/NewCollectionForm";
+import {useParams} from "react-router-dom";
 import {useNavigate} from "react-router";
-import EditProfile from "./EditProfile";
+import EditProfile from "./EditProfileModal";
 import CollectionTable from "./Collections/CollectionTable";
 import {connect} from "react-redux";
-import {deleteCollectionThunk, saveCollectionThunk} from "../../redux/collectionsReducer2";
+import {saveCollectionThunk} from "../../redux/collectionsReducer";
 import {getProfile} from "../../redux/selectors/user-select";
 import AuthDataHOC from "../../hoc/AuthDataHOC";
 import {compose} from "redux";
 import {blockUserThunk, deleteUserThunk, getProfileThunk, unblockUserThunk} from "../../redux/uersReducer";
-import Loader from "../all/Loader";
+import Loader from "../../all/Loader";
 import {editSVG} from "../../assets/svg/svgExport";
-import NewCollectionFormArr from "./Collections/NewCollectionFormArr";
+import CreateCollectionForm from "./Collections/CreateCollectionForm";
 
 
 let Profile = (props) => {
@@ -28,7 +27,7 @@ let Profile = (props) => {
     submit = e
   }
   const getProfile = useCallback(async () => {
-    if (!props.iToken) return navigate('/news/collection')
+    if (!props.iToken && !userId) return navigate('/')
     let res = await props.getProfileThunk(props.iToken, userId)
     setLoading(false)
     setErrorPage(!res)
@@ -89,7 +88,7 @@ let Profile = (props) => {
             </button>
           </div> : null}
         </div>
-        {createMod ? <NewCollectionFormArr userId={userId} setSubmit={setSubmit} {...props}/> : null}
+        {createMod ? <CreateCollectionForm userId={userId} setSubmit={setSubmit} {...props}/> : null}
         <CollectionTable/>
       </div>
     </>

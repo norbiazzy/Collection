@@ -1,17 +1,15 @@
-import {useNavigate} from "react-router";
 import {useCallback, useEffect, useState} from "react";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
 import {compose} from "redux";
 import {connect} from "react-redux";
-import Loader from "../../all/Loader";
+import Loader from "../../../all/Loader";
 import {getCollectionListSelect} from "../../../redux/selectors/collection-select";
-import {getCollectionListThunk} from "../../../redux/collectionsReducer2";
+import {getCollectionListThunk} from "../../../redux/collectionsReducer";
 import NewsCollectionRow from "./NewsCollectionRow";
 import useSortableData from "../../../hooks/useSortableData";
 
 const NewsItemsTable = (props) => {
   const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
   const {items, requestSort, sortConfig} = useSortableData(props.collectionList);
   
   const getClassNamesFor = (name) => {
@@ -21,16 +19,15 @@ const NewsItemsTable = (props) => {
   
   
   const getCollectionList = useCallback(async () => {
-    let res = await props.getCollectionListThunk()
+    await props.getCollectionListThunk()
     setLoading(false)
   }, [props.iToken])
   
   useEffect(() => getCollectionList(), [getCollectionList])
   
   if (loading) return <Loader/>
-  console.log(props.collectionList)
   return (<>
-    <h2>Items</h2>
+    <h2>Collections</h2>
     <table className="table text-center">
       <thead>
       <tr>

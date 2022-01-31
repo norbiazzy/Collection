@@ -1,9 +1,8 @@
-import {useNavigate} from "react-router";
 import {useCallback, useEffect, useState} from "react";
 import AuthDataHOC from "../../../hoc/AuthDataHOC";
 import {compose} from "redux";
 import {connect} from "react-redux";
-import Loader from "../../all/Loader";
+import Loader from "../../../all/Loader";
 import {getItemListThunk} from "../../../redux/ItemsReducer";
 import {getItemListSelect} from "../../../redux/selectors/item-select";
 import NewsItemRow from "./NewsItemRow";
@@ -11,7 +10,6 @@ import useSortableData from "../../../hooks/useSortableData";
 
 const NewsItemsTable = (props) => {
   const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
   const {items, requestSort, sortConfig} = useSortableData(props.itemList);
   const getClassNamesFor = (name) => {
     if (!sortConfig) return
@@ -19,7 +17,7 @@ const NewsItemsTable = (props) => {
   };
   
   const getItemsList = useCallback(async () => {
-    let res = await props.getItemListThunk()
+    await props.getItemListThunk()
     setLoading(false)
   }, [props.iToken])
   
@@ -50,7 +48,7 @@ const NewsItemsTable = (props) => {
         <th scope="col" className={getClassNamesFor('likes')}
             onClick={() => requestSort('likes')}>Likes
         </th>
-        <th scope="col">Comments</th>
+        {/*<th scope="col">Comments</th>*/}
       </tr>
       </thead>
       <tbody>

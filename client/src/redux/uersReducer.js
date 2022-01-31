@@ -6,7 +6,7 @@ import {
   unblockUserAPI,
   updateProfileAPI
 } from "../api/apiUser";
-import {getCollectionListAC} from "./collectionsReducer2";
+import {getCollectionListAC} from "./collectionsReducer";
 import {loginOutAC} from "./authReducer";
 
 const GET_PROFILE = 'GET_PROFILE'
@@ -95,10 +95,8 @@ export const getUserListThunk = () => async (dispatch) => {
   dispatch(getUserListAC(userList))
 }
 export const getProfileThunk = (token, profileId) => async (dispatch) => {
-  
   let res = await getProfileUserAPI(token, profileId)
   if (res) {
-    
     dispatch(getProfileAC(res.profile, res.user))
     let sortedCollectionList = res.collections.sort((a, b) => {
       return a.created < b.created ? 1 : -1
@@ -123,7 +121,7 @@ export const blockUserThunk = (token, userId) => async (dispatch) => {
   dispatch(blockUserAC(userId))
 }
 export const unblockUserThunk = (token, userId) => async (dispatch) => {
-  let res = await unblockUserAPI(token, userId)
+  await unblockUserAPI(token, userId)
   dispatch(unblockUserAC(userId))
 }
 export const setUserRoleThunk = (token, userId) => async (dispatch) => {

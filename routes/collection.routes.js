@@ -21,8 +21,8 @@ router.post('/createItem?:id', auth, async (req, res) => {
     return res.status(400)
   }
 })
-// /api/collection/createCollection
-router.post('/create?:id', auth, async (req, res) => {
+
+router.post('/create/:id', auth, async (req, res) => {
   try {
     const userId = req.params.id || req.user.userId
     const obj = req.body
@@ -33,6 +33,22 @@ router.post('/create?:id', auth, async (req, res) => {
     
     return res.status(200).json(collection)
     
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(400).json({message: 'Коллекцию сохранить не удалось, не все поля зыли заполнены!'})
+  }
+})
+router.post('/create', auth, async (req, res) => {
+  try {
+    const userId = req.params.id || req.user.userId
+    const obj = req.body
+    obj.userId = userId
+    let collection = new Collection(obj)
+    await User.findByIdAndUpdate(userId, {$addToSet: {collections: collection._id}})
+    await collection.save()
+
+    return res.status(200).json(collection)
+
   } catch (e) {
     console.log(e, 'error')
     return res.status(400).json({message: 'Коллекцию сохранить не удалось, не все поля зыли заполнены!'})
@@ -110,7 +126,6 @@ router.get('/comment/:id', async (req, res) => {
       const comments = await Comment.find({itemId})
       for (let i = 0; i < comments.length; i++) {
         let profile = await Profile.findOne({userId: comments[i].userId})
-        console.log(profile)
         await names.push(profile.name)
       }
       return res.status(200).json({comments, names})
@@ -124,7 +139,6 @@ router.get('/comment/:id', async (req, res) => {
 // /api/collection/createCollection
 router.post('/getCollectionsList', auth, async (req, res) => {
   try {
-    console.log(req.user.userId)
     let collections = await Collection.find({userId: req.user.userId})
     return res.status(200).json(collections)
   } catch (e) {
