@@ -10,9 +10,9 @@ import CommentRow from "./CommentRow";
 const ItemRow = (props) => {
   const {name, _id, description, headers, likes, tags} = props.item
   const [commentsIsOpen, setCommentsIsOpen] = useState(false)
-  debugger
+  
   let spanText = tags.length ? tags.map(t => <span key={t}>{t} </span>) : <span>-</span>
-
+  
   let headersTd = {
     text: [],
     number: [],
@@ -20,13 +20,13 @@ const ItemRow = (props) => {
     checkbox: [],
     date: []
   }
-
+  
   for (const key in headers) {
     for (let i = 0; i < headers[key].length; i++) {
       headersTd[key][i] = <td key={key + i}>{headers[key][i]} </td>
     }
   }
-
+  
   return (<>
     <tr key={_id}>
       <td>{name}</td>
@@ -39,14 +39,9 @@ const ItemRow = (props) => {
         <button className={'btn btn-dark mx-1'} type={'button'}>{editSVG(s.tollSVG)}</button>
         <button className={'btn btn-dark mx-1 position-relative'}
                 onClick={() => {
-
                   if (!likes.includes(props.iUserId)) props.likeItem(_id)
                   else props.dislikeItem(_id)
-                }}
-                type={'button'}>{heartSVG(s.tollSVG)}
-          <span style={{color: 'gray'}}
-                className={'position-absolute top-50 start-50 translate-middle'}>{likes.length}</span>
-        </button>
+                }} type={'button'}>{likes.length}</button>
         <button className={'btn btn-dark mx-1'}
                 onClick={() => setCommentsIsOpen(prevState => !prevState)}
                 type={'button'}>{commentSVG(s.tollSVG)}</button>
@@ -60,12 +55,11 @@ const ItemRow = (props) => {
   </>)
 }
 const mapStateToProps = (state => (
-{
-  // comments: getCommentsSelect(state)
-}
+  {
+    // comments: getCommentsSelect(state)
+  }
 ))
 
 export default compose(AuthDataHOC, connect(mapStateToProps,
-{
-}
+  {}
 ))(ItemRow)

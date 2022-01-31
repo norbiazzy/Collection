@@ -4,27 +4,19 @@ import {useNavigate} from "react-router-dom";
 
 const NewsUsers = (props) => {
   const navigate = useNavigate()
-  const deleteUser = () => {
-    props.delete(props.iToken, props.user._id)
-  }
-  const blockUser = () => {
-  }
-  const linkUser = () => {
   
-    navigate('/profile/'+props.user._id)
-  }
-  const roleUser = () => {
-  }
   return (
     <tr>
       <td>{props.user.email}</td>
+      <td>{props.user.collections.length}</td>
       <td>{props.user.role}</td>
-      <td>{props.user.blocked+''}</td>
+      <td>{props.user.role}</td>
+      <td>{props.user.blocked + ''}</td>
       <td>
-        <button onClick={deleteUser}>delete</button>
-        <button onClick={blockUser}>block</button>
-        <button onClick={linkUser}>link</button>
-        <button onClick={roleUser}>role</button>
+        <button>delete</button>
+        <button>block</button>
+        <button>link</button>
+        <button>role</button>
       </td>
       <td></td>
     </tr>

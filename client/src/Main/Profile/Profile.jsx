@@ -21,29 +21,28 @@ let Profile = (props) => {
   const [createMod, setCreateMod] = useState(false)
   const [editProfileMod, setEditProfileMod] = useState(false)
   const [errorPage, setErrorPage] = useState(false)
-  const profileId = useParams().id
+  const userId = useParams().id
   const navigate = useNavigate()
   let submit
   let setSubmit = (e) => {
     submit = e
   }
   const getProfile = useCallback(async () => {
-    if (!props.iToken) return navigate('/')
-    let res = await props.getProfileThunk(props.iToken, profileId)
+    if (!props.iToken) return navigate('/news/collection')
+    let res = await props.getProfileThunk(props.iToken, userId)
     setLoading(false)
     setErrorPage(!res)
-  }, [props.iToken, profileId])
+  }, [props.iToken, userId])
 
   useEffect(() => getProfile(), [getProfile])
 
   const toggleMod = (value) => value(prevState => !prevState)
 
   if (loading) return <Loader/>
-
   if (errorPage) navigate('/error')
 
   const deleteUser = async () => {
-    let res = await props.deleteUserThunk(props.iToken, props.iUserId)
+    let res = await props.deleteUserThunk(props.iToken, props.profile.userId)
     if (res) navigate('/error')
   }
   const blockUser = async () => {
@@ -60,7 +59,7 @@ let Profile = (props) => {
         : null}
       <div className={'d-flex'}>
         <h2>Profile</h2>
-        {props.adminMod || props.profile.userId === props.iUserId ?
+        {props.iAdminMod || props.profile.userId === props.iUserId ?
           <button
             onClick={() => toggleMod(setEditProfileMod)}
             className={'btn btn-dark'}>
@@ -72,7 +71,7 @@ let Profile = (props) => {
           <img className={s.img} src={props.profile.photo} alt={'profile'}/>
         </div>
         <div>
-          <p>Username{props.profile.name}</p>
+          <p>Username: {props.profile.name}</p>
           <p>Status: {props.profile.status}</p>
           <p>Role: {props.profile.role}</p>
           <p>is blocked: {props.profile.blocked + ''}</p>
@@ -81,7 +80,7 @@ let Profile = (props) => {
       <div>
         <div className='d-flex justify-content-between align-items-center'>
           <h2>Collections</h2>
-          {props.adminMod || props.profile.userId === props.iUserId ? <div>
+          {props.iAdminMod || props.profile.userId === props.iUserId ? <div>
             {createMod ? <button className={'btn btn-success me-2'}
                                  onClick={event => submit(event)}>Create
             </button> : null}
@@ -90,7 +89,7 @@ let Profile = (props) => {
             </button>
           </div> : null}
         </div>
-        {createMod ? <NewCollectionFormArr setSubmit={setSubmit} {...props}/> : null}
+        {createMod ? <NewCollectionFormArr userId={userId} setSubmit={setSubmit} {...props}/> : null}
         <CollectionTable/>
       </div>
     </>

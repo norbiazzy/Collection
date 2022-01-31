@@ -35,7 +35,7 @@ const NewCollectionFormArr = (props) => {
         date: values.date,
       }
     }
-    props.saveCollectionThunk(body, props.iToken)
+    props.saveCollectionThunk(body, props.iToken, props.userId)
   }
   
   const required = value => (value ? undefined : true)

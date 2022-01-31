@@ -7,23 +7,7 @@ const Profile = require("../models/Profile")
 const Comment = require("../models/Comment")
 
 const router = Router()
-// /api/collection/createCollection
-router.post('/create', auth, async (req, res) => {
-  try {
-    const obj = req.body
-    obj.userId = req.user.userId
-    let collection = new Collection(obj)
-    await User.findByIdAndUpdate(req.user.userId, {$addToSet: {collections: collection._id}})
-    await collection.save()
-
-    return res.status(200).json(collection)
-
-  } catch (e) {
-    console.log(e, 'error')
-    return res.status(400).json({message: 'Коллекцию сохранить не удалось, не все поля зыли заполнены!'})
-  }
-})
-router.post('/createItem', auth, async (req, res) => {
+router.post('/createItem?:id', auth, async (req, res) => {
   try {
     const item = req.body
     item.userId = req.user.userId
@@ -31,10 +15,27 @@ router.post('/createItem', auth, async (req, res) => {
     await Collection.findByIdAndUpdate(item.collectionId, {$addToSet: {items: newItem._id}})
     await newItem.save()
     return res.status(200).json(newItem)
-
+    
   } catch (e) {
     console.log(e, 'error')
     return res.status(400)
+  }
+})
+// /api/collection/createCollection
+router.post('/create?:id', auth, async (req, res) => {
+  try {
+    const userId = req.params.id || req.user.userId
+    const obj = req.body
+    obj.userId = userId
+    let collection = new Collection(obj)
+    await User.findByIdAndUpdate(userId, {$addToSet: {collections: collection._id}})
+    await collection.save()
+    
+    return res.status(200).json(collection)
+    
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(400).json({message: 'Коллекцию сохранить не удалось, не все поля зыли заполнены!'})
   }
 })
 router.post('/deleteItem', auth, async (req, res) => {
@@ -46,16 +47,17 @@ router.post('/deleteItem', auth, async (req, res) => {
   } catch (e) {
     console.log(e, 'error')
     return res.status(400).json({message: 'error'})
-
+    
   }
 })
+
 router.post('/likeItem', auth, async (req, res) => {
     try {
       const {itemId} = req.body
       let userId = req.user.userId
       await Item.findByIdAndUpdate(itemId, {$addToSet: {likes: userId}});
       return res.status(200).json({userId})
-
+      
     } catch (e) {
       console.log(e, 'error')
       return res.status(400)
@@ -80,7 +82,7 @@ router.post('/updateItem', auth, async (req, res) => {
       const item = req.body
       await Item.findByIdAndUpdate(item._id, item);
       return res.status(200).json({message: 'UPDATE!!!'})
-
+      
     } catch
       (e) {
       console.log(e, 'error')
@@ -129,18 +131,6 @@ router.post('/getCollectionsList', auth, async (req, res) => {
     console.log(e, 'error')
   }
 })
-// /api/collection/getCollection
-router.get('/:id', async (req, res) => {
-  try {
-    let collection = await Collection.findById(req.params.id)
-    if (!collection) throw new Error('Collection is not defined')
-    let items = await Item.find({collectionId: req.params.id})
-    return res.status(200).json({collection, items})
-  } catch (e) {
-    console.log(e, 'error')
-    return res.status(404).json({message: e.message})
-  }
-})
 router.post('/update', auth, async (req, res) => {
   try {
     let body = req.body
@@ -164,4 +154,48 @@ router.delete('/:id', auth, async (req, res) => {
     return res.status(400).json('Не удалили...')
   }
 })
+router.get('/itemList', async (req, res) => {
+  try {
+    let itemList = await Item.find()
+    let result = []
+    for (let i = 0; i < itemList.length; i++) {
+      let collectionInfo = await Collection.findById(itemList[i].collectionId, {name: 1, topic: 1,})
+      let userInfo = await User.findById(itemList[i].userId, {email: 1})
+      result = [...result, {item: itemList[i], collectionInfo, userInfo}]
+    }
+    return res.status(200).json({result})
+    
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(404)
+  }
+})
+router.get('/list', async (req, res) => {
+  try {
+    let collectionList = await Collection.find()
+    let result = []
+    for (let i = 0; i < collectionList.length; i++) {
+      let author = await User.findById(collectionList[i].userId, {email: 1})
+      result = [...result, {collection: collectionList[i], author}]
+    }
+    return res.status(200).json({result})
+    
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(404)
+  }
+})
+// /api/collection/getCollection
+router.get('/:id', async (req, res) => {
+  try {
+    let collection = await Collection.findById(req.params.id)
+    if (!collection) throw new Error('Collection is not defined')
+    let items = await Item.find({collectionId: req.params.id})
+    return res.status(200).json({collection, items})
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(404).json({message: e.message})
+  }
+})
+
 module.exports = router

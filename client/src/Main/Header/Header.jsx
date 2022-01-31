@@ -17,15 +17,16 @@ const Header = (props) => {
       <Container>
         <Row>
           <Col>
-            <NavLink className='btn btn-dark' to={'/'}>Home</NavLink>
-            {/*<NavLink className='btn btn-dark' to={'/users'}>NewsUsers</NavLink>*/}
+            <NavLink className='btn btn-dark me-2' to={'/news/collections'}>Collections</NavLink>
+            <NavLink className='btn btn-dark me-2' to={'/news/items'}>Items</NavLink>
+            <NavLink className='btn btn-dark me-2' to={'/news/users'}>Users</NavLink>
           </Col>
           <Col className='d-flex justify-content-end'>
             {props.iToken ?
               (<>
-                {props.role === 'admin' ? <label className={'d-flex align-items-center me-2'}>
+                {props.iRole === 'admin' ? <label className={'d-flex align-items-center me-2'}>
                   <span>Режим админа</span>
-                  <input type={"checkbox"} checked={props.adminMod} onChange={toggleAdminMod}/>
+                  <input type={"checkbox"} checked={props.iAdminMod} onChange={toggleAdminMod}/>
                 </label> : null}
 
                 <NavLink className='btn btn-dark me-2' to={'/profile'}>Profile</NavLink>

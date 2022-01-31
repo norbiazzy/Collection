@@ -12,6 +12,11 @@ textarea {
     z-index: 20;
 }
 
+
+.table {
+    vertical-align: middle;
+}
+
 .customModal {
     position: absolute;
     top: 50%;
@@ -21,8 +26,14 @@ textarea {
     background-color: #fff;
     z-index: 30;
 }
+
 .modalMessage {
     position: fixed;
     bottom: 50px;
     right: 50px;
+}
+
+.svg15 {
+    width: 15px;
+    height: 15px;
 }

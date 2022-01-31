@@ -14,7 +14,6 @@ module.exports = async (req, res, next) => {
     req.user = jwt.verify(token, config.get('jwtSecret'))
     let user = await User.findById(req.user.userId, {blocked:1})
     if (!user) return res.status(404).json({message: 'Потзователь больше не существует'})
-    console.log(user)
     if (user.blocked) return res.status(403).json({message: 'Пользователь заблокирован'})
     req.user.token = token
     next()

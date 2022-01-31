@@ -1,5 +1,10 @@
-import {deleteCollectionAPI, getCollectionAPI, saveCollectionAPI, updateCollectionAPI} from "../api/apiCollection";
-
+import {
+  deleteCollectionAPI,
+  getCollectionAPI,
+  getCollectionListAPI,
+  saveCollectionAPI,
+  updateCollectionAPI
+} from "../api/apiCollection";
 
 const GET_COLLECTION = 'GET_COLLECTION'
 const GET_COLLECTION_LIST = 'GET_COLLECTION_LIST'
@@ -8,8 +13,8 @@ const UPDATE_COLLECTION = 'UPDATE_COLLECTION'
 const ADD_COLLECTION_TO_LIST = 'ADD_COLLECTION_TO_LIST'
 
 const initialState = {
-  collection: null, // текущая коллекция
-  collectionList: [], //список коллекций
+  collection: null,
+  collectionList: [],
   topics: [
     {value: 'alcohol', label: 'Alcohol'},
     {value: 'books', label: 'Books'},
@@ -31,6 +36,7 @@ export const collectionReducer = (state = initialState, action) => {
         collection: action.collection,
       }
     case GET_COLLECTION_LIST:
+      
       return {
         ...state,
         collectionList: action.collectionList,
@@ -62,8 +68,8 @@ export const collectionReducer = (state = initialState, action) => {
   }
 }
 
-export const saveCollectionThunk = (body, token) => async (dispatch) => {
-  let res = await saveCollectionAPI(body, token)
+export const saveCollectionThunk = (body, token, userId = '') => async (dispatch) => {
+  let res = await saveCollectionAPI(body, token, userId)
   if (res) dispatch(addCollectionToListAC(res))
 }
 
@@ -72,15 +78,23 @@ export const updateCollectionThunk = (token, updates) => async (dispatch) => {
   if (res) dispatch(updateCollectionAC(updates))
 }
 
-export const getCollectionAC = (collection) => ({type: GET_COLLECTION, collection})
-export const getCollectionListAC = (collectionList) => ({type: GET_COLLECTION_LIST, collectionList})
-export const addCollectionToListAC = (collection) => ({type: ADD_COLLECTION_TO_LIST, collection})
-
 export const getCollectionThunk = (token, id) => async (dispatch) => {
   let object = await getCollectionAPI(token, id)
   dispatch(getCollectionAC(object.collection))
   return true
 }
+
+export const getCollectionListThunk = () => async (dispatch) => {
+  let res = await getCollectionListAPI()
+  let resultList = res.result.map(data => {
+    data.collection.email = data.author.email
+    data.collection.itemsLength = data.collection.items.length
+    data.collection.topic = data.collection.topic.label
+    return data.collection
+  })
+  dispatch(getCollectionListAC(resultList.reverse()))
+}
+
 export const deleteCollectionThunk = (token, collectionId) => async (dispatch) => {
   let res = await deleteCollectionAPI(token, collectionId)
   if (res) dispatch(deleteCollectionAC(collectionId))
@@ -88,3 +102,7 @@ export const deleteCollectionThunk = (token, collectionId) => async (dispatch) =
 
 export const deleteCollectionAC = (collectionId) => ({type: DELETE_COLLECTION, collectionId})
 export const updateCollectionAC = ({name, description, topic}) => ({type: UPDATE_COLLECTION, name, description, topic})
+export const getCollectionAC = (collection) => ({type: GET_COLLECTION, collection})
+export const getCollectionListAC = (collectionList) => ({type: GET_COLLECTION_LIST, collectionList})
+export const addCollectionToListAC = (collection) => ({type: ADD_COLLECTION_TO_LIST, collection})
+

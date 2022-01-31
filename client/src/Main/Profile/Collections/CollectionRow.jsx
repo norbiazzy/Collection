@@ -18,7 +18,6 @@ const Collection = (props) => {
       <td>
         <button onClick={() => props.deleteCollection(_id)}
                 className={'btn btn-dark mx-1'}>{trashSVG(s.tollSVG)}</button>
-        <button className={'btn btn-dark mx-1'}>{editSVG(s.tollSVG)}</button>
         <NavLink to={'/items/' + _id} className={'btn btn-dark mx-1'}>{rightArrowSVG(s.tollSVG)}</NavLink>
         {/*<NavLink to={'/profile/'+ userId} className={'btn btn-dark mx-1'}>{userSVG(s.tollSVG)}</NavLink>*/}
       </td>

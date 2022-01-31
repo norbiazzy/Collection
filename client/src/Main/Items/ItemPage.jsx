@@ -40,13 +40,13 @@ const ItemsPage = (props) => {
       {editCollectionMod
         ? <EditCollection close={() => setEditCollectionMod(false)} collection={props.collection}/>
         : null}
-      {editItemMod
-        ? <EditCollection close={() => setEditItemMod(false)} collection={props.collection}/>
-        : null}
+      {/*{editItemMod*/}
+      {/*  ? <EditCollection close={() => setEditItemMod(false)} collection={props.collection}/>*/}
+      {/*  : null}*/}
       <CollectionHeader openModal={() => setEditCollectionMod(true)} collection={props.collection}/>
       <div className='d-flex justify-content-between align-items-center'>
         <h2>Items</h2>
-        {props.adminMod || props.collection.userId === props.iUserId ? <div>
+        {props.iAdminMod || props.collection.userId === props.iUserId ? <div>
           {createMod ? <button className={'btn btn-success me-2'}
                                onClick={event => submit(event)}
           >Create

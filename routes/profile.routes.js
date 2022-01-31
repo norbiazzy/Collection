@@ -24,9 +24,11 @@ router.get('/getUser', auth, async (req, res) => {
 // /api/profile/get
 router.get('/getUser/:id', auth, async (req, res) => {
   try {
-    const profile = await Profile.findOne({userId: req.params.id})
-    const collections = await Collection.find({userId: req.params.id})
-    if (!profile) return res.status(200).json({profile, collections})
+    const userId = req.params.id
+    const profile = await Profile.findOne({userId})
+    const collections = await Collection.find({userId})
+    const user = await User.findById(userId, {blocked: 1, role: 1})
+    if (profile) return res.status(200).json({profile, user, collections})
     return res.status(404).json({message: 'нету профиля...'})
   } catch (e) {
     return res.status(404).json({message: 'нету профиля...'})
@@ -37,14 +39,14 @@ router.post('/update', auth, async (req, res) => {
   try {
     let body = req.body
     await Profile.updateOne({userId: body.userId}, body)
-
+    
     return res.status(200).json({message: 'Профиль обновлен успешно!'})
   } catch (e) {
     return res.status(404).json({message: 'Не удалось удалить пользователя'})
   }
 })
 
-router.delete('/user/:id', async (req, res) => {
+router.delete('/user/?:id', async (req, res) => {
   try {
     const userId = req.params.id
     await User.findByIdAndDelete(userId)
@@ -54,7 +56,7 @@ router.delete('/user/:id', async (req, res) => {
     await Item.deleteMany({userId})
     await Item.updateMany({likes: [userId]}, {$pull: {likes: userId}})
     await Item.updateMany({comments: [userId]}, {$pull: {comments: userId}})
-    return res.status(200).json({message: 'удалили...'})
+    return res.status(200).json({you: req.params.id === req.user.userId})
   } catch (e) {
     console.log(e, 'error')
     return res.status(409).json(e)
@@ -65,7 +67,7 @@ router.delete('/blockUser/:id', auth, async (req, res) => {
     const blockUserId = req.params.id
     if (req.user.role !== 'admin') if (req.user.userId !== blockUserId) return res.status(403).json({message: 'У вас нет прав!'})
     await User.findByIdAndUpdate(blockUserId, {blocked: true})
-    return res.status(200).json({message: 'Block...'})
+    return res.status(200).json({you: blockUserId === req.user.userId})
   } catch (e) {
     console.log(e, 'error')
     return res.status(409).json(e)
@@ -73,10 +75,43 @@ router.delete('/blockUser/:id', auth, async (req, res) => {
 })
 router.delete('/unblockUser/:id', auth, async (req, res) => {
   try {
-    const blockUserId = req.params.id
-    if (req.user.role === 'admin') return res.status(403).json({message: 'У вас нет прав!'})
-    await User.findByIdAndUpdate(blockUserId, {blocked: false})
+    const unblockUserId = req.params.id
+    if (req.user.role !== 'admin') if (req.user.userId !== unblockUserId) return res.status(403).json({message: 'У вас нет прав!'})
+    await User.findByIdAndUpdate(unblockUserId, {blocked: false})
     return res.status(200).json({message: 'Unblock...'})
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(409).json(e)
+  }
+})
+router.delete('/role/:id', auth, async (req, res) => {
+  try {
+    const userId = req.params.id
+    if (req.user.role !== 'admin') if (req.user.userId !== userId) return res.status(403).json({message: 'У вас нет прав!'})
+    await User.findByIdAndUpdate(userId, {role: 'user'})
+    return res.status(200).json({you: userId=== req.user.userId})
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(409).json(e)
+  }
+})
+router.get('/role/:id', auth, async (req, res) => {
+  try {
+    const userId = req.params.id
+    if (req.user.role !== 'admin') if (req.user.userId !== userId) return res.status(403).json({message: 'У вас нет прав!'})
+    await User.findByIdAndUpdate(userId, {role: 'admin'})
+    return res.status(200)
+  } catch (e) {
+    console.log(e, 'error')
+    return res.status(409).json(e)
+  }
+})
+
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find()
+    const profiles = await Profile.find()
+    return res.status(200).json({users, profiles})
   } catch (e) {
     console.log(e, 'error')
     return res.status(409).json(e)

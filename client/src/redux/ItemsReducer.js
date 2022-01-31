@@ -1,7 +1,7 @@
 import {
   addCommentAPI,
   deleteItemAPI,
-  dislikeItemAPI, getCollectionItemsAPI, getCommentAPI,
+  dislikeItemAPI, getCollectionItemsAPI, getCommentAPI, getItemListAPI,
   likeItemAPI,
   saveItemAPI,
   saveUpdateItemAPI
@@ -14,6 +14,7 @@ const DISLIKE_ITEM = 'DISLIKE_ITEM'
 const DELETE_ITEM = 'DELETE_ITEM'
 const UPDATE_ITEM = 'UPDATE_ITEM'
 const GET_COMMENTS = 'GET_COMMENTS'
+const GET_ITEM_LIST = 'GET_ITEM_LIST'
 const ADD_ITEM_TO_LIST = 'ADD_ITEM_TO_LIST'
 
 const initialState = {
@@ -35,7 +36,7 @@ export const itemsReducer = (state = initialState, action) => {
       };
     case LIKE_ITEM:
       itemIndex = state.itemList.findIndex((i) => i._id === action.itemId)
-
+      
       return {
         ...state,
         itemList: [...state.itemList],
@@ -65,9 +66,23 @@ export const itemsReducer = (state = initialState, action) => {
 }
 
 export const saveItemThunk = (token, item) => async (dispatch) => {
+  
   let res = await saveItemAPI(token, item)
   if (res) dispatch(addItemToListAC(res))
   return true
+}
+export const getItemListThunk = () => async (dispatch) => {
+  let res = await getItemListAPI()
+  console.log(res)
+  let sortedResult = res.result.sort((a, b) => b.item.likes.length - a.item.likes.length)
+  let ItemList = sortedResult.map(data => {
+    data.item.collectionName = data.collectionInfo.name
+    data.item.email = data.userInfo.email
+    data.item.topic = data.collectionInfo.topic.label
+    return data.item
+  })
+  console.log(ItemList)
+  if (res) dispatch(getItemsAC(ItemList))
 }
 export const getCollectionItemsThunk = (token, collectionId) => async (dispatch) => {
   let res = await getCollectionItemsAPI(token, collectionId)
@@ -76,7 +91,7 @@ export const getCollectionItemsThunk = (token, collectionId) => async (dispatch)
     let sortedItemList = res.items.sort((a, b) => {
       return a.created < b.created ? 1 : -1
     })
-    dispatch(getItemsAC(sortedItemList,))
+    dispatch(getItemsAC(sortedItemList))
   }
 }
 export const deleteItemThunk = (token, itemId) => async (dispatch) => {

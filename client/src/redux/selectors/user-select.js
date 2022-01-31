@@ -16,3 +16,6 @@ export const getAdminMod = (state)=>{
 export const getBlocked = (state)=>{
     return state.auth.blocked
 }
+export const getUserListSelect = (state)=>{
+    return state.user.userList
+}

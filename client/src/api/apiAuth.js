@@ -6,7 +6,7 @@ export const registerUserAPI = async (body) => {
   let res = await fetch('/api/auth/register', {
     method: 'POST', body, headers
   })
-  return res.json()
+  return await res.json()
 }
 
 export const loginUserAPI = async ({email, password}) => {

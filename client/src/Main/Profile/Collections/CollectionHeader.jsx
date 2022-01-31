@@ -12,7 +12,7 @@ const CollectionHeader = (props) => {
     <div>
       <div className={'d-flex'}>
         <h2>{props.collection.name}</h2>
-        {props.adminMod || props.collection.userId === props.iUserId ?
+        {props.iAdminMod || props.collection.userId === props.iUserId ?
           <button
             onClick={props.openModal}
             className={'btn btn-dark'}>

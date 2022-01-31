@@ -30,7 +30,7 @@ const NewItemForm = (props) => {
   }
 
   let onSubmit = values => {
-
+    
     const body = {...values, tags, collectionId: props.collectionId}
     props.saveItemThunk(props.iToken, body)
   }
